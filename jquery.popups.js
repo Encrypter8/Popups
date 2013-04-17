@@ -24,18 +24,20 @@
 
 		if (this.options.className != '') { this.options.className = ' ' + this.options.className; }
 
-		var guid = _guid();
+		this.options.appendTo = this.options.appendTo || $(document.body);
+
+		this.guid = _guid();
 
 		// create popup and add to DOM
 		this.$popup = $([
-			'<div id="popup-' + guid + '" class="popup-container' + this.options.className + '" style="min-width: ' + this.options.minWidth + 'px; min-height: ' + this.options.minHeight + 'px;">',
+			'<div id="popup-' + this.guid + '" class="popup-container' + this.options.className + '" style="min-width: ' + this.options.minWidth + 'px; min-height: ' + this.options.minHeight + 'px;">',
 				this.options.showX ? '<button class="sprite popup-x" type="button"></button>' : '',
 				'<div class="popup-arrow"><div class="inner-arrow"></div></div>', // pointing-left will be placed variably
 			'</div>'
 		].join(''));
 
 		this.$popup.append(this.$el);
-		this.$body.append(this.$popup);
+		$(this.options.appendTo).append(this.$popup);
 
 		// if showX, bind click to remove popup *Please Note: Removing, not hiding
 		if (this.options.showX) {
@@ -74,7 +76,11 @@
 
 	Popup.prototype.get$popup = function() {
 		return this.$popup;
-	}
+	};
+
+	Popup.prototype.getGuid = function() {
+		return this.guid;
+	};
 
 
 	//
@@ -82,14 +88,16 @@
 	//
 	$.popup = function(el, option, arg) {
 
+		//
+
 		var $el = $(el);
-		var instance = $el.data('modal');
+		var instance = $el.data('popup');
 
 		var options = $.extend({}, $.popup.defaults, typeof option == 'object' && option)
 
 		// has an instance of $.modal been created on $el?
 		if (!instance) {
-			$el.data('modal', (instance = new Popup(el, options)));
+			$el.data('popup', (instance = new Popup(el, options)));
 		}
 
 		// if options == 'string', user is trying envoke a method of $.modal
@@ -109,6 +117,7 @@
 	$.popup.defaults = {
 		align: 'right',
 		attachTo: null,
+		appendTo: null,
 		autoOpen: true,
 		className: '',
 		responsivePosition: false,
@@ -125,8 +134,45 @@
 	};
 
 	$.fn.popup = function (option, arg) {
-		// this plug only works on a single jquery element
-		return $.popup(this[0], option, arg);
+		var rtnArray = [];
+		this.each(function() {
+			rtnArray.push($.popup(this, option, arg));
+		});
+
+		if (rtnArray.length == 1) {
+			return rtnArray[0];
+		}
+		else {
+			// if an array of jquery objects
+			// change to a single jquery collection
+			if (rtnArray[0] instanceof window.jQuery) {
+				$.each(rtnArray, function(i) {
+					rtnArray[i] = rtnArray[i][0];
+				})
+				rtnArray = $(rtnArray);
+			}
+			return rtnArray;
+		}
 	};
+
+
+	$.fn.bubble = function(options, arg) {
+		var defaults = {
+			className: '',
+			popupBuffer: 20,
+			offsetPercentage: 0,
+			offsetPixels: 50,
+			responsiveAlignment: true,
+			responsivePosition: true,
+			showArrow: true,
+			showX: true
+		};
+
+		options = $.extend(defaults, options);
+
+		options.className += ' bubble';
+
+		return this.popups(options, arg);
+	}
 
 }(window.jQuery);
