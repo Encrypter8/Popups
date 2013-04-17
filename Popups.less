@@ -1,0 +1,107 @@
+﻿/*
+ * Popups.less
+ * this less file is too acompany Popups.js
+ */
+
+/* variables */
+
+@darkblue: #095B93;
+@white: #FFF;
+
+
+/* popup styles */
+
+.popup-container {
+	height: auto;
+	position: absolute;
+	width: auto;
+}
+
+.popup-container.bubble {
+	background-color: #FFF;
+	border: 2px solid @darkblue;
+
+	.popup-x {
+		background-color: transparent;
+		//background-image: url(../Images/Popup_X.png); // will uncomment once we fix Resource Manager
+		background-repeat: no-repeat;
+		border: none;
+		cursor: pointer;
+		height: 24px;
+		margin: 0;
+		outline: none;
+		padding: 0;
+		position: absolute;
+		right: -12px;
+		top: -12px;
+		width: 23px;
+	}
+
+	.popup-arrow {
+		height: 0;
+		position: absolute;
+		width: 0;
+
+		.inner-arrow {
+			height: 0;
+			position: relative;
+			width: 0;
+		}
+
+		&.pointing-up {
+			border-bottom: 16px solid @darkblue;
+			border-left: 8px solid transparent;
+			border-right: 8px solid transparent;
+
+			.inner-arrow {
+				border-bottom: 12px solid @white;
+				border-left: 6px solid transparent;
+				border-right: 6px solid transparent;
+				left: -6px;
+				top: 4px;
+			}
+		}
+
+		&.pointing-right {
+			border-bottom: 8px solid transparent;
+			border-left: 16px solid @darkblue;
+			border-top: 8px solid transparent;
+
+			.inner-arrow {
+				border-bottom: 6px solid transparent;
+				border-left: 12px solid @white;
+				border-top: 6px solid transparent;
+				left: -16px;
+				top: -6px;
+			}
+		}
+
+		&.pointing-down {
+			border-left: 8px solid transparent;
+			border-right: 8px solid transparent;
+			border-top: 16px solid @darkblue;
+
+			.inner-arrow {
+				border-left: 6px solid transparent;
+				border-right: 6px solid transparent;
+				border-top: 12px solid @white;
+				left: -6px;
+				top: -16px;
+			}
+		}
+
+		&.pointing-left {
+			border-bottom: 8px solid transparent;
+			border-right: 16px solid @darkblue;
+			border-top: 8px solid transparent;
+
+			.inner-arrow {
+				border-bottom: 6px solid transparent;
+				border-right: 12px solid @white;
+				border-top: 6px solid transparent;
+				left: 4px;
+				top: -6px;
+			}
+		}
+	}
+}
