@@ -12,21 +12,21 @@
 	var Popup = function (el, options) {
 		this.options = options;
 		this.$el = $(el);
-		this.$body = $(document.body);
 
-		this.create();
+		if (this.$el.length == 1) {
+			this.create();
+		}
+		else {
+			$.error("$.popup requires that $el is a single jquery element");
+			return;
+		}
 	};
 
 	Popup.prototype.create = function() {
 
-		// set options.orientation to 'start' if invalid option is choosen
-		if (this.options.orientation != 'start' || this.options.orientation != 'middle' || this.options.orientation != 'end') { this.options.orientation = 'start'; }
-
 		if (this.options.className != '') { this.options.className = ' ' + this.options.className; }
 
-		this.options.appendTo = this.options.appendTo || $(document.body);
-
-		this.guid = _guid();
+				this.guid = _guid();
 
 		// create popup and add to DOM
 		this.$popup = $([
@@ -36,8 +36,11 @@
 			'</div>'
 		].join(''));
 
+		if (this.options.appendOrAfter != 'append' && this.options.appendOrAfter != 'after') { this.options.appendOrAfter = 'append'; }
+
+		this.options.appendTo = this.options.appendTo || $(document.body);
 		this.$popup.append(this.$el);
-		$(this.options.appendTo).append(this.$popup);
+		this.options.appendTo[this.options.appendOrAfter](this.$popup);
 
 		// if showX, bind click to remove popup *Please Note: Removing, not hiding
 		if (this.options.showX) {
@@ -72,6 +75,11 @@
 		var arrowClass = '';
 		var arrowLeft = 0;
 		var arrowTop = 0;
+
+		// set options.orientation to 'start' if invalid option is choosen
+		if (this.options.orientation != 'start' || this.options.orientation != 'middle' || this.options.orientation != 'end') { this.options.orientation = 'start'; }
+
+
 	};
 
 	Popup.prototype.get$popup = function() {
@@ -115,9 +123,10 @@
 	}
 
 	$.popup.defaults = {
-		align: 'right',
+		align: 'free',
 		attachTo: null,
 		appendTo: null,
+		appendOrAfter: 'append',
 		autoOpen: true,
 		className: '',
 		responsivePosition: false,
@@ -125,6 +134,7 @@
 		minWidth: 0,
 		offsetPercentage: 0,
 		offsetPixels: 0,
+		orientation: 'right',
 		popupBuffer: 0,
 		responsivePosition: false,
 		removeOnClose: false,

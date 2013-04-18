@@ -63,11 +63,6 @@
 	<button id="popupbtn">Show Popup</button>
 </div>
 
-<div class="popup">I belong in a popup</div>
-<div class="popup">I belong in a popup</div>
-<div class="popup">I belong in a popup</div>
-<div class="popup">I belong in a popup</div>
-
 <script type="text/javascript" src="./less-1.3.3.min.js"></script>
 <script type="text/javascript">
 
@@ -92,7 +87,7 @@ $(function() {
 			$overlay.addClass('shade');
 		});
 
-		var $html = $('<div class="popup-content">' + lorem() + '</div>');
+		var $html = $('<div class="popup">' + lorem() + '</div>');
 		var $popup = null;
 
 		$overlay.on($.support.transition.end, function() {
@@ -107,15 +102,19 @@ $(function() {
 		})
 	});
 
+
+
+
 	$('#popupbtn').on('click', function() {
-		var $html = $('.popup');
+		var $html = $('<div class="popup">' + lorem() + '</div>');
 		console.log($html);
 
 		var $html_array = [];
 
 		console.log($html.popup({
 			attachTo: this,
-			className: 'bubble'
+			className: 'bubble',
+			appendTo: $('#wrapper')
 		}).addClass('new-class'));
 
 		

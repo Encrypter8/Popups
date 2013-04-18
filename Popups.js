@@ -25,13 +25,14 @@ var Popups = function () {
  */
 Popups.prototype.Create = function ($el, content, options) {
 	var defaults = {
-		align: 'right',
+		align: 'free',
 		className: '',
 		responsivePosition: false,
 		minHeight: 0,
 		minWidth: 0,
 		offsetPercentage: 0,
-		offsetPixels: 0,F
+		offsetPixels: 0,
+		orientation: 'start',
 		popupBuffer: 0,
 		responsivePosition: false,
 		showArrow: false,
