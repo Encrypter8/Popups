@@ -13,20 +13,16 @@
 		this.options = options;
 		this.$el = $(el);
 
-		if (this.$el.length == 1) {
-			this.create();
-		}
-		else {
-			$.error("$.popup requires that $el is a single jquery element");
-			return;
-		}
+		this.create();
 	};
 
 	Popup.prototype.create = function() {
 
+		var that = this;
+
 		if (this.options.className != '') { this.options.className = ' ' + this.options.className; }
 
-				this.guid = _guid();
+		this.guid = _guid();
 
 		// create popup and add to DOM
 		this.$popup = $([
@@ -47,8 +43,8 @@
 		// if showX, bind click to remove popup *Please Note: Removing, not hiding
 		if (this.options.showX) {
 			this.$popup.find('.popup-x').on('click', function () {
-				var action = this.options.removeOnClose ? 'remove' : 'close';
-				this.$el.popup(action);
+				var action = that.options.destroyOnClose ? 'destroy' : 'close';
+				that.$el.popup(action);
 			});
 		}
 
@@ -56,7 +52,7 @@
 			this.$popup.find('.popup-arrow').remove();
 		}
 
-		if (this.options.align != 'free' && this.options.attachTo$el) {
+		if (this.options.align != 'free') {
 			this.options.attachTo$el = $(this.options.attachTo$el);
 			this.positionPopup();
 		}
@@ -277,13 +273,30 @@
 		this.positionPopup();
 	};
 
+	Popup.prototype.show = function() {
+		this.$popup.show();
+	}
+
+	Popup.prototype.close = function() {
+		this.$popup.hide();
+	}
+
+	Popup.prototype.destroy = function() {
+		this.$el.remove();
+		this.$popup.remove();
+		delete this;
+	}
+
 
 	//
 	// Define jQuery.Popup
 	//
 	$.popup = function(el, option, arg) {
 
-		//
+		// can only accept 1 at a time
+		if (el.length > 1) {
+			el = el[0];
+		}
 
 		var $el = $(el);
 		var instance = $el.data('popup');
@@ -298,24 +311,19 @@
 		// if options == 'string', user is trying envoke a method of $.modal
 		if (typeof option == 'string') {
 			if (instance[option]) {
-				var rtnVar = instance[option](arg);
-				if (rtnVar) {
-					return rtnVar;
-				}
+				return instance[option](arg);
 			}
 		}
-		
-		// return $el for chaining
-		return $el;
 	}
 
 	$.popup.defaults = {
 		align: 'free',
-		attachTo$el: null,
 		appendTo: null,
 		appendOrAfter: 'append',
+		attachTo$el: null,
 		autoOpen: true,
 		className: '',
+		destroyOnClose: false,
 		minHeight: 0,
 		minWidth: 0,
 		offsetPercentage: 0,
@@ -324,80 +332,19 @@
 		popupBuffer: 0,
 		responsiveAlignment: false,
 		responsiveToEdges: false,
-		removeOnClose: false,
 		showArrow: false,
 		showX: false
 	};
 
 	$.fn.popup = function (option, arg) {
-		var rtnArray = [];
+		var rtnValue = null;
 		this.each(function() {
-			rtnArray.push($.popup(this, option, arg));
-		});
-
-		if (rtnArray.length == 1) {
-			return rtnArray[0];
-		}
-		else {
-			// if an array of jquery objects
-			// change to a single jquery collection
-			if (rtnArray[0] instanceof window.jQuery) {
-				$.each(rtnArray, function(i) {
-					rtnArray[i] = rtnArray[i][0];
-				})
-				rtnArray = $(rtnArray);
+			if (rtnValue = $.popup(this, option, arg)) {
+				return false;
 			}
-			return rtnArray;
-		}
-	};
-
-
-	$.fn.bubble = function(options, arg) {
-		var defaults = {
-			className: '',
-			popupBuffer: 20,
-			offsetPercentage: 0,
-			offsetPixels: 50,
-			responsiveAlignment: true,
-			responsiveToEdges: true,
-			showArrow: true,
-			showX: true
-		};
-
-		options = $.extend(defaults, options);
-
-		options.className += ' bubble';
-
-		return this.popups(options, arg);
-	}
-
-
-	$.fn.popupOnHover = function($html, options) {
-		defaults = {
-			className: 'bubble',
-			minHeight: 90,
-			minWidth: 160,
-		}
-		options = $.extend(defaults, options);
-
-		// constants (the options that you always need to set no matter what, don't put these in defaults, as they can be overwritten by options)
-		options.align = 'free';
-		options.className += ' hover';
-
-		var $hoverPopup = $html.popup(options).popup('get$popup').hide();
-
-		console.log($hoverPopup);
-
-		return this.each(function() {
-			var $this = $(this);
-			$this.on('mousemove', function(e) {
-				$hoverPopup.css({ 'left': e.pageX + 10, 'top': e.pageY + 10});
-			}).on('mouseenter', function() {
-				$hoverPopup.show();
-			}).on('mouseleave', function() {
-				$hoverPopup.hide();
-			});
 		});
-	}
+
+		return rtnValue || this;
+	};
 
 }(window.jQuery);
