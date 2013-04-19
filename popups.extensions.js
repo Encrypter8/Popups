@@ -32,11 +32,11 @@
 
 
 	$.fn.popupOnHover = function($html, options) {
-		defaults = {
+		var defaults = {
 			className: 'bubble',
 			minHeight: 90,
-			minWidth: 160,
-		}
+			minWidth: 160
+		};
 		options = $.extend(defaults, options);
 
 		// constants (the options that you always need to set no matter what, don't put these in defaults, as they can be overwritten by options)
@@ -72,17 +72,22 @@
 
 		var $overlay = $('<div class="overlay"></div>').appendTo(document.body);
 
-		// if you don't wait, the class will actually be added to element
-		// before the element is added to the body
-		// and that will negate the transition
-		$.wait(100, function() {
-			$overlay.addClass('shade');
-		});
+		that.popup('get$popup').appendTo($overlay);
+		$(document.body).addClass('no-scroll').on('keydown.no-scroll', function(e) {
+			// the background is still scrollable via the press of the spacebar
+			// we deactivate that here (keyCode 32 = spacebar)
+			if (e.keyCode == 32) {
+				e.preventDefault();
+				// transfer to overlay
+			}
+		})
 
-		$overlay.on($.support.transition.end, function() {
-			that.popup('get$popup').addClass('show');
+		// TODO: refocus is focused on background
+		$(document.body).on('focus', function(e) {
+			if (!$(e.target).closest($overlay)) {
+				$overlay.trigger('focus');
+			}
 		});
-	}
-
+	};
 
 }(window.jQuery);
