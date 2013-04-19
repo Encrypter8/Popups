@@ -27,7 +27,6 @@ Popups.prototype.Create = function ($el, content, options) {
 	var defaults = {
 		align: 'free',
 		className: '',
-		responsivePosition: false,
 		minHeight: 0,
 		minWidth: 0,
 		offsetPercentage: 0,

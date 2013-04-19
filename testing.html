@@ -11,9 +11,13 @@
 <script src="./jquery.popups.js"></script>
 <style type="text/css">
 
+	body {
+		font-family: helvetica;
+	}
+
 	body.no-scroll {
-		overflow: hidden;
 		cursor: progress;
+		overflow: hidden;
 	}
 
 	#wrapper {
@@ -46,7 +50,7 @@
 		border: 1px solid black;
 		margin: 30px;
 		padding: 20px;
-		max-width: 200px;
+		width: 200px;
 	}
 
 	.modal {
@@ -56,11 +60,29 @@
 		left: 30%;
 	}
 
+	.hover-boxes {
+		background-color: blue;
+		color: white;
+		display: inline-block;
+		margin-left: 300px;
+		padding: 30px;
+	}
+
+	.hoverHtml {
+		padding: 20px;
+	}
+
+	.hover {
+		position: absolute;
+	}
+
 </style>
 <body>
 <div id="wrapper">
 	<button id="overlay">Show Overlay</button>
 	<button id="popupbtn">Show Popup</button>
+	<span class="hover-boxes">Hover over me</span>
+	<span class="hover-boxes">Hover over me</span>
 </div>
 
 <script type="text/javascript" src="./less-1.3.3.min.js"></script>
@@ -87,7 +109,7 @@ $(function() {
 			$overlay.addClass('shade');
 		});
 
-		var $html = $('<div class="popup">' + lorem() + '</div>');
+		var $html = $('<div class="popup"><p>' + lorem() + '</p><button id"re">Reposition Popup</button></div>');
 		var $popup = null;
 
 		$overlay.on($.support.transition.end, function() {
@@ -106,22 +128,36 @@ $(function() {
 
 
 	$('#popupbtn').on('click', function() {
-		var $html = $('<div class="popup">' + lorem() + '</div>');
+		var $html = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
 		console.log($html);
 
 		var $html_array = [];
 
-		console.log($html.popup({
-			attachTo: this,
+		$html.popup({
+			align: 'bottom',
+			attachTo$el: this,
 			className: 'bubble',
-			appendTo: $('#wrapper')
-		}).addClass('new-class'));
+			//offsetPixels: 20,
+			offsetPercentage: 50,
+			popupBuffer: 20,
+			responsiveAlignment: true,
+			responsiveToEdges: true,
+			showArrow: true,
+			showX: true
+		});
 
-		
-
-
-		
+		$html.find('#re').one('click', function() {
+			$html.css({ 'width': 500 });
+			$(this).remove();
+			//$html.popup('reAlignPopup');
+		})		
 	});
+
+	// hover example
+	var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
+	var $hoverPopup = null;
+	$('.hover-boxes').popupOnHover($hoverHtml);
+
 
 });
 
