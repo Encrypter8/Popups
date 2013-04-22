@@ -43,8 +43,7 @@
 		// if showX, bind click to remove popup *Please Note: Removing, not hiding
 		if (this.options.showX) {
 			this.$popup.find('.popup-x').on('click', function () {
-				var action = that.options.destroyOnClose ? 'destroy' : 'close';
-				that.$el.popup(action);
+				that.close();
 			});
 		}
 
@@ -278,13 +277,17 @@
 	}
 
 	Popup.prototype.close = function() {
-		this.$popup.hide();
+		if (this.options.destroyOnClose) {
+			this.destroy();
+		}
+		else {
+			this.$popup.hide();
+		}
 	}
 
 	Popup.prototype.destroy = function() {
 		this.$el.remove();
 		this.$popup.remove();
-		delete this;
 	}
 
 
@@ -317,23 +320,23 @@
 	}
 
 	$.popup.defaults = {
-		align: 'free',
-		appendTo: null,
-		appendOrAfter: 'append',
-		attachTo$el: null,
-		autoOpen: true,
-		className: '',
-		destroyOnClose: false,
-		minHeight: 0,
-		minWidth: 0,
-		offsetPercentage: 0,
-		offsetPixels: 0,
-		orientation: 'right',
-		popupBuffer: 0,
-		responsiveAlignment: false,
-		responsiveToEdges: false,
-		showArrow: false,
-		showX: false
+		align : 'free',
+		appendTo : null,
+		appendOrAfter : 'append',
+		attachTo$el : null,
+		autoOpen : true,
+		className : '',
+		destroyOnClose : false,
+		minHeight : 0,
+		minWidth : 0,
+		offsetPercentage : 0,
+		offsetPixels : 0,
+		orientation : 'right',
+		popupBuffer : 0,
+		responsiveAlignment : false,
+		responsiveToEdges : false,
+		showArrow : false,
+		showX : false
 	};
 
 	$.fn.popup = function (option, arg) {

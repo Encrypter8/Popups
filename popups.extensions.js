@@ -57,37 +57,4 @@
 		});
 	};
 
-
-	$.fn.modal = function(options) {
-
-		var that = this;
-
-		var defaults = {
-			align: 'middle',
-			className: 'bubble modal',
-			showX: true
-		}
-
-		this.popup(defaults);
-
-		var $overlay = $('<div class="overlay"></div>').appendTo(document.body);
-
-		that.popup('get$popup').appendTo($overlay);
-		$(document.body).addClass('no-scroll').on('keydown.no-scroll', function(e) {
-			// the background is still scrollable via the press of the spacebar
-			// we deactivate that here (keyCode 32 = spacebar)
-			if (e.keyCode == 32) {
-				e.preventDefault();
-				// transfer to overlay
-			}
-		})
-
-		// TODO: refocus is focused on background
-		$(document.body).on('focus', function(e) {
-			if (!$(e.target).closest($overlay)) {
-				$overlay.trigger('focus');
-			}
-		});
-	};
-
 }(window.jQuery);

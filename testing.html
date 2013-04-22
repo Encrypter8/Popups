@@ -4,81 +4,76 @@
 	<title>Test Page, Fool!</title>
 	<meta charset="UTF-8">
 	<link href="./Popups.less" rel="stylesheet/less" type="text/css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="./bootstrap-transition.js"></script>
-<!--<script src="./bootstrap-modal.js"></script>-->
-<script type="text/javascript" src="./jquery.popups.js"></script>
-<script type="text/javascript" src="./popups.extensions.js"></script>
-<style type="text/css">
+	<style type="text/css">
 
-	body {
-		font-family: helvetica;
-		height: 900px;
-	}
+		body {
+			font-family: helvetica;
+			height: 900px;
+		}
 
-	body.no-scroll {
-		overflow: hidden;
-	}
+		body.no-scroll {
+			overflow: hidden;
+		}
 
-	#wrapper {
-		border: 1px solid black;
-		margin: 30px;
-		padding: 30px;
-	}
+		#wrapper {
+			border: 1px solid black;
+			margin: 30px;
+			padding: 30px;
+		}
 
-	.overlay {
-		background: url('./BlackTransparent.png') repeat;
-		bottom: 0;
-		left: 0;
-		overflow-x: auto;
-		overflow-y: scroll;
-		position: fixed;
-		right: 0;
-		top: 0;
-		width: 100%;
-		z-index: 1000;
-	}
+		.overlay {
+			background: url('./BlackTransparent.png') repeat;
+			bottom: 0;
+			left: 0;
+			overflow-x: auto;
+			overflow-y: scroll;
+			position: fixed;
+			right: 0;
+			top: 0;
+			width: 100%;
+			z-index: 1000;
+		}
 
-	.modal {
-		opacity: 1;
-		position: absolute;
-	}
+		.modal {
+			opacity: 1;
+			position: absolute;
+		}
 
-	.hide {
-		display: none;
-	}
+		.hide {
+			display: none;
+		}
 
-	.popup {
-		border: 1px solid black;
-		margin: 30px;
-		padding: 20px;
-		width: 200px;
-	}
+		.popup {
+			border: 1px solid black;
+			margin: 30px;
+			padding: 20px;
+			width: 200px;
+		}
 
-	.modal-inner {
-		border: 1px solid black;
-		margin: 30px;
-		padding: 20px;
-		width: 200px;
-	}
+		.modal-inner {
+			border: 1px solid black;
+			margin: 30px;
+			padding: 20px;
+			width: 200px;
+		}
 
-	.hover-boxes {
-		background-color: blue;
-		color: white;
-		display: inline-block;
-		margin-left: 300px;
-		padding: 30px;
-	}
+		.hover-boxes {
+			background-color: blue;
+			color: white;
+			display: inline-block;
+			margin-left: 300px;
+			padding: 30px;
+		}
 
-	.hoverHtml {
-		padding: 20px;
-	}
+		.hoverHtml {
+			padding: 20px;
+		}
 
-	.hover {
-		position: absolute;
-	}
+		.hover {
+			position: absolute;
+		}
 
-</style>
+	</style>
 </head>
 <body>
 <div id="wrapper">
@@ -88,6 +83,12 @@
 	<span class="hover-boxes">Hover over me</span>
 </div>
 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="./bootstrap-transition.js"></script>
+<!--<script src="./bootstrap-modal.js"></script>-->
+<script type="text/javascript" src="./jquery.popups.js"></script>
+<script type="text/javascript" src="./popups.extensions.js"></script>
+<script type="text/javascript" src="./jquery.modal.js"></script>
 <script type="text/javascript" src="./less-1.3.3.min.js"></script>
 <script type="text/javascript">
 
@@ -101,12 +102,11 @@ $(function() {
 
 	var $body = $(document.body);
 
+
 	$('#overlay').on('click', function() {
-
-		if (!$(this).data('modal')) {
+		var $this = $(this);
+		if (!$this.data('modal-pointer')) {
 			var $html = $('<div class="modal-inner"><button>Click to Load Content</button></div>');
-
-			$html.modal();
 
 			$html.find('button').one('click', function() {
 				$html.append('<p>' + lorem() + '</p>').css({ 'width': 400 });
@@ -114,45 +114,47 @@ $(function() {
 				$html.popup('reAlignPopup');
 			});
 
-			$(this).data('modal', $html);
-		}
-		else {
-			$(this).data('modal').modal('show');
+			$this.data('modal-pointer', $html);
 		}
 
+		var options = {
+			className : 'bubble'
+		};
+
+		$this.data('modal-pointer').modal(options);
 	});
 
 
 
 
-	$('#popupbtn').on('click', function() {
-		var $html = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
+	// $('#popupbtn').on('click', function() {
+	// 	var $html = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
 
-		$html.popup({
-			align: 'bottom',
-			attachTo$el: this,
-			className: 'bubble',
-			offsetPercentage: 50,
-			popupBuffer: 20,
-			responsiveAlignment: true,
-			responsiveToEdges: true,
-			showArrow: true,
-			showX: true
-		});
+	// 	$html.popup({
+	// 		align : 'bottom',
+	// 		attachTo$el : this,
+	// 		className : 'bubble',
+	// 		offsetPercentage : 50,
+	// 		popupBuffer : 20,
+	// 		responsiveAlignment : true,
+	// 		responsiveToEdges : true,
+	// 		showArrow : true,
+	// 		showX : true
+	// 	});
 
-		$html.find('#re').one('click', function() {
-			$html.css({ 'width': 500 });
-			$(this).remove();
-			$html.popup('reAlignPopup');
-		});
+	// 	$html.find('#re').one('click', function() {
+	// 		$html.css({ 'width' : 500 });
+	// 		$(this).remove();
+	// 		$html.popup('reAlignPopup');
+	// 	});
 
-		console.log($html.popup('get$popup')); // should only return the value for the first of the collection
-	});
+	// 	console.log($html.popup('get$popup')); // should only return the value for the first of the collection
+	// });
 
 	// hover example
-	var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
-	var $hoverPopup = null;
-	$('.hover-boxes').popupOnHover($hoverHtml);
+	// var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
+	// var $hoverPopup = null;
+	// $('.hover-boxes').popupOnHover($hoverHtml);
 
 
 });
