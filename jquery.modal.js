@@ -5,7 +5,7 @@
 
 !function($) {
 
-	if (!$.popup) {
+	if (!$.fn.popup) {
 		$.error('popups.extensions.js requires jquery.popups.js');
 		return;
 	}
@@ -27,9 +27,10 @@
 			destroyOnClose: false,
 			showX: true
 		};
-		popup_options.className = 'modal' + this.options.className ? ' ' + this.options.className : '';
+		popup_options.popupClass = 'modal' + (this.options.popupClass ? ' ' + this.options.popupClass : '');
 
-		this.$el.popup(popup_options).popup('get$popup').appendTo(this.$overlay);
+		this.$popup = this.$el.popup(popup_options).popup('get$popup');
+		this.$popup.appendTo(this.$overlay);
 		this.$overlay.appendTo(document.body).hide();
 
 		this.$overlay.find('.popup-x').off('click').on('click', function() {
@@ -43,23 +44,31 @@
 
 
 	Modal.prototype.open = function() {
+		var that = this;
 		this.$overlay.show();
 
-		this.$body.addClass('no-scroll').on('keydown.no-scroll', function(e) {
-			// the background is still scrollable via the press of the spacebar
-			// we deactivate that here (keyCode 32 = spacebar)
+		this.$body.addClass('no-scroll');
+
+		// TODO:
+		// apparently triggering the event 'scroll' won't actually scroll the window or element
+		// need to figure out how to actually do this
+		this.$body.on('keydown.modal', function(e) {
+			// keycode 32 = space
 			if (e.keyCode == 32) {
 				e.preventDefault();
-				// transfer to overlay
-			}
-		})
-
-		// TODO: refocus is focused on background
-		this.$body.on('focus', function(e) {
-			if (!$(e.target).closest($overlay)) {
-				$overlay.trigger('focus');
+				that.$overlay.trigger('scroll');
 			}
 		});
+
+		// close on escape
+		if (that.options.closeOnEscape) {
+			this.$body.on('keydown.modal', function(e) {
+				// keycode 27 = escape
+				if (e.keyCode == 27) {
+					that.close();
+				}
+			});
+		}
 	};
 
 	Modal.prototype.close = function() {
@@ -68,7 +77,7 @@
 		}
 		else {
 			this.$overlay.hide();
-			this.$body.removeClass('no-scroll').off('.no-scroll');
+			this.$body.removeClass('no-scroll').off('.modal');
 		}
 	};
 
@@ -113,7 +122,7 @@
 
 	$.fn.modal.defaults = {
 		autoOpen : true,
-		className : '',
+		popupClass : '',
 		closeOnEscape : true,
 		destroyOnClose : false
 	};

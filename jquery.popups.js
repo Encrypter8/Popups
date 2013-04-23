@@ -9,9 +9,9 @@
 		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 	};
 
-	var Popup = function (el, options) {
+	var Popup = function ($el, options) {
 		this.options = options;
-		this.$el = $(el);
+		this.$el = $el;
 		this.isOpen = true;
 
 		this.create();
@@ -21,23 +21,23 @@
 
 		var that = this;
 
-		if (this.options.className != '') { this.options.className = ' ' + this.options.className; }
-
 		this.guid = _guid();
 
 		var popupStyles = [
 			' style="',
+			this.options.height ? 'height: ' + this.options.height + 'px; ' : '',
 			this.options.maxHeight ? 'max-height: ' + this.options.maxHeight + 'px; ': '',
 			this.options.maxWidth ? 'max-width: ' + this.options.maxWidth + 'px; ' : '',
 			this.options.minHeight ? 'min-height: ' + this.options.minHeight + 'px; '  : '',
 			this.options.minWidth ? 'min-width: ' + this.options.minWidth + 'px; ' : '',
+			this.options.width ? 'width: ' + this.options.width + 'px; ' : '',
 			'"',
 		].join('');
 
 
 		// create popup and add to DOM
 		this.$popup = $([
-			'<div id="popup-' + this.guid + '" class="popup-container' + this.options.className + '"' + popupStyles + '>',
+			'<div id="popup-' + this.guid + '" class="popup-container ' + this.options.popupClass + '"' + popupStyles + '>',
 				this.options.showX ? '<button class="sprite popup-x" type="button"></button>' : '',
 				'<div class="popup-arrow"><div class="inner-arrow"></div></div>',
 			'</div>'
@@ -45,13 +45,11 @@
 
 		this.$arrow = this.$popup.find('.popup-arrow');
 
-		if (this.options.appendOrAfter != 'append' && this.options.appendOrAfter != 'after') { this.options.appendOrAfter = 'append'; }
-
-		this.options.appendTo = this.options.appendTo || $(document.body);
+		this.options.appendTo = this.options.appendTo || document.body;
 		this.$popup.append(this.$el);
-		this.options.appendTo[this.options.appendOrAfter](this.$popup);
+		$(this.options.appendTo).append(this.$popup);
 
-		// if showX, bind click to remove popup *Please Note: Removing, not hiding
+		// if showX, bind click to close popup
 		if (this.options.showX) {
 			this.$popup.find('.popup-x').on('click', function () {
 				that.close();
@@ -288,22 +286,23 @@
 	};
 
 	Popup.prototype.open = function() {
+		if (this.isOpen) {
+			return;
+		}
 		this.isOpen = true;
 		this.$popup.show();
 	}
 
 	Popup.prototype.close = function() {
-		if (this.options.destroyOnClose) {
-			this.destroy();
+		if (!this.isOpen) {
+			return;
 		}
-		else {
-			this.isOpen = false;
-			this.$popup.hide();
-		}
+		this.isOpen = false;
+		this.$popup.hide();
 	}
 
 	Popup.prototype.toggle = function() {
-
+		this[this.isOpen ? 'close' : 'open']();
 	}
 
 	Popup.prototype.destroy = function() {
@@ -313,45 +312,42 @@
 
 
 	//
-	// Define jQuery.Popup
+	// Define $.fn.popup
 	//
-	$.popup = function(el, option, arg) {
+	$.fn.popup = function (option, arg) {
+		var rtnValue = null;
+		this.each(function() {
+			var $this = $(this);
+			var instance = $this.data('popup');
 
-		// can only accept 1 at a time
-		if (el.length > 1) {
-			el = el[0];
-		}
-
-		var $el = $(el);
-		var instance = $el.data('popup');
-
-		var options = $.extend({}, $.popup.defaults, typeof option == 'object' && option)
-
-		// has an instance of $.modal been created on $el?
-		if (!instance) {
-			$el.data('popup', (instance = new Popup(el, options)));
-		}
-		else {
-			// if options == 'string', user is trying envoke a method of $.modal
-			if (typeof option == 'string') {
-				if (instance[option]) {
-					return instance[option](arg);
-				}
+			if (!instance) {
+				var options = $.extend({}, $.fn.popup.defaults, typeof option == 'object' && option)
+				$this.data('popup', (instance = new Popup($this, options)));
 			}
 			else {
-				instance.open();
+				if (typeof option == 'string') {
+					if (instance[option]) {
+						rtnValue = instance[option]();
+						return false; // break out of .each
+					}
+				}
+				else {
+					instance.toggle();
+				}
 			}
-		}
-	}
+			
+		});
 
-	$.popup.defaults = {
+		return rtnValue || this;
+	};
+
+	$.fn.popup.defaults = {
 		align : 'free',
 		appendTo : null,
-		appendOrAfter : 'append',
 		attachTo$el : null,
 		autoOpen : true,
-		className : '',
-		destroyOnClose : false,
+		popupClass : '',
+		height : null,
 		maxHeight: 0,
 		maxWidth: 0,
 		minHeight : 0,
@@ -363,18 +359,8 @@
 		responsiveAlignment : false,
 		responsiveToEdges : false,
 		showArrow : false,
-		showX : false
-	};
-
-	$.fn.popup = function (option, arg) {
-		var rtnValue = null;
-		this.each(function() {
-			if (rtnValue = $.popup(this, option, arg)) {
-				return false;
-			}
-		});
-
-		return rtnValue || this;
+		showX : false,
+		width : null
 	};
 
 }(window.jQuery);

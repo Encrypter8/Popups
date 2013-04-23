@@ -5,7 +5,7 @@
 
 !function ($) {
 
-	if (!$.popup) {
+	if (!$.fn.popup) {
 		$.error('popups.extensions.js requires jquery.popups.js');
 		return;
 	}
@@ -33,7 +33,7 @@
 
 	$.fn.popupOnHover = function($html, options) {
 		var defaults = {
-			className: 'bubble',
+			popupClass: 'bubble',
 			minHeight: 90,
 			minWidth: 160
 		};

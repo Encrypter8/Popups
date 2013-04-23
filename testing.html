@@ -8,7 +8,7 @@
 
 		body {
 			font-family: helvetica;
-			height: 900px;
+			height: 2000px;
 		}
 
 		body.no-scroll {
@@ -34,11 +34,6 @@
 			z-index: 1000;
 		}
 
-		.modal {
-			opacity: 1;
-			position: absolute;
-		}
-
 		.hide {
 			display: none;
 		}
@@ -48,6 +43,10 @@
 			margin: 30px;
 			padding: 20px;
 			width: 200px;
+		}
+
+		.modal {
+			height: 1600px;
 		}
 
 		.modal-inner {
@@ -126,7 +125,7 @@ $(function() {
 		}
 
 		var options = {
-			className : 'bubble'
+			popupClass : 'bubble'
 		};
 
 		$this.data('modal-pointer').modal(options);
@@ -141,7 +140,7 @@ $(function() {
 		$html.popup({
 			align : 'bottom',
 			attachTo$el : this,
-			className : 'bubble',
+			popupClass : 'bubble',
 			offsetPercentage : 50,
 			popupBuffer : 20,
 			responsiveAlignment : true,
@@ -170,13 +169,19 @@ $(function() {
 		$html.popup({
 			align : 'left',
 			attachTo$el : this,
-			className : 'bubble',
+			popupClass : 'bubble',
 			offsetPercentage : 50,
 			popupBuffer : 20,
 			responsiveAlignment : true,
 			responsiveToEdges : true,
 			showArrow : true,
 			showX : true
+		});
+
+		$html.on('keypress', function(e) {
+			if (e.keyCode == 32) {
+				console.log('space');
+			}
 		});
 
 	})
