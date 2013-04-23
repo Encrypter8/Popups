@@ -12,6 +12,7 @@
 	var Popup = function (el, options) {
 		this.options = options;
 		this.$el = $(el);
+		this.isOpen = true;
 
 		this.create();
 	};
@@ -24,9 +25,19 @@
 
 		this.guid = _guid();
 
+		var popupStyles = [
+			' style="',
+			this.options.maxHeight ? 'max-height: ' + this.options.maxHeight + 'px; ': '',
+			this.options.maxWidth ? 'max-width: ' + this.options.maxWidth + 'px; ' : '',
+			this.options.minHeight ? 'min-height: ' + this.options.minHeight + 'px; '  : '',
+			this.options.minWidth ? 'min-width: ' + this.options.minWidth + 'px; ' : '',
+			'"',
+		].join('');
+
+
 		// create popup and add to DOM
 		this.$popup = $([
-			'<div id="popup-' + this.guid + '" class="popup-container' + this.options.className + '" style="min-width: ' + this.options.minWidth + 'px; min-height: ' + this.options.minHeight + 'px;">',
+			'<div id="popup-' + this.guid + '" class="popup-container' + this.options.className + '"' + popupStyles + '>',
 				this.options.showX ? '<button class="sprite popup-x" type="button"></button>' : '',
 				'<div class="popup-arrow"><div class="inner-arrow"></div></div>',
 			'</div>'
@@ -54,6 +65,10 @@
 		if (this.options.align != 'free') {
 			this.options.attachTo$el = $(this.options.attachTo$el);
 			this.positionPopup();
+		}
+
+		if (!this.options.autoOpen) {
+			this.close(); // if $popup has display: none before this point, positionPopup() will not work correctly, so we immediately close the popup if autoOpen = false;
 		}
 	};
 
@@ -272,7 +287,8 @@
 		this.positionPopup();
 	};
 
-	Popup.prototype.show = function() {
+	Popup.prototype.open = function() {
+		this.isOpen = true;
 		this.$popup.show();
 	}
 
@@ -281,8 +297,13 @@
 			this.destroy();
 		}
 		else {
+			this.isOpen = false;
 			this.$popup.hide();
 		}
+	}
+
+	Popup.prototype.toggle = function() {
+
 	}
 
 	Popup.prototype.destroy = function() {
@@ -310,11 +331,15 @@
 		if (!instance) {
 			$el.data('popup', (instance = new Popup(el, options)));
 		}
-
-		// if options == 'string', user is trying envoke a method of $.modal
-		if (typeof option == 'string') {
-			if (instance[option]) {
-				return instance[option](arg);
+		else {
+			// if options == 'string', user is trying envoke a method of $.modal
+			if (typeof option == 'string') {
+				if (instance[option]) {
+					return instance[option](arg);
+				}
+			}
+			else {
+				instance.open();
 			}
 		}
 	}
@@ -327,6 +352,8 @@
 		autoOpen : true,
 		className : '',
 		destroyOnClose : false,
+		maxHeight: 0,
+		maxWidth: 0,
 		minHeight : 0,
 		minWidth : 0,
 		offsetPercentage : 0,

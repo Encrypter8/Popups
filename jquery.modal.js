@@ -63,8 +63,13 @@
 	};
 
 	Modal.prototype.close = function() {
-		this.$overlay.hide();
-		this.$body.removeClass('no-scroll').off('.no-scroll');
+		if (this.options.destroyOnClose) {
+			this.destroy();
+		}
+		else {
+			this.$overlay.hide();
+			this.$body.removeClass('no-scroll').off('.no-scroll');
+		}
 	};
 
 	Modal.prototype.destroy = function() {
@@ -90,15 +95,16 @@
 				var options = $.extend({}, $.fn.modal.defaults, typeof option == 'object' && option);
 				$this.data('modal', (instance = new Modal($this, options)));
 			}
-
-			if (typeof option == 'string') {
-				if (instance[option]) {
-					rtnValue = instance[option](arg);
-					return false;
-				}
-			}
 			else {
-				instance.open();
+				if (typeof option == 'string') {
+					if (instance[option]) {
+						rtnValue = instance[option](arg);
+						return false;
+					}
+				}
+				else {
+					instance.open();
+				}
 			}
 		});
 

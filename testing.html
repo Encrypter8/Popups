@@ -26,7 +26,7 @@
 			bottom: 0;
 			left: 0;
 			overflow-x: auto;
-			overflow-y: scroll;
+			overflow-y: auto;
 			position: fixed;
 			right: 0;
 			top: 0;
@@ -73,6 +73,14 @@
 			position: absolute;
 		}
 
+		.add-comment {
+			margin-left: 300px;
+		}
+
+		.comment {
+			margin: 10px;
+		}
+
 	</style>
 </head>
 <body>
@@ -80,7 +88,7 @@
 	<button id="overlay">Show Overlay</button>
 	<button id="popupbtn">Show Popup</button>
 	<span class="hover-boxes">Hover over me</span>
-	<span class="hover-boxes">Hover over me</span>
+	<button class="add-comment">Click to add a comment</button>
 </div>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -127,36 +135,51 @@ $(function() {
 
 
 
-	// $('#popupbtn').on('click', function() {
-	// 	var $html = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
+	$('#popupbtn').on('click', function() {
+		var $html = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
 
-	// 	$html.popup({
-	// 		align : 'bottom',
-	// 		attachTo$el : this,
-	// 		className : 'bubble',
-	// 		offsetPercentage : 50,
-	// 		popupBuffer : 20,
-	// 		responsiveAlignment : true,
-	// 		responsiveToEdges : true,
-	// 		showArrow : true,
-	// 		showX : true
-	// 	});
+		$html.popup({
+			align : 'bottom',
+			attachTo$el : this,
+			className : 'bubble',
+			offsetPercentage : 50,
+			popupBuffer : 20,
+			responsiveAlignment : true,
+			responsiveToEdges : true,
+			showArrow : true,
+			showX : true
+		});
 
-	// 	$html.find('#re').one('click', function() {
-	// 		$html.css({ 'width' : 500 });
-	// 		$(this).remove();
-	// 		$html.popup('reAlignPopup');
-	// 	});
+		$html.find('#re').one('click', function() {
+			$html.css({ 'width' : 500 });
+			$(this).remove();
+			$html.popup('reAlignPopup');
+		});
 
-	// 	console.log($html.popup('get$popup')); // should only return the value for the first of the collection
-	// });
+		console.log($html.popup('get$popup')); // should only return the value for the first of the collection
+	});
 
 	// hover example
-	// var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
-	// var $hoverPopup = null;
-	// $('.hover-boxes').popupOnHover($hoverHtml);
+	var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
+	var $hoverPopup = null;
+	$('.hover-boxes').popupOnHover($hoverHtml);
 
+	$('.add-comment').on('click', function() {
+		$html = $('<div class="comment"><p>Add a comment</p><textarea></textarea></div>');
 
+		$html.popup({
+			align : 'left',
+			attachTo$el : this,
+			className : 'bubble',
+			offsetPercentage : 50,
+			popupBuffer : 20,
+			responsiveAlignment : true,
+			responsiveToEdges : true,
+			showArrow : true,
+			showX : true
+		});
+
+	})
 });
 
 function lorem() {
