@@ -15,7 +15,6 @@
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
-		this.$overlay = $('<div class="overlay" style="z-index: ' + this.options.zIndex + '"></div>');
 		this.$body = $(document.body);
 		this.isOpen = false;
 
@@ -26,6 +25,25 @@
 		var that = this;
 		var o = this.options
 
+		// background-image is a base64 encodement of a 1x1 px png of rbg(0,0,0,.7)
+		// we do this too support down to IE7
+		var overlayStyles = [
+			'style="',
+			'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QQTFiM7wlG6ZwAAAAxpVFh0Q29tbWVudAAAAAAAvK6ymQAAAA1JREFUCNdjYGBg2AwAALgAtEwmwcYAAAAASUVORK5CYII=);',
+			'bottom: 0;',
+			'left: 0;',
+			'overflow-x: auto;',
+			'overflow-y: auto;',
+			'position: fixed;',
+			'right: 0;',
+			'top: 0;',
+			'width: 100%;',
+			'z-index: ' + that.options.zIndex + ';',
+			'"'
+		].join('');
+
+		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(document.body);
+
 		var popup_options = {
 			align : 'middle',
 			appendTo : that.$overlay,
@@ -35,8 +53,8 @@
 		};
 		popup_options.popupClass = 'modal' + (o.popupClass ? ' ' + o.popupClass : '');
 
-		this.$el.popup(popup_options).popup('$popup');
-		this.$overlay.appendTo(document.body).hide();
+		this.$el.popup(popup_options);
+		this.$overlay.hide();
 
 		// reset $.fn.popup's .popup-close functionality
 		this.$overlay.find('.popup-close').off('click').on('click', function() {
