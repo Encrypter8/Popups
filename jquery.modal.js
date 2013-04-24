@@ -15,25 +15,27 @@
 		this.$el = $el;
 		this.$overlay = $('<div class="overlay"></div>');
 		this.$body = $(document.body);
+		this.$isOpen = false;
 
-		this.create();
+		this._create();
 	}
 
-	Modal.prototype.create = function() {
+	Modal.prototype._create = function() {
 		var that = this;
 
 		var popup_options = {
 			align: 'middle',
 			destroyOnClose: false,
-			showX: true
+			showClose: true
 		};
 		popup_options.popupClass = 'modal' + (this.options.popupClass ? ' ' + this.options.popupClass : '');
 
-		this.$popup = this.$el.popup(popup_options).popup('get$popup');
+		this.$popup = this.$el.popup(popup_options).popup('$popup');
 		this.$popup.appendTo(this.$overlay);
 		this.$overlay.appendTo(document.body).hide();
 
-		this.$overlay.find('.popup-x').off('click').on('click', function() {
+		// reset $.fn.popup's .popup-close functionality
+		this.$overlay.find('.popup-close').off('click').on('click', function() {
 			that.close();
 		});
 
@@ -45,9 +47,16 @@
 
 	Modal.prototype.open = function() {
 		var that = this;
+
+		// already open?
+		if (this.isOpen) {
+			return;
+		}
+
+		this.isOpen = true;
 		this.$overlay.show();
 
-		this.$body.addClass('no-scroll');
+		this.$body.css('overflow', 'hidden');
 
 		// TODO:
 		// apparently triggering the event 'scroll' won't actually scroll the window or element
@@ -76,8 +85,9 @@
 			this.destroy();
 		}
 		else {
+			this.isOpen = false;
 			this.$overlay.hide();
-			this.$body.removeClass('no-scroll').off('.modal');
+			this.$body.css('overflow', 'visible').off('.modal');
 		}
 	};
 
@@ -85,10 +95,6 @@
 		this.$el.popup('destroy');
 		this.$overlay.remove();
 	};
-
-	Modal.prototype.toggle = function() {
-		
-	}
 
 
 	//

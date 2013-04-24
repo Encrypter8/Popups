@@ -80,6 +80,10 @@
 			margin: 10px;
 		}
 
+		.comment textarea {
+			resize: none;
+		}
+
 	</style>
 </head>
 <body>
@@ -118,7 +122,7 @@ $(function() {
 			$html.find('button').one('click', function() {
 				$html.append('<p>' + lorem() + '</p>').css({ 'width': 400 });
 				$(this).remove();
-				$html.popup('reAlignPopup');
+				$html.popup('positionPopup');
 			});
 
 			$this.data('modal-pointer', $html);
@@ -132,30 +136,27 @@ $(function() {
 	});
 
 
+	var $popup = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
+	$popup.find('#re').one('click', function() {
+		$popup.css({ 'width' : 500 });
+		$(this).remove();
+		$popup.popup('positionPopup');
+	});
 
 
 	$('#popupbtn').on('click', function() {
-		var $html = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
-
-		$html.popup({
+		$popup.popup({
 			align : 'bottom',
 			attachTo$el : this,
+			//autoOpen : false,
 			popupClass : 'bubble',
 			offsetPercentage : 50,
 			popupBuffer : 20,
 			responsiveAlignment : true,
 			responsiveToEdges : true,
 			showArrow : true,
-			showX : true
+			showClose : true
 		});
-
-		$html.find('#re').one('click', function() {
-			$html.css({ 'width' : 500 });
-			$(this).remove();
-			$html.popup('reAlignPopup');
-		});
-
-		console.log($html.popup('get$popup')); // should only return the value for the first of the collection
 	});
 
 	// hover example
@@ -175,7 +176,7 @@ $(function() {
 			responsiveAlignment : true,
 			responsiveToEdges : true,
 			showArrow : true,
-			showX : true
+			showClose : true
 		});
 
 		$html.on('keypress', function(e) {
@@ -183,8 +184,7 @@ $(function() {
 				console.log('space');
 			}
 		});
-
-	})
+	});
 });
 
 function lorem() {

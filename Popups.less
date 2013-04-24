@@ -11,19 +11,13 @@
 
 /* popup styles */
 
-.popup-container {
-	height: auto;
-	position: absolute;
-	width: auto;
-}
-
 .popup-container.bubble {
 	background-color: #FFF;
 	border: 2px solid @darkblue;
 
-	.popup-x {
+	.popup-close {
 		background-color: transparent;
-		//background-image: url(../Images/Popup_X.png); // will uncomment once we fix Resource Manager
+		background-image: url('./Popup_Close.png');
 		background-repeat: no-repeat;
 		border: none;
 		cursor: pointer;
@@ -104,8 +98,4 @@
 			}
 		}
 	}
-}
-
-.sprite.popup-x {
-	background-image: url('./Popup_X2.png');
 }

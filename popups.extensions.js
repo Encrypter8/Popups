@@ -13,7 +13,7 @@
 
 	$.fn.bubble = function(options, arg) {
 		var defaults = {
-			className: '',
+			popupName: '',
 			popupBuffer: 20,
 			offsetPercentage: 0,
 			offsetPixels: 50,
@@ -31,7 +31,7 @@
 	};
 
 
-	$.fn.popupOnHover = function($html, options) {
+	$.fn.popupOnHover = function($el, options) {
 		var defaults = {
 			popupClass: 'bubble',
 			minHeight: 90,
@@ -43,7 +43,7 @@
 		options.align = 'free';
 		options.className += ' hover';
 
-		var $hoverPopup = $html.popup(options).popup('get$popup').hide();
+		var $hoverPopup = $el.popup(options).popup('$popup').hide();
 
 		return this.each(function() {
 			var $this = $(this);

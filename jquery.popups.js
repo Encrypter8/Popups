@@ -4,27 +4,22 @@
 
 !function ($) {
 
-	var _guid = function() {
-		var s4 = function() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
-		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	};
-
 	var Popup = function ($el, options) {
 		this.options = options;
 		this.$el = $el;
-		this.isOpen = true;
+		this.isOpen = false;
 
-		this.create();
+		this.version = 0.8;
+
+		this._create();
 	};
 
-	Popup.prototype.create = function() {
+	Popup.prototype._create = function() {
 
 		var that = this;
 
-		this.guid = _guid();
-
 		var popupStyles = [
-			' style="',
+			' style=" position: absolute; ',
 			this.options.height ? 'height: ' + this.options.height + 'px; ' : '',
 			this.options.maxHeight ? 'max-height: ' + this.options.maxHeight + 'px; ': '',
 			this.options.maxWidth ? 'max-width: ' + this.options.maxWidth + 'px; ' : '',
@@ -37,39 +32,33 @@
 
 		// create popup and add to DOM
 		this.$popup = $([
-			'<div id="popup-' + this.guid + '" class="popup-container ' + this.options.popupClass + '"' + popupStyles + '>',
-				this.options.showX ? '<button class="sprite popup-x" type="button"></button>' : '',
-				'<div class="popup-arrow"><div class="inner-arrow"></div></div>',
+			'<div class="popup-container ' + this.options.popupClass + '"' + popupStyles + '>',
+				this.options.showClose ? '<button class="popup-close" type="button"></button>' : '',
+				this.options.showArrow ? '<div class="popup-arrow"><div class="inner-arrow"></div></div>' : '',
 			'</div>'
 		].join(''));
 
 		this.$arrow = this.$popup.find('.popup-arrow');
 
 		this.options.appendTo = this.options.appendTo || document.body;
-		this.$popup.append(this.$el);
+		this.$popup.append(this.$el).hide(); // hide for autoOpen = false, if true, this.open will be called below
 		$(this.options.appendTo).append(this.$popup);
 
-		// if showX, bind click to close popup
-		if (this.options.showX) {
-			this.$popup.find('.popup-x').on('click', function () {
+		// if options.showClose, bind click to close popup
+		if (this.options.showClose) {
+			this.$popup.find('.popup-close').on('click', function () {
 				that.close();
 			});
 		}
 
-		if (!this.options.showArrow) {
-			this.$popup.find('.popup-arrow').remove();
-		}
-
 		if (this.options.align != 'free') {
 			this.options.attachTo$el = $(this.options.attachTo$el);
-			this.positionPopup();
 		}
 
-		if (!this.options.autoOpen) {
-			this.close(); // if $popup has display: none before this point, positionPopup() will not work correctly, so we immediately close the popup if autoOpen = false;
+		if (this.options.autoOpen) {
+			this.open();
 		}
 	};
-
 
 	Popup.prototype.positionPopup = function() {
 		var that = this;
@@ -90,15 +79,12 @@
 		var arrowLeft = 0;
 		var arrowTop = 0;
 
-		// reset options.orientation to 'start' if invalid option is choosen
-		if (this.options.orientation != 'start' || this.options.orientation != 'middle' || this.options.orientation != 'end') { this.options.orientation = 'start'; }
-
 		// Responsive Alignment
 		// run only if flag is set and if position != middle (because middle does not position the popup relative to the binding element)
 		// we change the position of the pop-up based on if it will fit in the visible window of it's orientation
 		// ie, if position is set to right, will the entire pop-up fit to the right of the binding element, if not, try left side
-		// will try to first fit in the same plane (ie, left will try right first, while top will try bottom first)
-		// will attept other plane if cannot fit in same plane, when trying other plane, first attempt will be right/bottom (respective of plane)
+		// will try to first fit in the same axis (ie, left will try right first, while top will try bottom first)
+		// will attept other axis if cannot fit in same one, when trying other axis, first attempt will be right/bottom (respectively)
 		// will position to middle if cannot fit in right, left, top, or bottom
 		//
 		if (this.options.responsiveAlignment == true && this.options.align != 'middle') {
@@ -164,6 +150,7 @@
 
 			this.options.align = newAlign;
 		}
+		// end Responsive Alignment
 
 		// define Constraint functions
 		var keepInVerticalConstraints = function () {
@@ -273,24 +260,15 @@
 		this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
 	};
 
-	Popup.prototype.get$popup = function() {
-		return this.$popup;
-	};
-
-	Popup.prototype.getGuid = function() {
-		return this.guid;
-	};
-
-	Popup.prototype.reAlignPopup = function() {
-		this.positionPopup();
-	};
-
 	Popup.prototype.open = function() {
 		if (this.isOpen) {
 			return;
 		}
 		this.isOpen = true;
 		this.$popup.show();
+		if (this.options.align != 'free') {
+			this.positionPopup();
+		}
 	}
 
 	Popup.prototype.close = function() {
@@ -327,7 +305,14 @@
 			else {
 				if (typeof option == 'string') {
 					if (instance[option]) {
-						rtnValue = instance[option]();
+						// if function
+						if (typeof instance[option] == 'function') {
+							rtnValue = instance[option]();
+						}
+						// if property
+						else {
+							rtnValue = instance[option];
+						}
 						return false; // break out of .each
 					}
 				}
@@ -347,20 +332,19 @@
 		attachTo$el : null,
 		autoOpen : true,
 		popupClass : '',
-		height : null,
+		height : 0,
 		maxHeight: 0,
 		maxWidth: 0,
 		minHeight : 0,
 		minWidth : 0,
 		offsetPercentage : 0,
 		offsetPixels : 0,
-		orientation : 'right',
 		popupBuffer : 0,
 		responsiveAlignment : false,
 		responsiveToEdges : false,
 		showArrow : false,
-		showX : false,
-		width : null
+		showClose : false,
+		width : 0
 	};
 
 }(window.jQuery);
