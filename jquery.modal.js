@@ -1,7 +1,9 @@
-//
-// jquery.modal.js
-// requires jquery.popups.js
-//
+/*
+ * jquery.modal.js
+ * By: Harris Miller
+ * For: Makrit On Demand
+ * Requires: jquery.popups.js
+ */
 
 !function($) {
 
@@ -13,25 +15,27 @@
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
-		this.$overlay = $('<div class="overlay"></div>');
+		this.$overlay = $('<div class="overlay" style="z-index: ' + this.options.zIndex + '"></div>');
 		this.$body = $(document.body);
-		this.$isOpen = false;
+		this.isOpen = false;
 
 		this._create();
 	}
 
 	Modal.prototype._create = function() {
 		var that = this;
+		var o = this.options
 
 		var popup_options = {
-			align: 'middle',
-			destroyOnClose: false,
-			showClose: true
+			align : 'middle',
+			appendTo : that.$overlay,
+			destroyOnClose : false,
+			showClose : true,
+			zIndex : o.zIndex + 5
 		};
-		popup_options.popupClass = 'modal' + (this.options.popupClass ? ' ' + this.options.popupClass : '');
+		popup_options.popupClass = 'modal' + (o.popupClass ? ' ' + o.popupClass : '');
 
-		this.$popup = this.$el.popup(popup_options).popup('$popup');
-		this.$popup.appendTo(this.$overlay);
+		this.$el.popup(popup_options).popup('$popup');
 		this.$overlay.appendTo(document.body).hide();
 
 		// reset $.fn.popup's .popup-close functionality
@@ -39,7 +43,7 @@
 			that.close();
 		});
 
-		if (this.options.autoOpen) {
+		if (o.autoOpen) {
 			that.open();
 		}
 	};
@@ -70,7 +74,7 @@
 		});
 
 		// close on escape
-		if (that.options.closeOnEscape) {
+		if (this.options.closeOnEscape) {
 			this.$body.on('keydown.modal', function(e) {
 				// keycode 27 = escape
 				if (e.keyCode == 27) {
@@ -100,7 +104,7 @@
 	//
 	// Define $.fn.Modal
 	//
-	$.fn.modal = function (option, arg) {
+	$.fn.modal = function (option) {
 		var rtnValue = null;
 		this.each(function() {
 			var $this = $(this);
@@ -113,7 +117,7 @@
 			else {
 				if (typeof option == 'string') {
 					if (instance[option]) {
-						rtnValue = instance[option](arg);
+						rtnValue = instance[option]();
 						return false;
 					}
 				}
@@ -128,9 +132,10 @@
 
 	$.fn.modal.defaults = {
 		autoOpen : true,
-		popupClass : '',
 		closeOnEscape : true,
-		destroyOnClose : false
+		destroyOnClose : false,
+		popupClass : '',
+		zIndex : 5000
 	};
 
 }(window.jQuery);

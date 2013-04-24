@@ -1,6 +1,8 @@
-//
-// popups jQuery plug-in
-//
+/*
+ * jquery.popup.js
+ * By: Harris Miller
+ * For: Markit On Demand
+ */
 
 !function ($) {
 
@@ -17,58 +19,60 @@
 	Popup.prototype._create = function() {
 
 		var that = this;
+		var o = this.options;
 
 		var popupStyles = [
 			' style=" position: absolute; ',
-			this.options.height ? 'height: ' + this.options.height + 'px; ' : '',
-			this.options.maxHeight ? 'max-height: ' + this.options.maxHeight + 'px; ': '',
-			this.options.maxWidth ? 'max-width: ' + this.options.maxWidth + 'px; ' : '',
-			this.options.minHeight ? 'min-height: ' + this.options.minHeight + 'px; '  : '',
-			this.options.minWidth ? 'min-width: ' + this.options.minWidth + 'px; ' : '',
-			this.options.width ? 'width: ' + this.options.width + 'px; ' : '',
-			'"',
+			o.height ? 'height: ' + o.height + 'px; ' : '',
+			o.maxHeight ? 'max-height: ' + o.maxHeight + 'px; ': '',
+			o.maxWidth ? 'max-width: ' + o.maxWidth + 'px; ' : '',
+			o.minHeight ? 'min-height: ' + o.minHeight + 'px; '  : '',
+			o.minWidth ? 'min-width: ' + o.minWidth + 'px; ' : '',
+			o.width ? 'width: ' + o.width + 'px; ' : '',
+			'z-index: ' + o.zIndex + '"',
 		].join('');
 
 
 		// create popup and add to DOM
 		this.$popup = $([
-			'<div class="popup-container ' + this.options.popupClass + '"' + popupStyles + '>',
-				this.options.showClose ? '<button class="popup-close" type="button"></button>' : '',
-				this.options.showArrow ? '<div class="popup-arrow"><div class="inner-arrow"></div></div>' : '',
+			'<div class="popup-container ' + o.popupClass + '"' + popupStyles + '>',
+				o.showClose ? '<button class="popup-close" type="button"></button>' : '',
+				o.showArrow ? '<div class="popup-arrow"><div class="inner-arrow"></div></div>' : '',
 			'</div>'
 		].join(''));
 
 		this.$arrow = this.$popup.find('.popup-arrow');
 
-		this.options.appendTo = this.options.appendTo || document.body;
+		o.appendTo = o.appendTo || document.body;
 		this.$popup.append(this.$el).hide(); // hide for autoOpen = false, if true, this.open will be called below
-		$(this.options.appendTo).append(this.$popup);
+		$(o.appendTo).append(this.$popup);
 
 		// if options.showClose, bind click to close popup
-		if (this.options.showClose) {
+		if (o.showClose) {
 			this.$popup.find('.popup-close').on('click', function () {
 				that.close();
 			});
 		}
 
-		if (this.options.align != 'free') {
-			this.options.attachTo$el = $(this.options.attachTo$el);
+		if (o.align != 'free') {
+			o.attachTo = $(o.attachTo);
 		}
 
-		if (this.options.autoOpen) {
+		if (o.autoOpen) {
 			this.open();
 		}
 	};
 
 	Popup.prototype.positionPopup = function() {
 		var that = this;
+		var o = this.options;
 
 		var $window = $(window);
 		var $document = $(document);
 
-		var elOffset = this.options.attachTo$el.offset();
-		var elWidth = this.options.attachTo$el.outerWidth();
-		var elHeight = this.options.attachTo$el.outerHeight();
+		var elOffset = o.attachTo.offset();
+		var elWidth = o.attachTo.outerWidth();
+		var elHeight = o.attachTo.outerHeight();
 		var popWidth = this.$popup.outerWidth();
 		var popHeight = this.$popup.outerHeight();
 
@@ -79,58 +83,61 @@
 		var arrowLeft = 0;
 		var arrowTop = 0;
 
-		// Responsive Alignment
-		// run only if flag is set and if position != middle (because middle does not position the popup relative to the binding element)
-		// we change the position of the pop-up based on if it will fit in the visible window of it's orientation
-		// ie, if position is set to right, will the entire pop-up fit to the right of the binding element, if not, try left side
-		// will try to first fit in the same axis (ie, left will try right first, while top will try bottom first)
-		// will attept other axis if cannot fit in same one, when trying other axis, first attempt will be right/bottom (respectively)
-		// will position to middle if cannot fit in right, left, top, or bottom
-		//
-		if (this.options.responsiveAlignment == true && this.options.align != 'middle') {
+		/*
+		 * Responsive Alignment
+		 * run only if flag is set and if position != middle (because middle does not position the popup relative to the attachTo element)
+		 * we change the position of the pop-up based on if it will fit in the visible window of it's orientation
+		 * ie, if position is set to right, will the entire pop-up fit to the right of the binding element, if not, try left side
+		 * will try to first fit in the same axis (ie, left will try right first, while top will try bottom first)
+		 * will attept other axis if cannot fit in same one, when trying other axis, first attempt will be right/bottom (respectively)
+		 * will position to middle if cannot fit in right, left, top, or bottom
+		 */
+		if (o.responsiveAlignment == true && o.align != 'middle') {
 			// declare login tests
 			var willFitOnRight = function () {
-				if (elOffset.left + elWidth + popWidth + that.options.popupBuffer > $window.width()) {
+				if (elOffset.left + elWidth + popWidth + o.popupBuffer > $window.width()) {
 					return false;
 				};
 				return 'right';
 			};
 
 			var willFitOnLeft = function () {
-				if (elOffset.left - popWidth - that.options.popupBuffer < 0) {
+				if (elOffset.left - popWidth - o.popupBuffer < 0) {
 					return false;
 				};
 				return 'left';
 			};
 
 			var willFitOnBottom = function () {
-				if (elOffset.top + elHeight + popHeight + that.options.popupBuffer > $document.scrollTop() + $window.height()) {
+				if (elOffset.top + elHeight + popHeight + o.popupBuffer > $document.scrollTop() + $window.height()) {
 					return false;
 				}
 				return 'bottom';
 			};
 
 			var willFitOnTop = function () {
-				if (elOffset.top - popHeight - that.options.popupBuffer < $document.scrollTop()) {
+				if (elOffset.top - popHeight - o.popupBuffer < $document.scrollTop()) {
 					return false;
 				}
 				return 'top';
 			};
 
-			// define the order to test based on position set
-			// if options.position was incorrectly set, the code below will re-set options.position = 'middle'
-			// also if you know a better way to go about this, let me know --Harris
+			/*
+			 * define the order to test based on position set
+			 * if options.position was incorrectly set, the code below will re-set options.position = 'middle'
+			 * also if you know a better way to go about this, let me know --Harris
+			 */
 			var testOrder = [];
-			if (this.options.align == 'right') {
+			if (o.align == 'right') {
 				testOrder = [willFitOnRight, willFitOnLeft, willFitOnBottom, willFitOnTop];
 			}
-			else if (this.options.align == 'left') {
+			else if (o.align == 'left') {
 				testOrder = [willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop];
 			}
-			else if (this.options.align == 'bottom') {
+			else if (o.align == 'bottom') {
 				testOrder = [willFitOnBottom, willFitOnTop, willFitOnRight, willFitOnLeft];
 			}
-			else if (this.options.align == 'top') {
+			else if (o.align == 'top') {
 				testOrder = [willFitOnTop, willFitOnBottom, willFitOnRight, willFitOnLeft];
 			}
 
@@ -148,7 +155,7 @@
 				newAlign = 'middle';
 			}
 
-			this.options.align = newAlign;
+			o.align = newAlign;
 		}
 		// end Responsive Alignment
 
@@ -185,25 +192,24 @@
 			}
 		};
 
-
-		// position popup next to $el
-		if (this.options.align == 'top') {
-			var offset = (popWidth * (this.options.offsetPercentage * 0.01)) + this.options.offsetPixels;
+		// position popup next to attachTo
+		if (o.align == 'top') {
+			var offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left + (elWidth / 2) - offset;
-			posTop = elOffset.top - popHeight - this.options.popupBuffer;
+			posTop = elOffset.top - popHeight - o.popupBuffer;
 
 			this.$arrow.addClass('pointing-down');
 			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'));
 			arrowTop = this.$popup.height();
 
-			if (this.options.responsiveToEdges) {
+			if (o.responsiveToEdges) {
 				keepInHorizontalConstraints();
 			}
 		}
-		else if (this.options.align == 'right') {
-			var offset = (popHeight * (this.options.offsetPercentage * 0.01)) + this.options.offsetPixels;
+		else if (o.align == 'right') {
+			var offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 
-			posLeft = elOffset.left + elWidth + this.options.popupBuffer;
+			posLeft = elOffset.left + elWidth + o.popupBuffer;
 			posTop = elOffset.top + (elHeight / 2) - offset; // set top of popup to align with middle of binding element
 
 			// add class to arrow
@@ -213,37 +219,37 @@
 			arrowLeft = -this.$arrow.outerWidth();
 			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width')); // pop-ups borderwidth needs to be accounted for here
 
-			if (this.options.responsiveToEdges) {
+			if (o.responsiveToEdges) {
 				keepInVerticalConstraints();
 			}
 		}
-		else if (this.options.align == 'bottom') {
-			var offset = (popWidth * (this.options.offsetPercentage * 0.01)) + this.options.offsetPixels;
+		else if (o.align == 'bottom') {
+			var offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left + (elWidth / 2) - offset;
-			posTop = elOffset.top + elHeight + this.options.popupBuffer;
+			posTop = elOffset.top + elHeight + o.popupBuffer;
 
 			this.$arrow.addClass('pointing-up');
 			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'));
 			arrowTop = -this.$arrow.outerHeight();
 
-			if (this.options.responsiveToEdges) {
+			if (o.responsiveToEdges) {
 				keepInHorizontalConstraints();
 			}
 		}
-		else if (this.options.align == 'left') {
-			var offset = (popHeight * (this.options.offsetPercentage * 0.01)) + this.options.offsetPixels;
-			posLeft = elOffset.left - popWidth - this.options.popupBuffer;
+		else if (o.align == 'left') {
+			var offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
+			posLeft = elOffset.left - popWidth - o.popupBuffer;
 			posTop = elOffset.top + (elHeight / 2) - offset; // set top of popup to align with middle of binding element
 
 			this.$arrow.addClass('pointing-right');
 			arrowLeft = this.$popup.width(); // we use $popup.width() here instead of popWidth because popWidth includes the popup's borders
 			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width')); // pop-ups borderwidth needs to be accounted for here
 
-			if (this.options.responsiveToEdges) {
+			if (o.responsiveToEdges) {
 				keepInVerticalConstraints();
 			}
 		}
-		else if (this.options.align == 'middle') {
+		else if (o.align == 'middle') {
 			posLeft = ($window.width() / 2) - (popWidth / 2);
 			if (posLeft < 0) {
 				posLeft = 0;
@@ -292,7 +298,7 @@
 	//
 	// Define $.fn.popup
 	//
-	$.fn.popup = function (option, arg) {
+	$.fn.popup = function (option) {
 		var rtnValue = null;
 		this.each(function() {
 			var $this = $(this);
@@ -313,9 +319,13 @@
 						else {
 							rtnValue = instance[option];
 						}
-						return false; // break out of .each
+
+						if (rtnValue) {
+							return false; // break out of .each
+						}
 					}
 				}
+				// if .popup is just called and has already been instanciated, trigger .toggle()
 				else {
 					instance.toggle();
 				}
@@ -329,7 +339,7 @@
 	$.fn.popup.defaults = {
 		align : 'free',
 		appendTo : null,
-		attachTo$el : null,
+		attachTo : null,
 		autoOpen : true,
 		popupClass : '',
 		height : 0,
@@ -344,7 +354,8 @@
 		responsiveToEdges : false,
 		showArrow : false,
 		showClose : false,
-		width : 0
+		width : 0,
+		zIndex : 1000
 	};
 
 }(window.jQuery);
