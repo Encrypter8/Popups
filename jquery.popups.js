@@ -43,7 +43,14 @@
 
 		this.$arrow = this.$popup.find('.popup-arrow');
 
-		o.appendTo = o.appendTo || document.body;
+		// set appendTo also to body
+		// need to fix the positioning math to account for when .poup-container is appending to something other than the body
+		// and that document.body isn't the relative element that it is being absolutely positioned too
+		//o.appendTo = o.appendTo || document.body; 
+		o.appendTo = document.body;
+		
+
+
 		this.$popup.append(this.$el).hide(); // hide for autoOpen = false, if true, this.open will be called below
 		$(o.appendTo).append(this.$popup);
 

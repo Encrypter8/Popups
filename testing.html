@@ -6,6 +6,15 @@
 	<link href="./Popups.less" rel="stylesheet/less" type="text/css" />
 	<style type="text/css">
 
+		.clearfix:after {
+			content: ".";
+			display: block;
+			clear: both;
+			visibility: hidden;
+			line-height: 0;
+			height: 0;
+		}
+
 		body {
 			font-family: helvetica;
 			height: 2000px;
@@ -15,7 +24,7 @@
 			overflow: hidden;
 		}
 
-		#wrapper {
+		.wrapper {
 			border: 1px solid black;
 			margin: 30px;
 			padding: 30px;
@@ -71,15 +80,28 @@
 			resize: none;
 		}
 
+		.relative {
+			position: relative;
+		}
+
+		#position {
+			float: left;
+			margin-left: 500px;
+		}
+
 	</style>
 </head>
 <body>
-<div id="wrapper">
+<div class="wrapper">
 	<button id="overlay">Show Overlay</button>
 	<button id="popupbtn">Show Popup</button>
 	<span class="hover-boxes">Hover over me</span>
 	<button class="add-comment">Click to add a comment</button>
 </div>
+<div class="wrapper relative clearfix">
+	<button id="position">Position</button>
+</div>
+
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="./bootstrap-transition.js"></script>
@@ -96,10 +118,7 @@ $.wait = function(time, callBack) {
 
 $(function() {
 
-	var $wrapper = $('#wrapper');
-
 	var $body = $(document.body);
-
 
 	$('#overlay').on('click', function() {
 		var $this = $(this);
@@ -171,6 +190,28 @@ $(function() {
 				console.log('space');
 			}
 		});
+	});
+
+
+
+	// position testing
+	var $pos = $('<div class="popup">' + lorem() + '</div>');
+	$('#position').on('click', function() {
+		if (!$pos.data('popup')) {
+			$pos.popup({
+				align : 'right',
+				appendTo : $('.relative'),
+				attachTo : this,
+				popupClass : 'bubble',
+				offsetPercentage : 50,
+				popupBuffer: 20,
+				showArrow : true,
+				showClose : true
+			});
+		}
+		else {
+			$pos.popup();
+		}
 	});
 });
 
