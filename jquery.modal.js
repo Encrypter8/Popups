@@ -29,7 +29,7 @@
 		// we do this too support down to IE7
 		var overlayStyles = [
 			'style="',
-			'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QQTFiM7wlG6ZwAAAAxpVFh0Q29tbWVudAAAAAAAvK6ymQAAAA1JREFUCNdjYGBg2AwAALgAtEwmwcYAAAAASUVORK5CYII=);',
+			'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGDYDAAAuAC0TCbBxgAAAABJRU5ErkJggg==);',
 			'bottom: 0;',
 			'left: 0;',
 			'overflow-x: auto;',
@@ -47,17 +47,26 @@
 		var popup_options = {
 			align : 'middle',
 			appendTo : that.$overlay,
-			destroyOnClose : false,
 			showClose : true,
 			zIndex : o.zIndex + 5
 		};
+
+		if (o.saveTo) {
+			$(o.saveTo).data('modal-ref', this.$el);
+		}
+
+		popup_options = $.extend({}, o, popup_options);
+
+		// popup_options.saveTo = null, since we are saving 'modal-ref' instead
+		popup_options.saveTo = null;
+
 		popup_options.popupClass = 'modal' + (o.popupClass ? ' ' + o.popupClass : '');
 
 		this.$el.popup(popup_options);
 		this.$overlay.hide();
 
 		// reset $.fn.popup's .popup-close functionality
-		this.$overlay.find('.popup-close').off('click').on('click', function() {
+		this.$overlay.find('.popup-close').on('click', function() {
 			that.close();
 		});
 
@@ -103,6 +112,12 @@
 	};
 
 	Modal.prototype.close = function() {
+		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to 
+		if (this.options.jqXHR && this.options.jqXHR.state() == "pending") {
+			this.options.jqXHR.abort();
+			// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
+			this.destroy();
+		}
 		if (this.options.destroyOnClose) {
 			this.destroy();
 		}
@@ -114,19 +129,41 @@
 	};
 
 	Modal.prototype.destroy = function() {
-		this.$el.popup('destroy');
+		if (this.options.saveTo) {
+			$(this.options.saveTo).removeData('modal-ref');
+		}
+		this.$el.trigger('modalDestroy');
+		this.$body.css('overflow', 'visible').off('.modal');
 		this.$overlay.remove();
 	};
+
+	Modal.prototype.replaceContent = function(content) {
+		this.$el.popup('replaceContent', content);
+	}
 
 
 	//
 	// Define $.fn.Modal
 	//
-	$.fn.modal = function (option) {
+	$.fn.modal = function (option, args) {
 		var rtnValue = null;
 		this.each(function() {
 			var $this = $(this);
 			var instance = $this.data('modal');
+
+			// "if it looks like a duck, sounds like a duck, walks like a duck"
+			// test on this to see if it's an jqXHR object
+			if (this.readyState && this.promise) {
+				option.jqXHR = this;
+				var $html = $('<div>').modal(option);
+				$html.popup('$popup').addClass('loading');
+				this.done(function(data) {
+				 	$html.popup('$popup').removeClass('loading');
+				});
+				// return single jquery object of newly created node with popup instanciated on it
+				rtnValue = $html;
+				return false;
+			}
 
 			if (!instance) {
 				var options = $.extend({}, $.fn.modal.defaults, typeof option == 'object' && option);
@@ -135,7 +172,7 @@
 			else {
 				if (typeof option == 'string') {
 					if (instance[option]) {
-						rtnValue = instance[option]();
+						rtnValue = instance[option](args);
 						return false;
 					}
 				}
@@ -153,6 +190,7 @@
 		closeOnEscape : true,
 		destroyOnClose : false,
 		popupClass : '',
+		saveTo : null,
 		zIndex : 5000
 	};
 

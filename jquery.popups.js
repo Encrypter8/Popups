@@ -46,13 +46,13 @@
 		// set appendTo also to body
 		// need to fix the positioning math to account for when .poup-container is appending to something other than the body
 		// and that document.body isn't the relative element that it is being absolutely positioned too
-		//o.appendTo = o.appendTo || document.body; 
-		o.appendTo = document.body;
-		
+		o.appendTo = o.appendTo || document.body;
 
+		this.$popup.append(this.$el).appendTo(o.appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
 
-		this.$popup.append(this.$el).hide(); // hide for autoOpen = false, if true, this.open will be called below
-		$(o.appendTo).append(this.$popup);
+		if (o.saveTo) {
+			$(o.saveTo).data('popup-ref', this.$el);
+		}
 
 		// if options.showClose, bind click to close popup
 		if (o.showClose) {
@@ -61,9 +61,7 @@
 			});
 		}
 
-		if (o.align != 'free') {
-			o.attachTo = $(o.attachTo);
-		}
+		o.attachTo = $(o.attachTo);
 
 		if (o.autoOpen) {
 			this.open();
@@ -76,6 +74,8 @@
 
 		var $window = $(window);
 		var $document = $(document);
+
+		var $appendTo = $(o.appendTo);
 
 		var elOffset = o.attachTo.offset();
 		var elWidth = o.attachTo.outerWidth();
@@ -262,9 +262,9 @@
 				posLeft = 0;
 			}
 
-			posTop = $document.scrollTop() + ($window.height() / 2) - (popHeight / 2);
-			if (posTop < $document.scrollTop()) {
-				posTop = $document.scrollTop();
+			posTop = $appendTo.scrollTop() + ($window.height() / 2) - (popHeight / 2);
+			if (posTop < $appendTo.scrollTop()) {
+				posTop = $appendTo.scrollTop();
 			}
 		}
 
@@ -278,6 +278,7 @@
 			return;
 		}
 		this.isOpen = true;
+		this.$el.trigger('popupOpen');
 		this.$popup.show();
 		if (this.options.align != 'free') {
 			this.positionPopup();
@@ -288,8 +289,22 @@
 		if (!this.isOpen) {
 			return;
 		}
-		this.isOpen = false;
-		this.$popup.hide();
+
+		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to 
+		if (this.options.jqXHR && this.options.jqXHR.state() == "pending") {
+			this.options.jqXHR.abort();
+			// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
+			this.destroy();
+		}
+
+		if (this.options.destroyOnClose) {
+			this.destroy();
+		}
+		else {
+			this.isOpen = false;
+			this.$popup.hide();
+			this.$el.trigger('popupClose');
+		}
 	}
 
 	Popup.prototype.toggle = function() {
@@ -297,30 +312,54 @@
 	}
 
 	Popup.prototype.destroy = function() {
-		this.$el.remove();
+		if (this.options.saveTo) {
+			$(this.options.saveTo).removeData('popup-ref');
+		}
+		this.$el.trigger('popupDestroy');
 		this.$popup.remove();
+	}
+
+	Popup.prototype.replaceContent = function(content) {
+		this.$el.empty().append(content);
+		this.positionPopup();
 	}
 
 
 	//
 	// Define $.fn.popup
 	//
-	$.fn.popup = function (option) {
+	$.fn.popup = function (option, args) {
+
 		var rtnValue = null;
 		this.each(function() {
 			var $this = $(this);
 			var instance = $this.data('popup');
 
-			if (!instance) {
+			// "if it looks like a duck, sounds like a duck, walks like a duck"
+			// test on this to see if it's an jqXHR object
+			if (this.readyState && this.promise) {
+				option.jqXHR = this;
+				var $html = $('<div class="popup-inner">').popup(option);
+				$html.popup('$popup').addClass('loading');
+				this.done(function(data) {
+				 	$html.popup('$popup').removeClass('loading');
+				});
+				// return single jquery object of newly created node with popup instanciated on it
+				rtnValue = $html;
+				return false;
+			}
+			// if node that popup has yet to be instanciated on
+			else if (!instance) {
 				var options = $.extend({}, $.fn.popup.defaults, typeof option == 'object' && option)
 				$this.data('popup', (instance = new Popup($this, options)));
 			}
+			// if node already has popup instanciated
 			else {
 				if (typeof option == 'string') {
 					if (instance[option]) {
 						// if function
 						if (typeof instance[option] == 'function') {
-							rtnValue = instance[option]();
+							rtnValue = instance[option](args);
 						}
 						// if property
 						else {
@@ -345,24 +384,26 @@
 
 	$.fn.popup.defaults = {
 		align : 'free',
-		appendTo : null,
+		appendTo : null, // WARNING: if this element does not have position: relative, absolute, or fixed, the auto-positioning will break
 		attachTo : null,
 		autoOpen : true,
 		popupClass : '',
 		height : 0,
 		maxHeight: 0,
 		maxWidth: 0,
-		minHeight : 0,
-		minWidth : 0,
+		minHeight : 200,
+		minWidth : 200,
 		offsetPercentage : 0,
 		offsetPixels : 0,
 		popupBuffer : 0,
 		responsiveAlignment : false,
 		responsiveToEdges : false,
+		saveTo : null,
 		showArrow : false,
 		showClose : false,
 		width : 0,
 		zIndex : 1000
 	};
+
 
 }(window.jQuery);
