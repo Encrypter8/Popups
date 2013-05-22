@@ -89,17 +89,6 @@
 
 		this.$body.css('overflow', 'hidden');
 
-		// TODO:
-		// apparently triggering the event 'scroll' won't actually scroll the window or element
-		// need to figure out how to actually do this
-		this.$body.on('keydown.modal', function(e) {
-			// keycode 32 = space
-			if (e.keyCode == 32) {
-				e.preventDefault();
-				that.$overlay.trigger('scroll');
-			}
-		});
-
 		// close on escape
 		if (this.options.closeOnEscape) {
 			this.$body.on('keydown.modal', function(e) {
