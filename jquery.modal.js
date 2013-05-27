@@ -41,11 +41,11 @@
 		this.isOpen = false;
 
 		this._create();
-	}
+	};
 
 	Modal.prototype._create = function() {
 		var that = this;
-		var o = this.options
+		var o = this.options;
 
 		// background-image is a base64 encodement of a 1x1 px png of rbg(0,0,0,.7)
 		// we do this too support down to IE7
@@ -168,7 +168,7 @@
 
 	Modal.prototype.replaceContent = function(content) {
 		this.$el.popup('replaceContent', content);
-	}
+	};
 
 
 	//
@@ -187,7 +187,7 @@
 				var $html = $('<div>').modal(option);
 				$html.popup('$popup').addClass('loading');
 				this.done(function(data) {
-				 	$html.popup('$popup').removeClass('loading');
+					$html.popup('$popup').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
 				rtnValue = $html;
