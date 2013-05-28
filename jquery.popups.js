@@ -56,7 +56,7 @@
 
 		// if options.showClose, bind click to close popup
 		if (o.showClose) {
-			this.$popup.find('.popup-close').on('click', function () {
+			this.$popup.find('.popup-close').on('click.popup', function () {
 				that.close();
 			});
 		}

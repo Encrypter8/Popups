@@ -12,6 +12,28 @@
 		return;
 	}
 
+	// integrated transitionEnd module
+	// from Twitter Boostrap (boostrap-transition.js)
+	var transitionEnd = (function() {
+		var el = document.createElement('modal');
+		var transEndEventNames = {
+			'WebkitTransition' : 'webkitTransitionEnd',
+			'MozTransition' : 'transitionend',
+			'OTransition' : 'oTransitionEnd otransitionend',
+			'transition' : 'transitionend'
+		};
+
+		for(var name in transEndEventNames) {
+			if (el.style[name] !== undefined) {
+				return transEndEventNames[name];
+			}
+		}
+
+		// return null is browser does not support transitions
+		return null;
+	})();
+
+
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
@@ -32,17 +54,19 @@
 			'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGDYDAAAuAC0TCbBxgAAAABJRU5ErkJggg==);',
 			'bottom: 0;',
 			'left: 0;',
+			'opacity: 0;',
 			'overflow-x: auto;',
 			'overflow-y: auto;',
 			'position: fixed;',
 			'right: 0;',
 			'top: 0;',
+			'transition: opacity 0.6s;',
 			'width: 100%;',
 			'z-index: ' + that.options.zIndex + ';',
 			'"'
 		].join('');
 
-		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(document.body);
+		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(this.$body);
 
 		var popup_options = {
 			align : 'middle',
@@ -66,7 +90,7 @@
 		this.$overlay.hide();
 
 		// reset $.fn.popup's .popup-close functionality
-		this.$overlay.find('.popup-close').on('click', function() {
+		this.$overlay.find('.popup-close').off('click.popup').on('click.modal', function() {
 			that.close();
 		});
 
@@ -86,6 +110,11 @@
 
 		this.isOpen = true;
 		this.$overlay.show();
+		// timeout so DOM renderer can change element's state first before applying transition
+		// as recommended: https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions#Which_CSS_properties_are_animatable.3F
+		window.setTimeout(function() {
+			that.$overlay.css('opacity', 1);
+		}, 20);
 
 		this.$body.css('overflow', 'hidden');
 
@@ -101,6 +130,7 @@
 	};
 
 	Modal.prototype.close = function() {
+		var that = this;
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to 
 		if (this.options.jqXHR && this.options.jqXHR.state() == "pending") {
 			this.options.jqXHR.abort();
@@ -112,8 +142,18 @@
 		}
 		else {
 			this.isOpen = false;
-			this.$overlay.hide();
-			this.$body.css('overflow', 'visible').off('.modal');
+			// transition close if set and browser can
+			if (this.options.transition && transitionEnd) {
+				this.$overlay.one(transitionEnd, function() {
+					that.$overlay.hide();
+					that.$body.css('overflow', 'visible').off('.modal');
+				});
+			}
+			else{
+				this.$overlay.hide();
+				this.$body.css('overflow', 'visible').off('.modal');
+			}
+			this.$overlay.css('opacity', 0);
 		}
 	};
 
@@ -180,6 +220,7 @@
 		destroyOnClose : false,
 		popupClass : '',
 		saveTo : null,
+		transition : true,
 		zIndex : 5000
 	};
 
