@@ -11,8 +11,6 @@
 		this.$el = $el;
 		this.isOpen = false;
 
-		this.version = 0.8;
-
 		this._create();
 	};
 
@@ -356,7 +354,8 @@
 			// if node already has popup instanciated
 			else {
 				if (typeof option == 'string') {
-					if (instance[option]) {
+					// if method/property exists and is not private (all private methods begin with _)
+					if (instance[option] && !option.match(/^_/)) {
 						// if function
 						if (typeof instance[option] == 'function') {
 							rtnValue = instance[option](args);
@@ -370,11 +369,15 @@
 							return false; // break out of .each
 						}
 					}
+					else {
+						$.error("fn.Modal says: Method or Property you are trying to call is either private or does not exist");
+					}
 				}
 				// if .popup is just called and has already been instanciated, trigger .toggle()
-				else {
+				else if (!option) {
 					instance.toggle();
 				}
+				// if some other invalid value was passed as option (say a function or a number), nothing will happen
 			}
 			
 		});

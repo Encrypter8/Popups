@@ -122,23 +122,24 @@ $(function() {
 
 	$('#overlay').on('click', function() {
 		var $this = $(this);
-		if (!$this.data('modal-pointer')) {
-			var $html = $('<div class="modal-inner"><button>Click to Load Content</button></div>');
+		if (!$this.data('modal-ref')) {
+			var $html = $('<div class="modal-inner"><button>Click to Load Content</button></div>'); 
 
 			$html.find('button').one('click', function() {
-				$html.append('<p>' + lorem() + '</p>').css({ 'width': 400 });
-				$(this).remove();
-				$html.popup('positionPopup');
+				var newContent = $('<p>' + lorem() + '</p>');
+				$html.css({ 'width': 400 }).popup('replaceContent', newContent);
 			});
 
-			$this.data('modal-pointer', $html);
+			var options = {
+				popupClass : 'bubble',
+				saveTo : $this
+			};
+
+			$html.modal(options);
 		}
-
-		var options = {
-			popupClass : 'bubble'
-		};
-
-		$this.data('modal-pointer').modal(options);
+		else {
+			$this.data('modal-ref').modal();
+		}
 	});
 
 

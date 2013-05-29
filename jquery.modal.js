@@ -33,11 +33,10 @@
 		return null;
 	})();
 
-
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
-		this.$body = $(document.body);
+		this._$body = $(document.body);
 		this.isOpen = false;
 
 		this._create();
@@ -60,13 +59,13 @@
 			'position: fixed;',
 			'right: 0;',
 			'top: 0;',
-			'transition: opacity 0.6s;',
+			'transition: opacity ' + o.transitionTime + 's;',
 			'width: 100%;',
-			'z-index: ' + that.options.zIndex + ';',
+			'z-index: ' + o.zIndex + ';',
 			'"'
 		].join('');
 
-		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(this.$body);
+		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(this._$body);
 
 		var popup_options = {
 			align : 'middle',
@@ -109,18 +108,18 @@
 		}
 
 		this.isOpen = true;
-		this.$overlay.show();
+		this.$overlay.show().addClass('show');
 		// timeout so DOM renderer can change element's state first before applying transition
 		// as recommended: https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions#Which_CSS_properties_are_animatable.3F
 		window.setTimeout(function() {
 			that.$overlay.css('opacity', 1);
 		}, 20);
 
-		this.$body.css('overflow', 'hidden');
+		this._$body.css('overflow', 'hidden');
 
 		// close on escape
 		if (this.options.closeOnEscape) {
-			this.$body.on('keydown.modal', function(e) {
+			this._$body.on('keydown.modal', function(e) {
 				// keycode 27 = escape
 				if (e.keyCode == 27) {
 					that.close();
@@ -145,29 +144,43 @@
 			// transition close if set and browser can
 			if (this.options.transition && transitionEnd) {
 				this.$overlay.one(transitionEnd, function() {
-					that.$overlay.hide();
-					that.$body.css('overflow', 'visible').off('.modal');
+					that._closeModal();
 				});
 			}
 			else{
-				this.$overlay.hide();
-				this.$body.css('overflow', 'visible').off('.modal');
+				this._closeModal.call(that);
 			}
 			this.$overlay.css('opacity', 0);
 		}
 	};
 
+	Modal.prototype.toggle = function() {
+		this.isOpen ? this.close() : this.open();
+	};
+
 	Modal.prototype.destroy = function() {
+		var that = this;
+
+		// remove saveTo ref
 		if (this.options.saveTo) {
 			$(this.options.saveTo).removeData('modal-ref');
 		}
 		this.$el.trigger('modalDestroy');
-		this.$body.css('overflow', 'visible').off('.modal');
-		this.$overlay.remove();
+		// transition close if set and browser can
+		if (this.options.transition && transitionEnd) {
+			this.$overlay.one(transitionEnd, function() {
+				that._closeModal.call(that);
+			});
+		}
 	};
 
 	Modal.prototype.replaceContent = function(content) {
 		this.$el.popup('replaceContent', content);
+	};
+
+	Modal.prototype._closeModal = function() {
+		this.options.destoryOnClse ? this.$overlay.remove() : this.$overlay.hide();
+		this._$body.css('overflow', 'visible').off('.modal');
 	};
 
 
@@ -200,17 +213,34 @@
 			}
 			else {
 				if (typeof option == 'string') {
-					if (instance[option]) {
-						rtnValue = instance[option](args);
-						return false;
+					// if method/property exists and is not private (all private methods begin with _)
+					if (instance[option] && !option.match(/^_/)) {
+						// if function
+						if (typeof instance[option] == 'function') {
+							rtnValue = instance[option](args);
+						}
+						// if property
+						else {
+							rtnValue = instance[option];
+						}
+
+						if (rtnValue) {
+							return false; // break out of .each
+						}
+					}
+					else {
+						$.error("fn.Modal says: Method or Property you are trying to call is either private or does not exist");
 					}
 				}
-				else {
-					instance.open();
+				// if option was not passed, toggle the modal
+				else if(!option) {
+					instance.toggle();
 				}
+				// if some other invalid value was passed as option (say a function or a number), nothing will happen
 			}
 		});
 
+		// return either the value returned a method of the instance called, or simply return itself
 		return rtnValue || this;
 	};
 
@@ -221,6 +251,7 @@
 		popupClass : '',
 		saveTo : null,
 		transition : true,
+		transitionTime : 0.6,
 		zIndex : 5000
 	};
 
