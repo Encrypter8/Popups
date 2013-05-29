@@ -1,0 +1,83 @@
+/*
+ * Popups.less
+ * this less file is too acompany Popups.js
+ */
+/* variables */
+/* popup styles */
+.popup-container.bubble {
+  background-color: #FFF;
+  border: 2px solid #095b93;
+}
+.popup-container.bubble .popup-close {
+  background-color: transparent;
+  background-image: url('./Popup_Close.png');
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  height: 24px;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  right: -12px;
+  top: -12px;
+  width: 23px;
+}
+.popup-container.bubble .popup-arrow {
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.popup-container.bubble .popup-arrow .inner-arrow {
+  height: 0;
+  position: relative;
+  width: 0;
+}
+.popup-container.bubble .popup-arrow.pointing-up {
+  border-bottom: 16px solid #095b93;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+.popup-container.bubble .popup-arrow.pointing-up .inner-arrow {
+  border-bottom: 12px solid #ffffff;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  left: -6px;
+  top: 4px;
+}
+.popup-container.bubble .popup-arrow.pointing-right {
+  border-bottom: 8px solid transparent;
+  border-left: 16px solid #095b93;
+  border-top: 8px solid transparent;
+}
+.popup-container.bubble .popup-arrow.pointing-right .inner-arrow {
+  border-bottom: 6px solid transparent;
+  border-left: 12px solid #ffffff;
+  border-top: 6px solid transparent;
+  left: -16px;
+  top: -6px;
+}
+.popup-container.bubble .popup-arrow.pointing-down {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 16px solid #095b93;
+}
+.popup-container.bubble .popup-arrow.pointing-down .inner-arrow {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 12px solid #ffffff;
+  left: -6px;
+  top: -16px;
+}
+.popup-container.bubble .popup-arrow.pointing-left {
+  border-bottom: 8px solid transparent;
+  border-right: 16px solid #095b93;
+  border-top: 8px solid transparent;
+}
+.popup-container.bubble .popup-arrow.pointing-left .inner-arrow {
+  border-bottom: 6px solid transparent;
+  border-right: 12px solid #ffffff;
+  border-top: 6px solid transparent;
+  left: 4px;
+  top: -6px;
+}

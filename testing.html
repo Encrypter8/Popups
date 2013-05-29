@@ -3,7 +3,7 @@
 <head>
 	<title>Test Page, Fool!</title>
 	<meta charset="UTF-8">
-	<link href="./Popups.less" rel="stylesheet/less" type="text/css" />
+	<link href="./assets/popups.css" rel="stylesheet" type="text/css" />
 	<style type="text/css">
 
 		.clearfix:after {
@@ -103,13 +103,12 @@
 </div>
 
 
-<script type="text/javascript" src="./jquery-1.9.1.js"></script>
-<script type="text/javascript" src="./bootstrap-transition.js"></script>
-<!--<script src="./bootstrap-modal.js"></script>-->
-<script type="text/javascript" src="./jquery.popups.js"></script>
-<script type="text/javascript" src="./popups.extensions.js"></script>
-<script type="text/javascript" src="./jquery.modal.js"></script>
-<script type="text/javascript" src="./less-1.3.3.min.js"></script>
+<script type="text/javascript" src="./libs/jquery-1.9.1.js"></script>
+<!--<script type="text/javascript" src="./libs/bootstrap-transition.js"></script>-->
+<!--<script src="./assets/bootstrap-modal.js"></script>-->
+<script type="text/javascript" src="./src/jquery.popups.js"></script>
+<script type="text/javascript" src="./src/jquery.modal.js"></script>
+<!--<script type="text/javascript" src="./libs/less-1.3.3.min.js"></script>-->
 <script type="text/javascript">
 
 $.wait = function(time, callBack) {
@@ -169,7 +168,10 @@ $(function() {
 	// hover example
 	var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
 	var $hoverPopup = null;
-	$('.hover-boxes').popupOnHover($hoverHtml);
+	// I deleted the popups extensions file as that should not be used like how I originally defined it
+	// need to re-write is functionality better
+	//$('.hover-boxes').popupOnHover($hoverHtml);
+
 
 	$('.add-comment').on('click', function() {
 		$html = $('<div class="comment"><p>Add a comment</p><textarea></textarea></div>');

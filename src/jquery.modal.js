@@ -199,7 +199,7 @@
 				option.jqXHR = this;
 				var $html = $('<div>').modal(option);
 				$html.popup('$popup').addClass('loading');
-				this.done(function(data) {
+				this.done(function() {
 					$html.popup('$popup').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
