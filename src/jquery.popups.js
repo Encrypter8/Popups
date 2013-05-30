@@ -20,7 +20,7 @@
 		var o = this.options;
 
 		var popupStyles = [
-			' style=" position: absolute; ',
+			'style=" position: absolute; ',
 			o.height ? 'height: ' + o.height + 'px; ' : '',
 			o.maxHeight ? 'max-height: ' + o.maxHeight + 'px; ': '',
 			o.maxWidth ? 'max-width: ' + o.maxWidth + 'px; ' : '',
@@ -33,7 +33,7 @@
 
 		// create popup and add to DOM
 		this.$popup = $([
-			'<div class="popup-container ' + o.popupClass + '"' + popupStyles + '>',
+			'<div class="popup-container ' + o.popupClass + '" ' + popupStyles + '>',
 				o.showClose ? '<button class="popup-close" type="button"></button>' : '',
 				o.showArrow ? '<div class="popup-arrow"><div class="inner-arrow"></div></div>' : '',
 			'</div>'
@@ -74,13 +74,19 @@
 		var $document = $(document);
 
 		var $appendTo = $(o.appendTo);
+		var appTop = $appendTo.offset().top;
+		var appLeft = $appendTo.offset().left;
+
+		console.log($appendTo);
+		console.log(appTop);
+		console.log(appLeft);
 
 		var elOffset = o.attachTo.offset();
 		var elWidth = o.attachTo.outerWidth();
 		var elHeight = o.attachTo.outerHeight();
 		var popWidth = this.$popup.outerWidth();
-		var popHeight = this.$popup.outerHeight();
 
+		var popHeight = this.$popup.outerHeight();
 		var posLeft = 0;
 		var posTop = 0;
 

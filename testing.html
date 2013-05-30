@@ -167,12 +167,23 @@ $(function() {
 
 	// hover example
 	var $hoverHtml = $('<div class="hoverHtml">Lorem ipsum</div>')
-	var $hoverPopup = null;
-	// I deleted the popups extensions file as that should not be used like how I originally defined it
-	// need to re-write is functionality better
-	//$('.hover-boxes').popupOnHover($hoverHtml);
+	$hoverHtml.popup({
+		autoOpen : false,
+		popupClass : 'bubble',
+		minHeight : 90,
+		minWidth : 100
+	});
+
+	$('.hover-boxes').on('mousemove', function(e) {
+		$hoverHtml.popup('$popup').css({ 'left': e.pageX + 10, 'top' : e.pageY + 10});
+	}).on('mouseenter', function() {
+		$hoverHtml.popup('open');
+	}).on('mouseleave', function() {
+		$hoverHtml.popup('close');
+	});
 
 
+	// add comment example
 	$('.add-comment').on('click', function() {
 		$html = $('<div class="comment"><p>Add a comment</p><textarea></textarea></div>');
 
