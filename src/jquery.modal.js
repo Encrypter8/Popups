@@ -8,7 +8,7 @@
 !function($) {
 
 	if (!$.fn.popup) {
-		$.error('popups.extensions.js requires jquery.popups.js');
+		$.error('jquery.modal.js requires jquery.popups.js');
 		return;
 	}
 
