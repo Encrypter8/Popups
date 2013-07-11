@@ -77,10 +77,6 @@
 		var appTop = $appendTo.offset().top;
 		var appLeft = $appendTo.offset().left;
 
-		console.log($appendTo);
-		console.log(appTop);
-		console.log(appLeft);
-
 		var elOffset = o.attachTo.offset();
 		var elWidth = o.attachTo.outerWidth();
 		var elHeight = o.attachTo.outerHeight();
