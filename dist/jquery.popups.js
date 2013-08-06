@@ -1,4 +1,4 @@
-/*! jQuery Popups - v0.7.0 - 2013-07-11
+/*! jQuery Popups - v0.7.0 - 2013-07-30
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2013 Harris Miller; Licensed MIT */
 !function ($) {
@@ -73,10 +73,6 @@
 		var $appendTo = $(o.appendTo);
 		var appTop = $appendTo.offset().top;
 		var appLeft = $appendTo.offset().left;
-
-		console.log($appendTo);
-		console.log(appTop);
-		console.log(appLeft);
 
 		var elOffset = o.attachTo.offset();
 		var elWidth = o.attachTo.outerWidth();

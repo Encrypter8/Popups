@@ -401,11 +401,11 @@
 		offsetPercentage : 0,
 		offsetPixels : 0,
 		popupBuffer : 0,
-		responsiveAlignment : false,
-		responsiveToEdges : false,
+		responsiveAlignment : true,
+		responsiveToEdges : true,
 		saveTo : null,
-		showArrow : false,
-		showClose : false,
+		showArrow : true,
+		showClose : true,
 		width : 0,
 		zIndex : 1000
 	};
