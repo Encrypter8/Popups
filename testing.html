@@ -89,6 +89,13 @@
 			margin-left: 500px;
 		}
 
+		/* popup loading graphic*/
+		.loading {
+			background-image: url("./assets/loading_spinner.gif");
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+
 	</style>
 </head>
 <body>
@@ -102,12 +109,16 @@
 	<button id="position">Position</button>
 </div>
 
+<div class="wrapper clearfix">
+	<input id="input-test" type="text"/>
+	<button id="ajax-test">Echo the input data</button>
+</div>
 
+<script type="text/javascript" src="./libs/Function.1.js"></script>
 <script type="text/javascript" src="./libs/jquery-1.9.1.js"></script>
-<!--<script type="text/javascript" src="./libs/bootstrap-transition.js"></script>-->
-<!--<script src="./assets/bootstrap-modal.js"></script>-->
 <script type="text/javascript" src="./src/jquery.popups.js"></script>
 <script type="text/javascript" src="./src/jquery.modal.js"></script>
+<script type="text/javascript" src="http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
 <!--<script type="text/javascript" src="./libs/less-1.3.3.min.js"></script>-->
 <script type="text/javascript">
 
@@ -226,6 +237,40 @@ $(function() {
 			$pos.popup();
 		}
 	});
+
+
+	// jsfiddle ajax request
+	var $jsfiddle = $('#ajax-test');
+	var $echoPopup = null;
+	var jqXHR
+	$jsfiddle.on('click', function() {
+		$echoPopup = $(
+			jqXHR = $.ajax({
+				type: 'GET',
+				url: 'http://jsfiddle.net/echo/jsonp/',
+				data: {
+					html: '<div>Here is your Echo:<br /><span class="echo"></span></div>',
+					echo: $('#input-test').val(),
+					delay: 3
+				},
+				dataType: 'jsonp'
+			}).done(function(data) {
+				console.log(data);
+				$echoPopup.popup('replaceContent', data.html);
+				$echoPopup.find('.echo').text(data.echo);
+			})
+		).popup({
+			align: 'right',
+			attachTo: $jsfiddle,
+			popupClass: 'bubble',
+			offsetPercentage: 50,
+			popupBuffer: 20,
+			destroyOnClose: true,
+			showArrow: true
+		});
+		console.log(jqXHR);
+	});
+
 });
 
 function lorem() {

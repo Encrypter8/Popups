@@ -1,4 +1,4 @@
-/*! jQuery Popups - v0.7.0 - 2013-07-30
+/*! jQuery Popups - v0.7.0 - 2013-08-06
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2013 Harris Miller; Licensed MIT */
 !function ($) {
@@ -398,11 +398,11 @@
 		offsetPercentage : 0,
 		offsetPixels : 0,
 		popupBuffer : 0,
-		responsiveAlignment : false,
-		responsiveToEdges : false,
+		responsiveAlignment : true,
+		responsiveToEdges : true,
 		saveTo : null,
-		showArrow : false,
-		showClose : false,
+		showArrow : true,
+		showClose : true,
 		width : 0,
 		zIndex : 1000
 	};
