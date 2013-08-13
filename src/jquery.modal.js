@@ -1,11 +1,11 @@
 /*
  * jquery.modal.js
  * By: Harris Miller
- * For: Makrit On Demand
+ * For: Markit On Demand
  * Requires: jquery.popups.js
  */
 
-!function($) {
+!function ($, document, window) {
 
 	if (!$.fn.popup) {
 		$.error('jquery.modal.js requires jquery.popups.js');
@@ -46,8 +46,8 @@
 		var that = this;
 		var o = this.options;
 
-		// background-image is a base64 encodement of a 1x1 px png of rbg(0,0,0,.7)
-		// we do this too support down to IE7
+		// background-image is a base64 encodement of a 1x1 px png of rgba(0,0,0,.7)
+		// we do this too support down to IE8, otherwise I would just do:  'background-color: rgba(0,0,0,.7);',
 		var overlayStyles = [
 			'style="',
 			'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGDYDAAAuAC0TCbBxgAAAABJRU5ErkJggg==);',
@@ -69,7 +69,7 @@
 
 		var popup_options = {
 			align : 'middle',
-			appendTo : that.$overlay,
+			_appendTo : that.$overlay,
 			showClose : true,
 			zIndex : o.zIndex + 5
 		};
@@ -244,6 +244,8 @@
 		return rtnValue || this;
 	};
 
+	$.fn.modal.Constructor = Modal;
+
 	$.fn.modal.defaults = {
 		autoOpen : true,
 		closeOnEscape : true,
@@ -255,4 +257,4 @@
 		zIndex : 5000
 	};
 
-}(window.jQuery);
+}(window.jQuery, document, window);

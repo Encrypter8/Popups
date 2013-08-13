@@ -4,7 +4,7 @@
  * For: Markit On Demand
  */
 
-!function ($) {
+!function ($, document, window) {
 
 	var Popup = function ($el, options) {
 		this.options = options;
@@ -41,16 +41,13 @@
 
 		this.$arrow = this.$popup.find('.popup-arrow');
 
-		// set appendTo also to body
-		// need to fix the positioning math to account for when .poup-container is appending to something other than the body
-		// and that document.body isn't the relative element that it is being absolutely positioned too
-		o.appendTo = o.appendTo || document.body;
+		// _appendTo so the plug-in knows where in the DOM to place
+		// right now this should only be used by the modal plugin
+		o._appendTo = o._appendTo || document.body;
 
-		this.$popup.append(this.$el).appendTo(o.appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
+		this.$popup.append(this.$el).appendTo(o._appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
 
-		if (o.saveTo) {
-			$(o.saveTo).data('popup-ref', this.$el);
-		}
+		o.saveTo && $(o.saveTo).data('popup-ref', this.$el);
 
 		// if options.showClose, bind click to close popup
 		if (o.showClose) {
@@ -61,19 +58,21 @@
 
 		o.attachTo = $(o.attachTo);
 
-		if (o.autoOpen) {
-			this.open();
-		}
+		o.autoOpen && this.open();
 	};
 
 	Popup.prototype.positionPopup = function() {
+
+		// return if this.options.attachTo.length == 0
+		if(!this.options.attachTo.length) { return; }
+
 		var that = this;
 		var o = this.options;
 
 		var $window = $(window);
 		var $document = $(document);
 
-		var $appendTo = $(o.appendTo);
+		var $appendTo = $(o._appendTo);
 		var appTop = $appendTo.offset().top;
 		var appLeft = $appendTo.offset().left;
 
@@ -135,17 +134,19 @@
 			 * also if you know a better way to go about this, let me know --Harris
 			 */
 			var testOrder = [];
-			if (o.align == 'right') {
-				testOrder = [willFitOnRight, willFitOnLeft, willFitOnBottom, willFitOnTop];
-			}
-			else if (o.align == 'left') {
-				testOrder = [willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop];
-			}
-			else if (o.align == 'bottom') {
-				testOrder = [willFitOnBottom, willFitOnTop, willFitOnRight, willFitOnLeft];
-			}
-			else if (o.align == 'top') {
-				testOrder = [willFitOnTop, willFitOnBottom, willFitOnRight, willFitOnLeft];
+			switch (o.align) {
+				case 'right':
+					testOrder = [willFitOnRight, willFitOnLeft, willFitOnBottom, willFitOnTop];
+					break;
+				case 'left':
+					testOrder = [willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop];
+					break;
+				case 'bottom':
+					testOrder = [willFitOnBottom, willFitOnTop, willFitOnRight, willFitOnLeft];
+					break;
+				case 'top':
+					testOrder = [willFitOnTop, willFitOnBottom, willFitOnRight, willFitOnLeft];
+					break;
 			}
 
 			// run the tests
@@ -387,9 +388,11 @@
 		return rtnValue || this;
 	};
 
+	$.fn.popup.Constructor = Popup;
+
 	$.fn.popup.defaults = {
 		align : 'free',
-		appendTo : null, // WARNING: if this element does not have position: relative, absolute, or fixed, the auto-positioning will break
+		_appendTo : null, // NOT A PUBLIC property, needs to be here however for the modal plug-in
 		attachTo : null,
 		autoOpen : true,
 		popupClass : '',
@@ -410,5 +413,4 @@
 		zIndex : 1000
 	};
 
-
-}(window.jQuery);
+}(window.jQuery, document, window);
