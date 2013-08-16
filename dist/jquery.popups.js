@@ -1,7 +1,7 @@
 /*! jQuery Popups - v0.7.0 - 2013-08-15
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2013 Harris Miller; Licensed MIT */
-!function ($, document, window) {
++function ($, document, window) {
 
 	var Popup = function ($el, options) {
 		this.options = options;
@@ -40,6 +40,7 @@
 
 		// _appendTo so the plug-in knows where in the DOM to place
 		// right now this should only be used by the modal plugin
+		// ie, this property is NOT PUBLIC
 		o._appendTo = o._appendTo || document.body;
 
 		this.$popup.append(this.$el).appendTo(o._appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
@@ -391,7 +392,6 @@
 
 	$.fn.popup.defaults = {
 		align : 'free',
-		_appendTo : null, // NOT A PUBLIC property, needs to be here however for the modal plug-in
 		attachTo : null,
 		autoOpen : true,
 		popupClass : '',
@@ -412,8 +412,8 @@
 		zIndex : 1000
 	};
 
-}(window.jQuery, document, window);
-!function ($, document, window) {
+}(jQuery, document, window);
++function ($, document, window) {
 
 	if (!$.fn.popup) {
 		$.error('jquery.modal.js requires jquery.popups.js');
@@ -475,25 +475,23 @@
 
 		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(this._$body);
 
-		var popup_options = {
+		var constant_options = {
 			align : 'middle',
 			_appendTo : that.$overlay,
-			showClose : true,
+			attachTo : that.$overlay,
 			zIndex : o.zIndex + 5
 		};
+		
+		o.saveTo && $(o.saveTo).data('modal-ref', this.$el);
 
-		if (o.saveTo) {
-			$(o.saveTo).data('modal-ref', this.$el);
-		}
-
-		popup_options = $.extend({}, o, popup_options);
+		$.extend(o, constant_options);
 
 		// popup_options.saveTo = null, since we are saving 'modal-ref' instead
-		popup_options.saveTo = null;
+		o.saveTo = null;
 
-		popup_options.popupClass = 'modal' + (o.popupClass ? ' ' + o.popupClass : '');
+		o.popupClass = 'modal' + (o.popupClass ? ' ' + o.popupClass : '');
 
-		this.$el.popup(popup_options);
+		this.$el.popup(o);
 		this.$overlay.hide();
 
 		// reset $.fn.popup's .popup-close functionality
@@ -660,9 +658,10 @@
 		destroyOnClose : false,
 		popupClass : '',
 		saveTo : null,
+		showClose : true,
 		transition : true,
 		transitionTime : 0.6,
 		zIndex : 5000
 	};
 
-}(window.jQuery, document, window);
+}(jQuery, document, window);

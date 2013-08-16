@@ -4,7 +4,7 @@
  * For: Markit On Demand
  */
 
-!function ($, document, window) {
++function ($, document, window) {
 
 	var Popup = function ($el, options) {
 		this.options = options;
@@ -43,6 +43,7 @@
 
 		// _appendTo so the plug-in knows where in the DOM to place
 		// right now this should only be used by the modal plugin
+		// ie, this property is NOT PUBLIC
 		o._appendTo = o._appendTo || document.body;
 
 		this.$popup.append(this.$el).appendTo(o._appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
@@ -394,7 +395,6 @@
 
 	$.fn.popup.defaults = {
 		align : 'free',
-		_appendTo : null, // NOT A PUBLIC property, needs to be here however for the modal plug-in
 		attachTo : null,
 		autoOpen : true,
 		popupClass : '',
@@ -415,4 +415,4 @@
 		zIndex : 1000
 	};
 
-}(window.jQuery, document, window);
+}(jQuery, document, window);
