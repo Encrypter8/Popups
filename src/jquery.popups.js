@@ -98,19 +98,19 @@
 		 * will attept other axis if cannot fit in same one, when trying other axis, first attempt will be right/bottom (respectively)
 		 * will position to middle if cannot fit in right, left, top, or bottom
 		 */
-		if (o.responsiveAlignment == true && o.align != 'middle') {
+		if (o.responsiveAlignment === true && o.align !== 'middle') {
 			// declare login tests
 			var willFitOnRight = function () {
 				if (elOffset.left + elWidth + popWidth + o.popupBuffer > $window.width()) {
 					return false;
-				};
+				}
 				return 'right';
 			};
 
 			var willFitOnLeft = function () {
 				if (elOffset.left - popWidth - o.popupBuffer < 0) {
 					return false;
-				};
+				}
 				return 'left';
 			};
 
@@ -153,13 +153,13 @@
 			var newAlign = false;
 			for (var i = 0; i < testOrder.length; i++) {
 				newAlign = testOrder[i].call();
-				if (newAlign != false) {
+				if (newAlign !== false) {
 					break;
 				}
 			}
 
 			// if all tests fail, set to middle
-			if (newAlign == false) {
+			if (newAlign === false) {
 				newAlign = 'middle';
 			}
 
@@ -169,45 +169,48 @@
 
 		// define Constraint functions
 		var keepInVerticalConstraints = function () {
+			var diff;
 			// shift pop-up up if will display below bottom of window
 			if (posTop + popHeight > $document.scrollTop() + $window.height()) {
-				var diff = (posTop + popHeight) - ($document.scrollTop() + $window.height());
+				diff = (posTop + popHeight) - ($document.scrollTop() + $window.height());
 				posTop -= diff;
 				arrowTop += diff;
 			}
 
 			// shift pop-up down if will display above top of window
 			if (posTop < $document.scrollTop()) {
-				var diff = $document.scrollTop() - posTop;
-				posTop += diff
+				diff = $document.scrollTop() - posTop;
+				posTop += diff;
 				arrowTop -= diff;
 			}
 		};
 
 		var keepInHorizontalConstraints = function () {
-			
+			var diff;
+			// shift pop-up left if will display past right edge of window (with 10px buffer)
 			if (posLeft + popWidth > $window.width()) {
-				var diff = (posLeft + popWidth) - $window.width();
+				diff = (posLeft + popWidth) - $window.width();
 				posLeft -= diff;
 				arrowLeft += diff;
 			}
 
 			// shift pop-up right if will display past left edge of window (with 10px buffer);
 			if (posLeft < 0) {
-				var diff = -posLeft;
+				diff = -posLeft;
 				posLeft += diff;
 				arrowLeft -= diff;
 			}
 		};
 
 		// position popup next to attachTo
+		var offset;
 		if (o.align == 'top') {
-			var offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
+			offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left + (elWidth / 2) - offset;
 			posTop = elOffset.top - popHeight - o.popupBuffer;
 
 			this.$arrow.addClass('pointing-down');
-			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'));
+			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'), 10);
 			arrowTop = this.$popup.height();
 
 			if (o.responsiveToEdges) {
@@ -215,8 +218,7 @@
 			}
 		}
 		else if (o.align == 'right') {
-			var offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
-
+			offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left + elWidth + o.popupBuffer;
 			posTop = elOffset.top + (elHeight / 2) - offset; // set top of popup to align with middle of binding element
 
@@ -225,19 +227,19 @@
 			this.$arrow.addClass('pointing-left');
 
 			arrowLeft = -this.$arrow.outerWidth();
-			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width')); // pop-ups borderwidth needs to be accounted for here
+			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width'), 10); // pop-ups borderwidth needs to be accounted for here
 
 			if (o.responsiveToEdges) {
 				keepInVerticalConstraints();
 			}
 		}
 		else if (o.align == 'bottom') {
-			var offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
+			offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left + (elWidth / 2) - offset;
 			posTop = elOffset.top + elHeight + o.popupBuffer;
 
 			this.$arrow.addClass('pointing-up');
-			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'));
+			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'), 10);
 			arrowTop = -this.$arrow.outerHeight();
 
 			if (o.responsiveToEdges) {
@@ -245,13 +247,13 @@
 			}
 		}
 		else if (o.align == 'left') {
-			var offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
+			offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left - popWidth - o.popupBuffer;
 			posTop = elOffset.top + (elHeight / 2) - offset; // set top of popup to align with middle of binding element
 
 			this.$arrow.addClass('pointing-right');
 			arrowLeft = this.$popup.width(); // we use $popup.width() here instead of popWidth because popWidth includes the popup's borders
-			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width')); // pop-ups borderwidth needs to be accounted for here
+			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width'), 10); // pop-ups borderwidth needs to be accounted for here
 
 			if (o.responsiveToEdges) {
 				keepInVerticalConstraints();
@@ -284,7 +286,7 @@
 		if (this.options.align != 'free') {
 			this.positionPopup();
 		}
-	}
+	};
 
 	Popup.prototype.close = function() {
 		if (!this.isOpen) {
@@ -306,11 +308,11 @@
 			this.$popup.hide();
 			this.$el.trigger('popupClose');
 		}
-	}
+	};
 
 	Popup.prototype.toggle = function() {
 		this[this.isOpen ? 'close' : 'open']();
-	}
+	};
 
 	Popup.prototype.destroy = function() {
 		if (this.options.saveTo) {
@@ -318,12 +320,12 @@
 		}
 		this.$el.trigger('popupDestroy');
 		this.$popup.remove();
-	}
+	};
 
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
 		this.positionPopup();
-	}
+	};
 
 
 	//
@@ -343,7 +345,7 @@
 				var $html = $('<div class="popup-inner">').popup(option);
 				$html.popup('$popup').addClass('loading');
 				this.done(function(data) {
-				 	$html.popup('$popup').removeClass('loading');
+					$html.popup('$popup').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
 				rtnValue = $html;
@@ -351,7 +353,7 @@
 			}
 			// if node that popup has yet to be instanciated on
 			else if (!instance) {
-				var options = $.extend({}, $.fn.popup.defaults, typeof option == 'object' && option)
+				var options = $.extend({}, $.fn.popup.defaults, typeof option == 'object' && option);
 				$this.data('popup', (instance = new Popup($this, options)));
 			}
 			// if node already has popup instanciated

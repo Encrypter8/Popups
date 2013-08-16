@@ -23,6 +23,22 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.js'
       },
     },
+    jshint: {
+      options: {
+        "curly": true,
+        "eqnull": true,
+        "eqeqeq": false,
+        "undef": true,
+        "expr": true,
+        "globals": {
+          "window": true,
+          "document": true
+        }
+      },
+      files: {
+        src: ['src/jquery.popups.js', 'src/jquery.modal.js']
+      }
+    },
     uglify: {
       options: {
         banner: '<%= banner %>'
@@ -47,12 +63,13 @@ module.exports = function(grunt) {
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-qunit');
   //grunt.loadNpmTasks('grunt-contrib-less');
   //grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['clean', 'concat', 'jshint', 'uglify']);
 
 };
