@@ -115,7 +115,7 @@
 </div>
 
 <script type="text/javascript" src="./libs/Function.1.js"></script>
-<script type="text/javascript" src="./libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="./libs/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="./src/jquery.popups.js"></script>
 <script type="text/javascript" src="./src/jquery.modal.js"></script>
 <script type="text/javascript" src="http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
@@ -278,6 +278,39 @@ $(function() {
 function lorem() {
 	return "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 }
+
+
+// concat testing using $.map
+function concatMultiInputs() {
+	var inputs = [].slice.call(arguments);
+	
+	//return $.map(inputs, function(n) { return n; });
+
+	return [].concat.apply([], arguments);
+}
+
+function flattenArray(input, output /* internal */) {
+	var output = output || [];
+
+	// should only accept single in put of type array
+	// if not, just return empty array
+	if ( !jQuery.isArray(input) ) {
+		return output;
+	}
+
+	$.each(input, function(i, n) {
+		if ( $.isArray(n) ) {
+			flattenArray(n, output);
+		}
+		else {
+			output.push(n);
+		}
+	});
+
+	return output;
+}
+
+
 
 </script>
 </body>
