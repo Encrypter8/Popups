@@ -33,6 +33,27 @@
 		return null;
 	})();
 
+	// left: 37, up: 38, right: 39, down: 40,
+	// spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+	var keys = [37, 38, 39, 40];
+
+	// this function should disable scrolling on the window when the model is open
+	// is doesn't actuallyu "disable" scrolling, but it does catch all the key-commands that would make it scroll
+	var disable_scroll = function() {
+		$(document.body).on('keydown.modal', function(e) {
+			for (var i = 0, i < keys.length; i++) {
+				if (e.keyCode == keys[i]) {
+					e.preventDefault();
+					return;
+				}
+			}
+		});
+	}
+
+	var enable_scroll = function() {
+		$(document.body).off('keydown.modal');
+	}
+
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
