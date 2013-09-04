@@ -35,13 +35,13 @@
 
 	// left: 37, up: 38, right: 39, down: 40,
 	// spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
-	var keys = [37, 38, 39, 40];
+	var keys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
 
 	// this function should disable scrolling on the window when the model is open
 	// is doesn't actuallyu "disable" scrolling, but it does catch all the key-commands that would make it scroll
-	var disable_scroll = function() {
+	var disableScroll = function() {
 		$(document.body).on('keydown.modal', function(e) {
-			for (var i = 0, i < keys.length; i++) {
+			for (var i = 0; i < keys.length; i++) {
 				if (e.keyCode == keys[i]) {
 					e.preventDefault();
 					return;
@@ -50,7 +50,7 @@
 		});
 	}
 
-	var enable_scroll = function() {
+	var enableScroll = function() {
 		$(document.body).off('keydown.modal');
 	}
 
@@ -126,6 +126,8 @@
 			return;
 		}
 
+		disableScroll();
+
 		this.isOpen = true;
 		this.$overlay.show().addClass('show');
 		// timeout so DOM renderer can change element's state first before applying transition
@@ -149,6 +151,9 @@
 
 	Modal.prototype.close = function() {
 		var that = this;
+
+		enableScroll();
+
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to 
 		if (this.options.jqXHR && this.options.jqXHR.state() == "pending") {
 			this.options.jqXHR.abort();
