@@ -48,11 +48,11 @@
 				}
 			}
 		});
-	}
+	};
 
 	var enableScroll = function() {
 		$(document.body).off('keydown.modal');
-	}
+	};
 
 	var Modal = function($el, options) {
 		this.options = options;

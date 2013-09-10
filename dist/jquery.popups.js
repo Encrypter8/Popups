@@ -1,4 +1,4 @@
-/*! jQuery Popups - v0.7.0 - 2013-09-04
+/*! jQuery Popups - v0.8.0 - 2013-09-10
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2013 Harris Miller; Licensed MIT */
 +function ($, document, window) {
@@ -456,11 +456,11 @@
 				}
 			}
 		});
-	}
+	};
 
 	var enableScroll = function() {
 		$(document.body).off('keydown.modal');
-	}
+	};
 
 	var Modal = function($el, options) {
 		this.options = options;
