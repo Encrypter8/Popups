@@ -65,7 +65,6 @@
 			this._$body = $(window.top.document.body);
 			this.inIframe = true;
 		}
-		console.log(this._$body);
 		this.isOpen = false;
 
 		this._create();
