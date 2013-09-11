@@ -71,6 +71,33 @@
 		o.autoOpen && this.open();
 	};
 
+	// positionPopup_new is a rewrite to allow of the originally intended appendTo option as well as to account for iFrames
+	Popup.prototype.positionPopup_new = function() {
+
+		// return if this.options.attachTo.length
+		// return if this.options.attachTo.length == 0
+		if(!this.options.attachTo.length) { return; }
+
+		var that = this;
+		var o = this.options;
+
+		var $window = $(window.top);
+		var $document = $(document);
+
+		var $appendTo = $(o._appendTo);
+
+		var position = this.getPosition();
+	};
+
+	Popup.prototype.getPosition = function() {
+		var $attachTo = this.options.attachTo;
+		var el = $attachTo[0];
+		return $.extend({}, ($.isFunction(el.getBoundingClientRect)) ? el.getBoundingClientRect() : {
+			height: el.offsetHeight,
+			width: el.offsetWidth
+		}, $attachTo.offset());
+	};
+
 	Popup.prototype.positionPopup = function() {
 
 		// return if this.options.attachTo.length == 0
