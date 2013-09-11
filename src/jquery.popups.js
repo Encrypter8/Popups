@@ -11,6 +11,15 @@
 		this.$el = $el;
 		this.isOpen = false;
 
+		if (window == window.top) {
+			this._$body = $(document.body);
+			this.inIframe = false;
+		}
+		else {
+			this._$body = $(window.top.document.body);
+			this.inIframe = true;
+		}
+
 		this._create();
 	};
 
@@ -44,7 +53,7 @@
 		// _appendTo so the plug-in knows where in the DOM to place
 		// right now this should only be used by the modal plugin
 		// ie, this property is NOT PUBLIC
-		o._appendTo = o._appendTo || document.body;
+		o._appendTo = o._appendTo || 'body';
 
 		this.$popup.append(this.$el).appendTo(o._appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
 
@@ -62,6 +71,33 @@
 		o.autoOpen && this.open();
 	};
 
+	// positionPopup_new is a rewrite to allow of the originally intended appendTo option as well as to account for iFrames
+	Popup.prototype.positionPopup_new = function() {
+
+		// return if this.options.attachTo.length
+		// return if this.options.attachTo.length == 0
+		if(!this.options.attachTo.length) { return; }
+
+		var that = this;
+		var o = this.options;
+
+		var $window = $(window.top);
+		var $document = $(document);
+
+		var $appendTo = $(o._appendTo);
+
+		var position = this.getPosition();
+	};
+
+	Popup.prototype.getPosition = function() {
+		var $attachTo = this.options.attachTo;
+		var el = $attachTo[0];
+		return $.extend({}, ($.isFunction(el.getBoundingClientRect)) ? el.getBoundingClientRect() : {
+			height: el.offsetHeight,
+			width: el.offsetWidth
+		}, $attachTo.offset());
+	};
+
 	Popup.prototype.positionPopup = function() {
 
 		// return if this.options.attachTo.length == 0
@@ -70,7 +106,7 @@
 		var that = this;
 		var o = this.options;
 
-		var $window = $(window);
+		var $window = $(window.top);
 		var $document = $(document);
 
 		var $appendTo = $(o._appendTo);
@@ -397,6 +433,7 @@
 		align : 'free',
 		attachTo : null,
 		autoOpen : true,
+		destroyOnClose : false,
 		popupClass : '',
 		height : 0,
 		maxHeight: 0,

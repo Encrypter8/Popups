@@ -8,6 +8,15 @@
 		this.$el = $el;
 		this.isOpen = false;
 
+		if (window == window.top) {
+			this._$body = $(document.body);
+			this.inIframe = false;
+		}
+		else {
+			this._$body = $(window.top.document.body);
+			this.inIframe = true;
+		}
+
 		this._create();
 	};
 
@@ -41,7 +50,7 @@
 		// _appendTo so the plug-in knows where in the DOM to place
 		// right now this should only be used by the modal plugin
 		// ie, this property is NOT PUBLIC
-		o._appendTo = o._appendTo || document.body;
+		o._appendTo = o._appendTo || 'body';
 
 		this.$popup.append(this.$el).appendTo(o._appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
 
@@ -67,7 +76,7 @@
 		var that = this;
 		var o = this.options;
 
-		var $window = $(window);
+		var $window = $(window.top);
 		var $document = $(document);
 
 		var $appendTo = $(o._appendTo);
@@ -465,7 +474,14 @@
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
-		this._$body = $(document.body);
+		if (window == window.top) {
+			this._$body = $(document.body);
+			this.inIframe = false;
+		}
+		else {
+			this._$body = $(window.top.document.body);
+			this.inIframe = true;
+		}
 		this.isOpen = false;
 
 		this._create();

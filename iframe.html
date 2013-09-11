@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>iFrame Test</title>
+	<link href="./assets/popups.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+	
+		.popup {
+			border: 1px solid black;
+			margin: 30px;
+			padding: 20px;
+			width: 200px;
+		}
+
+	</style>
+</head>
+<body>
+<button id="modal">Click for Modal</button>
+<button id="popup">Click for Popup</button>
+
+<script type="text/javascript" src="./libs/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="./src/jquery.popups.js"></script>
+<script type="text/javascript" src="./src/jquery.modal.js"></script>
+<script type="text/javascript">
+
+	(function() {
+
+		$('#modal').on('click', function() {
+			var $this = $(this);
+			if (!$this.data('modal-ref')) {
+				var $html = $('<div class="modal-inner"><button>Click to Load Content</button></div>'); 
+
+				$html.find('button').one('click', function() {
+					var newContent = $('<p>' + lorem() + '</p>');
+					$html.css({ 'width': 400 }).popup('replaceContent', newContent);
+				});
+
+				var options = {
+					popupClass : 'bubble',
+					saveTo : $this
+				};
+
+				$html.modal(options);
+			}
+			else {
+				$this.data('modal-ref').modal();
+			}
+		});
+
+		var $popup = $('<div class="popup"><p>' + lorem() + '</p><button id="re">Reposition Popup</button></div>');
+		$popup.find('#re').one('click', function() {
+			$popup.css({ 'width' : 500 });
+			$(this).remove();
+			$popup.popup('positionPopup');
+		});
+
+		$('#popup').on('click', function() {
+			$popup.popup({
+				align : 'bottom',
+				attachTo : this,
+				destroyOnClose : true,
+				offsetPercentage : 50,
+				popupClass : 'bubble',
+				popupBuffer : 20
+			});
+		});
+
+
+	})();
+
+	function lorem() {
+		return "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+	}
+</script>
+</body>
+</html>
