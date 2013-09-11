@@ -39,6 +39,8 @@
 
 	// this function should disable scrolling on the window when the model is open
 	// is doesn't actuallyu "disable" scrolling, but it does catch all the key-commands that would make it scroll
+	// NOTE: normally, if you focus within the popup-container, the above keys will scroll that (if it's longer enough)
+	// this disableScroll will display that as well, but I think it's an acceptable loss
 	var disableScroll = function() {
 		$(document.body).on('keydown.modal', function(e) {
 			for (var i = 0; i < keys.length; i++) {
