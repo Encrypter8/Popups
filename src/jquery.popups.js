@@ -433,6 +433,7 @@
 		align : 'free',
 		attachTo : null,
 		autoOpen : true,
+		destroyOnClose : false,
 		popupClass : '',
 		height : 0,
 		maxHeight: 0,
