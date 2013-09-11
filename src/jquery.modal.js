@@ -57,7 +57,15 @@
 	var Modal = function($el, options) {
 		this.options = options;
 		this.$el = $el;
-		this._$body = $(document.body);
+		if (window == window.top) {
+			this._$body = $(document.body);
+			this.inIframe = false;
+		}
+		else {
+			this._$body = $(window.top.document.body);
+			this.inIframe = true;
+		}
+		console.log(this._$body);
 		this.isOpen = false;
 
 		this._create();
