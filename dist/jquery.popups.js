@@ -1,4 +1,4 @@
-/*! jQuery Popups - v0.8.0 - 2013-09-10
+/*! jQuery Popups - v0.8.0 - 2013-09-13
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2013 Harris Miller; Licensed MIT */
 +function ($, document, window) {
@@ -66,6 +66,33 @@
 		o.attachTo = $(o.attachTo);
 
 		o.autoOpen && this.open();
+	};
+
+	// positionPopup_new is a rewrite to allow of the originally intended appendTo option as well as to account for iFrames
+	Popup.prototype.positionPopup_new = function() {
+
+		// return if this.options.attachTo.length
+		// return if this.options.attachTo.length == 0
+		if(!this.options.attachTo.length) { return; }
+
+		var that = this;
+		var o = this.options;
+
+		var $window = $(window.top);
+		var $document = $(document);
+
+		var $appendTo = $(o._appendTo);
+
+		var position = this.getPosition();
+	};
+
+	Popup.prototype.getPosition = function() {
+		var $attachTo = this.options.attachTo;
+		var el = $attachTo[0];
+		return $.extend({}, ($.isFunction(el.getBoundingClientRect)) ? el.getBoundingClientRect() : {
+			height: el.offsetHeight,
+			width: el.offsetWidth
+		}, $attachTo.offset());
 	};
 
 	Popup.prototype.positionPopup = function() {
@@ -403,6 +430,7 @@
 		align : 'free',
 		attachTo : null,
 		autoOpen : true,
+		destroyOnClose : false,
 		popupClass : '',
 		height : 0,
 		maxHeight: 0,
@@ -456,6 +484,8 @@
 
 	// this function should disable scrolling on the window when the model is open
 	// is doesn't actuallyu "disable" scrolling, but it does catch all the key-commands that would make it scroll
+	// NOTE: normally, if you focus within the popup-container, the above keys will scroll that (if it's longer enough)
+	// this disableScroll will display that as well, but I think it's an acceptable loss
 	var disableScroll = function() {
 		$(document.body).on('keydown.modal', function(e) {
 			for (var i = 0; i < keys.length; i++) {
@@ -516,6 +546,7 @@
 			align : 'middle',
 			_appendTo : that.$overlay,
 			attachTo : that.$overlay,
+			showArrow : false,
 			zIndex : o.zIndex + 5
 		};
 		
@@ -594,11 +625,11 @@
 				this.$overlay.one(transitionEnd, function() {
 					that._closeModal();
 				});
+				this.$overlay.css('opacity', 0);
 			}
 			else{
-				this._closeModal.call(that);
+				this._closeModal();
 			}
-			this.$overlay.css('opacity', 0);
 		}
 	};
 
@@ -617,8 +648,12 @@
 		// transition close if set and browser can
 		if (this.options.transition && transitionEnd) {
 			this.$overlay.one(transitionEnd, function() {
-				that._closeModal.call(that);
+				that._closeModal();
 			});
+			this.$overlay.css('opacity', 0);
+		}
+		else {
+			that._closeModal();
 		}
 	};
 

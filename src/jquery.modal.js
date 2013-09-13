@@ -180,11 +180,11 @@
 				this.$overlay.one(transitionEnd, function() {
 					that._closeModal();
 				});
+				this.$overlay.css('opacity', 0);
 			}
 			else{
-				this._closeModal.call(that);
+				this._closeModal();
 			}
-			this.$overlay.css('opacity', 0);
 		}
 	};
 
@@ -203,8 +203,12 @@
 		// transition close if set and browser can
 		if (this.options.transition && transitionEnd) {
 			this.$overlay.one(transitionEnd, function() {
-				that._closeModal.call(that);
+				that._closeModal();
 			});
+			this.$overlay.css('opacity', 0);
+		}
+		else {
+			that._closeModal();
 		}
 	};
 
