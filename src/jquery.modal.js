@@ -101,6 +101,7 @@
 			align : 'middle',
 			_appendTo : that.$overlay,
 			attachTo : that.$overlay,
+			showArrow : false,
 			zIndex : o.zIndex + 5
 		};
 		
