@@ -237,7 +237,7 @@
 				option.jqXHR = this;
 				var $html = $('<div>').modal(option);
 				$html.popup('$popup').addClass('loading');
-				this.done(function() {
+				this.always(function() {
 					$html.popup('$popup').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
@@ -285,15 +285,15 @@
 	$.fn.modal.Constructor = Modal;
 
 	$.fn.modal.defaults = {
-		autoOpen : true,
-		closeOnEscape : true,
-		destroyOnClose : false,
-		popupClass : '',
-		saveTo : null,
-		showClose : true,
-		transition : true,
-		transitionTime : 0.6,
-		zIndex : 5000
+		autoOpen: true,
+		closeOnEscape: true,
+		destroyOnClose: false,
+		popupClass: '',
+		saveTo: null,
+		showClose: true,
+		transition: true,
+		transitionTime: 0.6,
+		zIndex: 5000
 	};
 
 }(jQuery, document, window);

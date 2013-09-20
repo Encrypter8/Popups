@@ -1,4 +1,4 @@
-/*! jQuery Popups - v0.8.0 - 2013-09-13
+/*! jQuery Popups - v0.8.2 - 2013-09-20
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2013 Harris Miller; Licensed MIT */
 +function ($, document, window) {
@@ -8,15 +8,6 @@
 		this.$el = $el;
 		this.isOpen = false;
 
-		if (window == window.top) {
-			this._$body = $(document.body);
-			this.inIframe = false;
-		}
-		else {
-			this._$body = $(window.top.document.body);
-			this.inIframe = true;
-		}
-
 		this._create();
 	};
 
@@ -25,14 +16,22 @@
 		var that = this;
 		var o = this.options;
 
+		// us to add px to end of value is just a number is passed
+		var addPX = function(value) {
+			if (typeof value == 'number') {
+				return value + 'px';
+			}
+			return value;
+		};
+
 		var popupStyles = [
 			'style=" position: absolute; ',
-			o.height ? 'height: ' + o.height + 'px; ' : '',
-			o.maxHeight ? 'max-height: ' + o.maxHeight + 'px; ': '',
-			o.maxWidth ? 'max-width: ' + o.maxWidth + 'px; ' : '',
-			o.minHeight ? 'min-height: ' + o.minHeight + 'px; '  : '',
-			o.minWidth ? 'min-width: ' + o.minWidth + 'px; ' : '',
-			o.width ? 'width: ' + o.width + 'px; ' : '',
+			o.height ? 'height: ' + addPX(o.height) + '; ' : '',
+			o.maxHeight ? 'max-height: ' + addPX(o.maxHeight) + '; ': '',
+			o.maxWidth ? 'max-width: ' + addPX(o.maxWidth) + '; ' : '',
+			o.minHeight ? 'min-height: ' + addPX(o.minHeight) + '; '  : '',
+			o.minWidth ? 'min-width: ' + addPX(o.minWidth) + '; ' : '',
+			o.width ? 'width: ' + addPX(o.width) + '; ' : '',
 			'z-index: ' + o.zIndex + '"',
 		].join('');
 
@@ -78,7 +77,7 @@
 		var that = this;
 		var o = this.options;
 
-		var $window = $(window.top);
+		var $window = $(window);
 		var $document = $(document);
 
 		var $appendTo = $(o._appendTo);
@@ -103,7 +102,7 @@
 		var that = this;
 		var o = this.options;
 
-		var $window = $(window.top);
+		var $window = $(window);
 		var $document = $(document);
 
 		var $appendTo = $(o._appendTo);
@@ -132,6 +131,7 @@
 		 * will attept other axis if cannot fit in same one, when trying other axis, first attempt will be right/bottom (respectively)
 		 * will position to middle if cannot fit in right, left, top, or bottom
 		 */
+		var origAlign = o.align;
 		if (o.responsiveAlignment === true && o.align !== 'middle') {
 			// declare login tests
 			var willFitOnRight = function () {
@@ -238,6 +238,7 @@
 
 		// position popup next to attachTo
 		var offset;
+		this.$arrow.removeClass('pointing-up pointing-down pointing-left pointing-right');
 		if (o.align == 'top') {
 			offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
 			posLeft = elOffset.left + (elWidth / 2) - offset;
@@ -308,6 +309,8 @@
 		// set positioning
 		this.$popup.css({ 'left': posLeft, 'top': posTop });
 		this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
+
+		o.align = origAlign;
 	};
 
 	Popup.prototype.open = function() {
@@ -378,7 +381,7 @@
 				option.jqXHR = this;
 				var $html = $('<div class="popup-inner">').popup(option);
 				$html.popup('$popup').addClass('loading');
-				this.done(function(data) {
+				this.always(function(data) {
 					$html.popup('$popup').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
@@ -427,26 +430,26 @@
 	$.fn.popup.Constructor = Popup;
 
 	$.fn.popup.defaults = {
-		align : 'free',
-		attachTo : null,
-		autoOpen : true,
-		destroyOnClose : false,
-		popupClass : '',
-		height : 0,
+		align: 'free',
+		attachTo: null,
+		autoOpen: true,
+		destroyOnClose: false,
+		popupClass: '',
+		height: 0,
 		maxHeight: 0,
 		maxWidth: 0,
-		minHeight : 200,
-		minWidth : 200,
-		offsetPercentage : 0,
-		offsetPixels : 0,
-		popupBuffer : 0,
-		responsiveAlignment : true,
-		responsiveToEdges : true,
-		saveTo : null,
-		showArrow : true,
-		showClose : true,
-		width : 0,
-		zIndex : 1000
+		minHeight: 0,
+		minWidth: 0,
+		offsetPercentage: 0,
+		offsetPixels: 0,
+		popupBuffer: 0,
+		responsiveAlignment: true,
+		responsiveToEdges: true,
+		saveTo: null,
+		showArrow: true,
+		showClose: true,
+		width: 0,
+		zIndex: 1000
 	};
 
 }(jQuery, document, window);
@@ -682,7 +685,7 @@
 				option.jqXHR = this;
 				var $html = $('<div>').modal(option);
 				$html.popup('$popup').addClass('loading');
-				this.done(function() {
+				this.always(function() {
 					$html.popup('$popup').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
@@ -730,15 +733,15 @@
 	$.fn.modal.Constructor = Modal;
 
 	$.fn.modal.defaults = {
-		autoOpen : true,
-		closeOnEscape : true,
-		destroyOnClose : false,
-		popupClass : '',
-		saveTo : null,
-		showClose : true,
-		transition : true,
-		transitionTime : 0.6,
-		zIndex : 5000
+		autoOpen: true,
+		closeOnEscape: true,
+		destroyOnClose: false,
+		popupClass: '',
+		saveTo: null,
+		showClose: true,
+		transition: true,
+		transitionTime: 0.6,
+		zIndex: 5000
 	};
 
 }(jQuery, document, window);
