@@ -6,6 +6,9 @@
 
 +function ($, document, window) {
 
+	var $window = $(window);
+	var $document = $(document);
+
 	var Popup = function ($el, options) {
 		this.options = options;
 		this.$el = $el;
@@ -74,18 +77,18 @@
 	Popup.prototype.positionPopup_new = function() {
 
 		// return if this.options.attachTo.length
-		// return if this.options.attachTo.length == 0
 		if(!this.options.attachTo.length) { return; }
 
 		var that = this;
 		var o = this.options;
 
-		var $window = $(window);
-		var $document = $(document);
-
 		var $appendTo = $(o._appendTo);
 
-		var position = this.getPosition();
+		var pos = this.getPosition();
+		console.log(pos);
+
+		this.$popup.css({ 'left': pos.left, 'top': pos.top });
+		this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
 	};
 
 	Popup.prototype.getPosition = function() {
