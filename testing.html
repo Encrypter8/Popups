@@ -109,6 +109,10 @@
 			width: 50px;
 		}
 
+		#new-position {
+			margin-left: 500px;
+		}
+
 	</style>
 </head>
 <body>
@@ -120,6 +124,7 @@
 </div>
 <div class="wrapper relative clearfix">
 	<button id="position">Position</button>
+	<a href="#" id="tooltip">Tootip Test</a>
 	<div id="new-position-wrapper" class="wrapper clearfix">
 		<a href="#" id="new-position">New Position Test</button>
 	</div>
@@ -132,10 +137,10 @@
 
 <script type="text/javascript" src="./libs/Function.1.js"></script>
 <script type="text/javascript" src="./libs/jquery-1.9.1.js"></script>
-<script type="text/javascript" src="./src/jquery.popups.js"></script>
+<script type="text/javascript" src="./src/jquery.popups.new.js"></script>
 <script type="text/javascript" src="./src/jquery.modal.js"></script>
 <script type="text/javascript" src="http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
-<!--<script type="text/javascript" src="./libs/bootstrap-tooltip.js"></script>-->
+<script type="text/javascript" src="./libs/bootstrap-tooltip.js"></script>
 <!--<script type="text/javascript" src="./libs/less-1.3.3.min.js"></script>-->
 <script type="text/javascript">
 
@@ -147,20 +152,25 @@ $(function() {
 
 	var $body = $(document.body);
 
+	// tool-tip test
+	$('#tooltip').tooltip({
+		animation: false,
+		title: "This is a test"
+	});
+
 
 	// new position testing
 	var $newPos = $('<div class="popup">' + lorem() + '</div>');
 	$('#new-position').on('click', function() {
 		if (!$newPos.data('popup')) {
 			$newPos.popup({
-				align : 'right',
-				appendTo : $('.relative'),
-				attachTo : this,
-				popupClass : 'bubble',
-				offsetPercentage : 50,
-				popupBuffer: 20,
-				showArrow : true,
-				showClose : true
+				attachTo: this,
+				autoOpen: true,
+				buffer: 15,
+				classes: 'bubble',
+				container: $('#new-position-wrapper'),
+				offset: '50%',
+				placement: 'bottom'
 			});
 		}
 		else {

@@ -11,6 +11,10 @@
 
 /* popup styles */
 
+.popup-container {
+	position: absolute;
+}
+
 .popup-container.bubble {
 	background-color: #FFF;
 	border: 2px solid @darkblue;
@@ -41,8 +45,11 @@
 			position: relative;
 			width: 0;
 		}
+	}
 
-		&.pointing-up {
+	&.bottom {
+
+		.popup-arrow {
 			border-bottom: 16px solid @darkblue;
 			border-left: 8px solid transparent;
 			border-right: 8px solid transparent;
@@ -55,8 +62,11 @@
 				top: 4px;
 			}
 		}
+	}
 
-		&.pointing-right {
+	&.left {
+
+		.popup-arrow {
 			border-bottom: 8px solid transparent;
 			border-left: 16px solid @darkblue;
 			border-top: 8px solid transparent;
@@ -69,8 +79,11 @@
 				top: -6px;
 			}
 		}
+	}
 
-		&.pointing-down {
+	&.top {
+
+		.popup-arrow {
 			border-left: 8px solid transparent;
 			border-right: 8px solid transparent;
 			border-top: 16px solid @darkblue;
@@ -83,8 +96,11 @@
 				top: -16px;
 			}
 		}
+	}
 
-		&.pointing-left {
+	&.right {
+
+		.popup-arrow {
 			border-bottom: 8px solid transparent;
 			border-right: 16px solid @darkblue;
 			border-top: 8px solid transparent;

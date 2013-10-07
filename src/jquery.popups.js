@@ -8,6 +8,7 @@
 
 	var $window = $(window);
 	var $document = $(document);
+	var $body = $(document.body);
 
 	var Popup = function ($el, options) {
 		this.options = options;
@@ -88,7 +89,7 @@
 		console.log(pos);
 
 		this.$popup.css({ 'left': pos.left, 'top': pos.top });
-		this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
+		//this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
 	};
 
 	Popup.prototype.getPosition = function() {
