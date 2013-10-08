@@ -153,8 +153,8 @@
 		if (!this.placement || this.placement === 'none') {
 			return this.placement;
 		}
-		
-
+		// TODO
+		return this.placement;
 	};
 
 
