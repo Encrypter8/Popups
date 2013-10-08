@@ -60,6 +60,9 @@
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$popup);
 
+		// trigger create event
+		$el.trigger('create.popup');
+
 		// finally, if autoOpen, open!
 		this.autoOpen && this.open();
 	};
@@ -67,7 +70,7 @@
 	Popup.prototype.positionPopup = function() {
 		var that = this;
 
-		var placement = this.responsive ? this.determinePlacement() : this.placement;
+		var placement = this.determinePlacement();
 		var atPos = this.getAttachmentPosition();
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
@@ -77,11 +80,13 @@
 		var offset = parseFloat(this.offset);
 		
 		// calculate px value if isOffsetPercentage
-		if (isOffsetPercentage && offset && (placement === 'right' || placement === 'left')) {
-			offset = elHeight * (offset / 100);
-		}
-		if (isOffsetPercentage && offset && (placement === 'top' || placement === 'bottom')) {
-			offset = elWidth * (offset / 100);
+		if (isOffsetPercentage && !isNaN(offset)) {}
+			if (placement === 'right' || placement === 'left') {
+				offset = elHeight * (offset / 100);
+			}
+			if (placement === 'top' || placement === 'bottom') {
+				offset = elWidth * (offset / 100);
+			}
 		}
 
 		// create coords for popup based on placement
@@ -145,16 +150,11 @@
 
 	// 
 	Popup.prototype.determinePlacement = function() {
-		return this.placement;
-		// TODO
-	};
-
-	Popup.prototype.applyPlacement = function(placement) {
+		if (!this.placement || this.placement === 'none') {
+			return this.placement;
+		}
 		
-	};
 
-	Popup.prototype.positionArrow = function(placement) {
-		
 	};
 
 
@@ -289,7 +289,7 @@
 		classes: null,
 		offset: '50%',
 		placement: null,
-		responsive: true,
+		collision: 'flipfit',
 		showArrow: true,
 		showClose: true,
 		triggerEl: null,
