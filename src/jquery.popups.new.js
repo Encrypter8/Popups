@@ -17,9 +17,20 @@
 +function ($, document, window) {
 
 	// globally used variables
-	var $window = $(window);
-	var $document = $(document);
-	var $body = $(document.body);
+	// we always want to use the top frame, this will allow iframe appcliations to always display relative to the viewport properly
+	try {
+		var win = window.top;
+		var doc = win.document;
+		var body = doc.body;
+	}
+	catch(e) {
+		var win = window;
+		var doc = win.document;
+		var body = doc.body;
+	}
+	var $window = $(win);
+	var $document = $(doc);
+	var $body = $(body);
 
 	// define Popup
 	var Popup = function ($el, options) {
