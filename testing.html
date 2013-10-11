@@ -109,8 +109,20 @@
 			width: 50px;
 		}
 
+		#new-position-wrapper {
+			height: 500px;
+			width: 1000px;
+		}
+
 		#new-position {
 			margin-left: 500px;
+		}
+
+		#position-test {
+			border: 1px solid blue;
+			background-color: skyblue;
+			height: 50px;
+			width: 50px;
 		}
 
 	</style>
@@ -126,7 +138,8 @@
 	<button id="position">Position</button>
 	<a href="#" id="tooltip">Tootip Test</a>
 	<div id="new-position-wrapper" class="wrapper clearfix">
-		<a href="#" id="new-position">New Position Test</button>
+		<a href="#" id="new-position">New Position Test</a>
+		<div id="position-test"></div>
 	</div>
 </div>
 
@@ -141,6 +154,7 @@
 <script type="text/javascript" src="./src/jquery.modal.js"></script>
 <script type="text/javascript" src="http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js"></script>
 <script type="text/javascript" src="./libs/bootstrap-tooltip.js"></script>
+<script type="text/javascript" src="./libs/jquery.ui.position.js"></script>
 <!--<script type="text/javascript" src="./libs/less-1.3.3.min.js"></script>-->
 <script type="text/javascript">
 
@@ -158,7 +172,6 @@ $(function() {
 		title: "This is a test"
 	});
 
-
 	// new position testing
 	var $newPos = $('<div class="popup">' + lorem() + '</div>');
 	$('#new-position').on('click', function() {
@@ -169,8 +182,7 @@ $(function() {
 				buffer: 15,
 				classes: 'bubble',
 				container: $('#new-position-wrapper'),
-				offset: '50%',
-				placement: 'top'
+				placement: 'right'
 			});
 		}
 		else {
@@ -179,7 +191,18 @@ $(function() {
 	});
 
 
+	$('#position-test').position({
+		my: "right-10 center+150",
+		at: "left",
+		of: $('#new-position-wrapper'),
+		collision: "flip fit",
+		within: $('.relative').first()
+	});
 
+	console.log($('.relative').first());
+
+
+	return;
 
 
 	$('#overlay').on('click', function() {

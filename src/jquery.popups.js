@@ -86,7 +86,6 @@
 		var $appendTo = $(o._appendTo);
 
 		var pos = this.getPosition();
-		console.log(pos);
 
 		this.$popup.css({ 'left': pos.left, 'top': pos.top });
 		//this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });

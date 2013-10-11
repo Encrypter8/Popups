@@ -18,15 +18,16 @@
 
 	// globally used variables
 	// we always want to use the top frame, this will allow iframe appcliations to always display relative to the viewport properly
+	var win, doc, body;
 	try {
-		var win = window.top;
-		var doc = win.document;
-		var body = doc.body;
+		win = window.top;
+		doc = win.document;
+		body = doc.body;
 	}
 	catch(e) {
-		var win = window;
-		var doc = win.document;
-		var body = doc.body;
+		win = window;
+		doc = win.document;
+		body = doc.body;
 	}
 	var $window = $(win);
 	var $document = $(doc);
@@ -42,8 +43,8 @@
 
 		// process options
 		// i want all the options passed to be part of the object so they can be get/set later on
-		for (var o in options) {
-			this[o] = options[o];
+		for (var opt in options) {
+			this[opt] = options[opt];
 		}
 		// handle options that need to be jQueryfied
 		this.$attachTo = this.attachTo = $(this.attachTo);
@@ -82,7 +83,7 @@
 		var that = this;
 
 		var placement = this.determinePlacement();
-		var atPos = this.getAttachmentPosition();
+		var atPos = this.getPosition(this.attachTo);
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
 		var buffer = this.buffer;
@@ -91,7 +92,7 @@
 		var offset = parseFloat(this.offset);
 		
 		// calculate px value if isOffsetPercentage
-		if (isOffsetPercentage && !isNaN(offset)) {}
+		if (isOffsetPercentage && !isNaN(offset)) {
 			if (placement === 'right' || placement === 'left') {
 				offset = elHeight * (offset / 100);
 			}
@@ -124,6 +125,11 @@
 		// 
 		this.$popup.offset(elPos);
 
+		// it is far easier
+		if (this.collision) {
+
+		}
+
 		// add class to popup for styling (first remove all posible classes)
 		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
 
@@ -147,19 +153,29 @@
 		}
 	};
 
-	Popup.prototype.getAttachmentPosition = function() {
-		var el = this.$attachTo[0];
-		if (!el) {
+	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
+	Popup.prototype.getPosition = function($el) {
+		if (!$el || !$el[0]) {
 			return { left: 0, top: 0 };
 		}
 
-		return $.extend({}, ($.isFunction(el.getBoundingClientRect)) ? el.getBoundingClientRect() : {
+		var el = $el[0];
+
+		if ($.isFunction(el.getBoundingClientRect)) {
+			return el.getBoundingClientRect();
+		}
+
+		var offset = $el.offset();
+
+		return $.extend({}, {
 			height: el.offsetHeight,
-			width: el.offsetWidth
-		}, this.$attachTo.offset());
+			width: el.offsetWidth,
+		}, offset, {
+			bottom: el.offsetHeight + offset.top,
+			right: el.offsetWidth + offset.left
+		});
 	};
 
-	// 
 	Popup.prototype.determinePlacement = function() {
 		if (!this.placement || this.placement === 'none') {
 			return this.placement;
@@ -195,7 +211,7 @@
 			this.$popup.hide();
 			this.$el.trigger('close.popup');
 		}
-	}
+	};
 
 	Popup.prototype.toggle = function() {
 		if (this.isOpen) { return this.close(); }
@@ -301,6 +317,7 @@
 		offset: '50%',
 		placement: null,
 		collision: 'flipfit',
+		collisionWithin: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
 		triggerEl: null,
