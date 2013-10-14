@@ -39,6 +39,10 @@
 	// point is to grab the separate percent and pixel value off the submitted input
 	var offsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/;
 
+	// placement options
+	var responsivePlacementOptions = /top|bottom|right|left/;
+
+
 	// define Popup
 	var Popup = function ($el, options) {
 		var that = this;
@@ -52,6 +56,9 @@
 		for (var opt in options) {
 			this[opt] = options[opt];
 		}
+		// handle special cases
+		this.placement = this.placement.toLowerCase();
+
 		// handle options that need to be jQueryfied
 		this.$attachTo = this.attachTo = $(this.attachTo);
 		this.$container = this.container = $(this.container);
@@ -85,83 +92,25 @@
 		this.autoOpen && this.open();
 	};
 
+
 	Popup.prototype.positionPopup = function() {
-		var that = this;
+	
+		var placement = this.placePopup(this.placement);
+		var newPlacement;
 
-		var placement = this.determinePlacement();
-		var atPos = this.getPosition(this.attachTo);
-		var elWidth = this.$popup[0].offsetWidth;
-		var elHeight = this.$popup[0].offsetHeight;
-		var buffer = this.buffer;
-		var parsedOffset = this.parseOffset();
-		var offset = 0; // default is zero
-
-		// if parsedOffset has a percent value
-		if (parsedOffset && parsedOffset[1]) {
-			if (placement === 'right' || placement === 'left') {
-				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
-			}
-			if (placement === 'top' || placement === 'bottom') {
-				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
-			}
-		}
-		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
-		if (parsedOffset && parsedOffset[2]) {
-			offset += parseFloat(parsedOffset[2]);
-		}
-		
-
-		// create coords for popup based on placement
-		var elPos = { top: null, left: null };
-		switch (placement) {
-			case 'top':
-				elPos = { top: atPos.top - elHeight - buffer, left: atPos.left + atPos.width/2 - offset}; break;
-			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + buffer, left: atPos.left + atPos.width/2 - offset }; break;
-			case 'right':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + buffer }; break;
-			case 'left':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - buffer }; break;
-			case 'middle':
-				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 }; break;
-			default:
-				// if placement is == to something other than what is in the switch statement,
-				// it is considered "free" and is left with the null vals
-				placement = 'free';
-		}
-		
-		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
-		// elements is the first to have a position of absolute/relative/fixed
-		// 
-		this.$popup.offset(elPos);
-
-		// it is far easier
+		// if this.collision == true, replace if needed
+		// it's easiest to place the Popup in it's intended position first, and then check if it needs to be moved
 		if (this.collision) {
-
-		}
-
-		// add class to popup for styling (first remove all posible classes)
-		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
-
-		// position arrow, arrow also has point at middle of $attachTo
-		if (this.showArrow) {
-			var $arrow = this.$arrow;
-
-			var arrPos = { top: null, left: null };
-			switch (placement) {
-				case 'top':
-					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
-				case 'bottom':
-					arrPos = { top: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
-				case 'right':
-					arrPos = { top: -$arrow.outerHeight()/2 + offset, left: -$arrow.outerWidth() }; break;
-				case 'left':
-					arrPos = { top: -$arrow.outerHeight()/2 + offset, right: -$arrow.outerWidth() }; break;
+			newPlacement = this.collitionDetection(placement);
+			if (placement !== newPlacement) {
+				placement = this.placePopup(newPlacement);
 			}
-
-			$arrow.css(arrPos);
 		}
+
+
+		return;		
 	};
+
 
 	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
 	Popup.prototype.getPosition = function($el) {
@@ -186,16 +135,96 @@
 		});
 	};
 
-	Popup.prototype.determinePlacement = function() {
-		if (!this.placement || this.placement === 'none') {
-			return this.placement;
+	// return new placement if collition is detected
+	// if no collition, returns original placement
+	Popup.prototype.collitionDetection = function(placement) {
+		if (!placement || !responsivePlacementOptions.test(placement)) {
+			return placement;
 		}
-		// TODO
-		return this.placement;
+
+		var popupPosition = this.getPosition(this.$popup);
+
+		// currently just return what was submitted until method is written out
+		return placement;
+	
 	};
 
-	Popup.prototype.parseOffset = function() {
-		return offsetMatch.exec(this.offset);
+	Popup.prototype.calculateOffset = function(placement) {
+		var parsedOffset = offsetMatch.exec(this.offset);
+		var elWidth = this.$popup[0].offsetWidth;
+		var elHeight = this.$popup[0].offsetHeight;
+		var offset = 0; // zero by default;
+
+		// if parsedOffset has a percent value
+		if (parsedOffset && parsedOffset[1]) {
+			if (placement === 'right' || placement === 'left') {
+				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
+			}
+			if (placement === 'top' || placement === 'bottom') {
+				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
+			}
+		}
+		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
+		if (parsedOffset && parsedOffset[2]) {
+			offset += parseFloat(parsedOffset[2]);
+		}
+
+		return offset;
+	};
+
+
+	Popup.prototype.placePopup = function(placement) {
+		var buffer = this.buffer;
+		var offset = this.calculateOffset(placement);
+		var elWidth = this.$popup[0].offsetWidth;
+		var elHeight = this.$popup[0].offsetHeight;
+		var atPos = this.getPosition(this.attachTo);
+		var elPos = { top: null, left: null };
+
+		switch (placement) {
+			case 'top':
+				elPos = { top: atPos.top - elHeight - buffer, left: atPos.left + atPos.width/2 - offset}; break;
+			case 'bottom':
+				elPos = { top: atPos.top + atPos.height + buffer, left: atPos.left + atPos.width/2 - offset }; break;
+			case 'right':
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + buffer }; break;
+			case 'left':
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - buffer }; break;
+			case 'middle':
+				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 }; break;
+			default:
+				// if placement is == to something other than what is in the switch statement,
+				// it is considered "free" and is left with the null vals
+				placement = 'free';
+		}
+		
+		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
+		// elements is the first to have a position of absolute/relative/fixed
+		this.$popup.offset(elPos);
+
+		// add class to popup for styling (first remove all posible classes)
+		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
+
+		// position arrow, arrow also has point at middle of $attachTo
+		if (this.showArrow) {
+			var $arrow = this.$arrow;
+
+			var arrPos = { top: null, left: null };
+			switch (placement) {
+				case 'top':
+					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
+				case 'bottom':
+					arrPos = { top: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
+				case 'right':
+					arrPos = { top: -$arrow.outerHeight()/2 + offset, left: -$arrow.outerWidth() }; break;
+				case 'left':
+					arrPos = { top: -$arrow.outerHeight()/2 + offset, right: -$arrow.outerWidth() }; break;
+			}
+
+			$arrow.css(arrPos);
+		}
+
+		return placement;
 	};
 
 
@@ -206,6 +235,7 @@
 		this.$popup.show();
 		this.positionPopup();
 	};
+
 
 	Popup.prototype.close = function() {
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to abort the XHR call
@@ -227,10 +257,12 @@
 		}
 	};
 
+
 	Popup.prototype.toggle = function() {
 		if (this.isOpen) { return this.close(); }
 		return this.open();
 	};
+
 
 	Popup.prototype.destroy = function() {
 		if (this.$saveTo) {
@@ -240,10 +272,12 @@
 		this.$popup.remove();
 	};
 
+
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
 		this.positionPopup();
 	};
+
 
 	// save reference to existing definition for no conflict
 	var old = $.fn.popup;
