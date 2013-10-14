@@ -33,6 +33,12 @@
 	var $document = $(doc);
 	var $body = $(body);
 
+	// regex to match offset
+	// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
+	// for "50%-25", exec gives ["50%-25", "50%", "-25"]
+	// point is to grab the separate percent and pixel value off the submitted input
+	var offsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/;
+
 	// define Popup
 	var Popup = function ($el, options) {
 		var that = this;
@@ -87,19 +93,23 @@
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
 		var buffer = this.buffer;
+		var parsedOffset = parseOffset();
+		var offset = 0; // default is zero
 
-		var isOffsetPercentage = /\%$/.test(this.offset); // value ending with %
-		var offset = parseFloat(this.offset);
-		
-		// calculate px value if isOffsetPercentage
-		if (isOffsetPercentage && !isNaN(offset)) {
+		// if parsedOffset has a percent value
+		if (parsedOffset[1]) {
 			if (placement === 'right' || placement === 'left') {
-				offset = elHeight * (offset / 100);
+				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
 			}
 			if (placement === 'top' || placement === 'bottom') {
-				offset = elWidth * (offset / 100);
+				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
 			}
 		}
+		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
+		if (parsedOffset[2]) {
+			offset += parseFloat(parsedOffset[2]);
+		}
+		
 
 		// create coords for popup based on placement
 		var elPos = { top: null, left: null };
@@ -182,6 +192,10 @@
 		}
 		// TODO
 		return this.placement;
+	};
+
+	Popup.prototype.parseOffset = function() {
+		return offsetMatch.exec(this.offset);
 	};
 
 
@@ -314,7 +328,7 @@
 		container: $body,
 		destroyOnClose: false,
 		classes: null,
-		offset: '50%',
+		offset: '50%', // want to explore having this input be '-35', '50%', or '+50%-30' or any combo of
 		placement: null,
 		collision: 'flipfit',
 		collisionWithin: $window, // bound the popup within
