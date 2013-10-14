@@ -93,11 +93,11 @@
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
 		var buffer = this.buffer;
-		var parsedOffset = parseOffset();
+		var parsedOffset = this.parseOffset();
 		var offset = 0; // default is zero
 
 		// if parsedOffset has a percent value
-		if (parsedOffset[1]) {
+		if (parsedOffset && parsedOffset[1]) {
 			if (placement === 'right' || placement === 'left') {
 				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
 			}
@@ -106,7 +106,7 @@
 			}
 		}
 		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
-		if (parsedOffset[2]) {
+		if (parsedOffset && parsedOffset[2]) {
 			offset += parseFloat(parsedOffset[2]);
 		}
 		
