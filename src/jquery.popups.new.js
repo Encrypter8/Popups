@@ -37,12 +37,15 @@
 	// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
 	// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
 	// point is to grab the separate percent and pixel value off the submitted input
-	var offsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/;
+	var rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/;
+
+	// this strips the px off a valid pixel input
+	// accepts: "25" or "25px"
+	// exec[1] will give 25 for the above cases
+	var rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/
 
 	// responsive placement options
-	var responsivePlacementOptions = /top|bottom|right|left/;
-
-	var optionsToPropertiesList = ['buffer', 'destroyOnClose', 'offset', 'placement', 'collision', 'within', 'showArrow', 'showClose', 'trigger'];
+	var rResponsivePlacementOptions = /top|bottom|right|left/;
 
 	// define Popup
 	var Popup = function ($el, options) {
@@ -52,25 +55,21 @@
 		this.isOpen = false;
 		var o = this.options = options;
 
-		// process options
-		// i want all the options passed to be part of the object so they can be get/set later on
-		for (var i=0; i<optionsToPropertiesList.length; i++) {
-			this[optionsToPropertiesList[i]] = options[optionsToPropertiesList[i]];
-		}
-		// handle special cases
-		this.placement = this.placement.toLowerCase();
+		// process options that need processing
+		o.buffer = parseFloat(rPxMatch.exec(o.buffer));
 
-		// handle options that need to be jQueryfied
-		this.$attachTo(o.attachTo);
-		this.$container(o.container);
-		this.$triggerEl(o.triggerEl);
+		// handle special cases that I also what to be properties		
+		this.placement = o.placement.toLowerCase();
+		this.$attachTo = $(o.attachTo)
+		this.$container = $(o.container);
+		this.$triggerEl = $(o.triggerEl);
 
 		// create popup container
 		this.$popup = this.popup = $('<div class="popup-container">').addClass(o.classes);
 
 		// create close and arrow if needed
-		this.$closeButton = this.closeButton = this.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
-		this.$arrow = this.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popup) : null;
+		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
+		this.$arrow = o.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popup) : null;
 
 		// if showClose, bind click event
 		if (this.$closeButton) {
@@ -81,16 +80,19 @@
 
 		// append popup-container to o.container
 		// hide, if o.autoOpen, popup will open below
-		this.$popup.append(this.$el).appendTo(this.$container()).hide();
+		this.$popup.append(this.$el).appendTo(this.$container).hide();
 
 		// if attachTo, save ref of popup
-		this.$attachTo() && this.$attachTo().data('popup-ref', this.$el);
+		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
 
 		// trigger create event
 		$el.trigger('create.popup');
 
 		// finally, if autoOpen, open!
 		o.autoOpen && this.open();
+
+		//TODO
+		// set triggering element with event to open/close dialog
 	};
 
 
@@ -145,7 +147,7 @@
 	// return new placement if collition is detected
 	// if no collition, returns original placement
 	Popup.prototype.collitionDetection = function(placement) {
-		if (!placement || !responsivePlacementOptions.test(placement)) {
+		if (!placement || !rResponsivePlacementOptions.test(placement)) {
 			return placement;
 		}
 
@@ -157,7 +159,7 @@
 	};
 
 	Popup.prototype.calculateOffset = function(placement) {
-		var parsedOffset = offsetMatch.exec(this.offset);
+		var parsedOffset = rOffsetMatch.exec(this.options.offset);
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
 		var offset = 0; // zero by default;
@@ -181,11 +183,12 @@
 
 
 	Popup.prototype.placePopup = function(placement) {
-		var buffer = this.buffer;
+		var o = this.options;
+		var buffer = o.buffer;
 		var offset = this.calculateOffset(placement);
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
-		var atPos = this.getPosition(this.attachTo());
+		var atPos = this.getPosition(this.$attachTo);
 		var elPos = { top: null, left: null };
 
 		switch (placement) {
@@ -204,9 +207,6 @@
 				// it is considered "free" and is left with the null vals
 				placement = 'free';
 		}
-
-		console.log(atPos);
-		console.log(elPos);
 		
 		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
 		// elements is the first to have a position of absolute/relative/fixed
@@ -216,7 +216,7 @@
 		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
 
 		// position arrow, arrow also has point at middle of $attachTo
-		if (this.showArrow) {
+		if (o.showArrow) {
 			var $arrow = this.$arrow;
 			var arrPos = { top: null, left: null };
 			// QUESTION
@@ -232,6 +232,8 @@
 				case 'left':
 					arrPos = { top: -$arrow.outerHeight()/2 + offset, right: -$arrow.outerWidth() }; break;
 			}
+
+			console.log(arrPos);
 
 			$arrow.css(arrPos);
 		}
@@ -277,8 +279,8 @@
 
 
 	Popup.prototype.destroy = function() {
-		if (this.$attachTo()) {
-			this.this.$attachTo().removeData('popup-ref');
+		if (this.$attachTo) {
+			this.$attachTo.removeData('popup-ref');
 		}
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
@@ -288,32 +290,6 @@
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
 		this.positionPopup();
-	};
-
-	Popup.prototype.$attachTo = Popup.prototype.attachTo = function(value) {
-		if (value) {
-			this._$attachTo = $(value);
-			return false;
-		}
-
-		return this._$attachTo;
-	};
-
-	Popup.prototype.$container = Popup.prototype.container = function(value) {
-		if (value) {
-			this._$container = $(value);
-			return false;
-		}
-
-		return this._$container;
-	};
-	Popup.prototype.$triggerEl = Popup.prototype.triggerEl = function(value) {
-		if (value) {
-			this._$triggerEl = $(value);
-			return false;
-		}
-
-		return this._$triggerEl;
 	};
 
 
@@ -356,17 +332,7 @@
 						if ($.isFunction(instance[option])) {
 							rtnValue = instance[option](arg);
 						}
-						// if property (assume if not a method)
-						else {
-							// set
-							if (arg !== undefined) {
-								instance[option] = arg;
-							}
-							// get
-							else {
-								rtnValue = instance[option];
-							}
-						}
+						// not allowing property access, so we do nothing and just fail silently
 					}
 
 					// follow how jQuery gets only return the method/property value first in the collection when it's a get
