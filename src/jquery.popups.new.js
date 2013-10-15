@@ -35,11 +35,11 @@
 
 	// regex to match offset
 	// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
-	// for "50%-25", exec gives ["50%-25", "50%", "-25"]
+	// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
 	// point is to grab the separate percent and pixel value off the submitted input
 	var offsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/;
 
-	// placement options
+	// responsive placement options
 	var responsivePlacementOptions = /top|bottom|right|left/;
 
 
