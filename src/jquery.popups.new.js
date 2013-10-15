@@ -30,7 +30,7 @@
 	// this strips the px off a valid pixel input
 	// accepts: "25" or "25px"
 	// exec[1] will give 25 for the above cases
-	var rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/
+	var rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/;
 
 	// responsive placement options
 	var rResponsivePlacementOptions = /top|bottom|right|left/;
@@ -39,16 +39,16 @@
 	var Popup = function ($el, options) {
 		var that = this;
 
-		this.el = this.$el = $el;
+		this.$el = $el;
 		this.isOpen = false;
 		var o = this.options = options;
 
 		// process options that need processing
 		o.buffer = parseFloat(rPxMatch.exec(o.buffer));
 
-		// handle special cases that I also what to be properties		
+		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
-		this.$attachTo = $(o.attachTo)
+		this.$attachTo = $(o.attachTo);
 		this.$container = $(o.container);
 		this.$triggerEl = $(o.triggerEl);
 
@@ -247,7 +247,7 @@
 
 		if (!this.isOpen) { return; }
 
-		if (this.destroyOnClose) {
+		if (this.options.destroyOnClose) {
 			this.destroy();
 		}
 		else {
@@ -259,7 +259,7 @@
 
 
 	Popup.prototype.toggle = function() {
-		if (this.isOpen) { return this.close(); }
+		this.isOpen && return this.close();
 		return this.open();
 	};
 
@@ -352,10 +352,10 @@
 		container: $body,
 		destroyOnClose: false,
 		classes: null,
-		offset: '50%', // want to explore having this input be '-35', '50%', or '+50%-30' or any combo of
+		offset: '50%', 
 		placement: 'right',
 		collision: 'flipfit',
-		collisionWithin: $window, // bound the popup within
+		within: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
 		triggerEl: null,

@@ -26,19 +26,23 @@ $(function() {
 	$('#modal').text(lorem());
 });
 
+test("truthy", function() {
+	ok(true, "true is truthy");
+	equal(1, true, "1 is truthy");
+	notEqual(0, true, "0 is NOT truthy");
+});
+
 test('are plug-ins defined', function() {
 	ok($.fn.popup, "$.fn.popups() exists");
 	ok($.fn.modal, "$.fn.modal() exists");
 });
 
-test('can popup be created', function() {
-	var $modal = $('#modal').modal({
-		autoOpen : false
-	});
-	var modal = $modal.data('modal');
+test('popup width test', function() {
+	var $popup = $('<div class="popup"></div>').popup();
 
-	ok($modal, '$modal was created');
-	ok(modal, '$modal has .data(\'modal\')');
+	console.log($popup.offset());
+
+	ok(true, "true");
 });
 
 
