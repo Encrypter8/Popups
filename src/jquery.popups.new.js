@@ -259,7 +259,7 @@
 
 
 	Popup.prototype.toggle = function() {
-		this.isOpen && return this.close();
+		if (this.isOpen) { return this.close(); }
 		return this.open();
 	};
 
