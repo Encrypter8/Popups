@@ -42,6 +42,7 @@
 	// responsive placement options
 	var responsivePlacementOptions = /top|bottom|right|left/;
 
+	var optionsToPropertiesList = ['buffer', 'destroyOnClose', 'offset', 'placement', 'collision', 'within', 'showArrow', 'showClose', 'trigger'];
 
 	// define Popup
 	var Popup = function ($el, options) {
@@ -53,43 +54,43 @@
 
 		// process options
 		// i want all the options passed to be part of the object so they can be get/set later on
-		for (var opt in options) {
-			this[opt] = options[opt];
+		for (var i=0; i<optionsToPropertiesList.length; i++) {
+			this[optionsToPropertiesList[i]] = options[optionsToPropertiesList[i]];
 		}
 		// handle special cases
 		this.placement = this.placement.toLowerCase();
 
 		// handle options that need to be jQueryfied
-		this.$attachTo = this.attachTo = $(this.attachTo);
-		this.$container = this.container = $(this.container);
-		this.$triggerEl = this.$triggerEl = $(this.triggerEl);
+		this.$attachTo(o.attachTo);
+		this.$container(o.container);
+		this.$triggerEl(o.triggerEl);
 
 		// create popup container
-		this.$popup = $('<div class="popup-container">').addClass(this.classes);
+		this.$popup = this.popup = $('<div class="popup-container">').addClass(o.classes);
 
 		// create close and arrow if needed
-		this.$close = this.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
+		this.$closeButton = this.closeButton = this.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
 		this.$arrow = this.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popup) : null;
 
 		// if showClose, bind click event
-		if (this.$close) {
-			this.$close.on('click', function() {
+		if (this.$closeButton) {
+			this.$closeButton.on('click', function() {
 				that.close();
 			});
 		}
 
 		// append popup-container to o.container
 		// hide, if o.autoOpen, popup will open below
-		this.$popup.append(this.$el).appendTo(this.$container).hide();
+		this.$popup.append(this.$el).appendTo(this.$container()).hide();
 
 		// if attachTo, save ref of popup
-		this.$attachTo && this.$attachTo.data('popup-ref', this.$popup);
+		this.$attachTo() && this.$attachTo().data('popup-ref', this.$el);
 
 		// trigger create event
 		$el.trigger('create.popup');
 
 		// finally, if autoOpen, open!
-		this.autoOpen && this.open();
+		o.autoOpen && this.open();
 	};
 
 
@@ -107,7 +108,6 @@
 			}
 		}
 
-
 		return;		
 	};
 
@@ -120,6 +120,13 @@
 
 		var el = $el[0];
 
+		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+			width: el.offsetWidth,
+			height: el.offsetHeight
+		}, $el.offset());
+
+		// below doesn't work as I expected, keeping here becase I may want to add bottom and right eventually for when not uysing get.BoundingClientRect
+		
 		if ($.isFunction(el.getBoundingClientRect)) {
 			return el.getBoundingClientRect();
 		}
@@ -178,7 +185,7 @@
 		var offset = this.calculateOffset(placement);
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
-		var atPos = this.getPosition(this.attachTo);
+		var atPos = this.getPosition(this.attachTo());
 		var elPos = { top: null, left: null };
 
 		switch (placement) {
@@ -197,6 +204,9 @@
 				// it is considered "free" and is left with the null vals
 				placement = 'free';
 		}
+
+		console.log(atPos);
+		console.log(elPos);
 		
 		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
 		// elements is the first to have a position of absolute/relative/fixed
@@ -208,8 +218,10 @@
 		// position arrow, arrow also has point at middle of $attachTo
 		if (this.showArrow) {
 			var $arrow = this.$arrow;
-
 			var arrPos = { top: null, left: null };
+			// QUESTION
+			// for left and right, the 'left' attribute will always be static, should that be handled in css?
+			// same for the 'top' attribute when it's top and bottom
 			switch (placement) {
 				case 'top':
 					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
@@ -265,8 +277,8 @@
 
 
 	Popup.prototype.destroy = function() {
-		if (this.$saveTo) {
-			this.$saveTo.removeData('popup-ref');
+		if (this.$attachTo()) {
+			this.this.$attachTo().removeData('popup-ref');
 		}
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
@@ -276,6 +288,32 @@
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
 		this.positionPopup();
+	};
+
+	Popup.prototype.$attachTo = Popup.prototype.attachTo = function(value) {
+		if (value) {
+			this._$attachTo = $(value);
+			return false;
+		}
+
+		return this._$attachTo;
+	};
+
+	Popup.prototype.$container = Popup.prototype.container = function(value) {
+		if (value) {
+			this._$container = $(value);
+			return false;
+		}
+
+		return this._$container;
+	};
+	Popup.prototype.$triggerEl = Popup.prototype.triggerEl = function(value) {
+		if (value) {
+			this._$triggerEl = $(value);
+			return false;
+		}
+
+		return this._$triggerEl;
 	};
 
 
@@ -363,7 +401,7 @@
 		destroyOnClose: false,
 		classes: null,
 		offset: '50%', // want to explore having this input be '-35', '50%', or '+50%-30' or any combo of
-		placement: null,
+		placement: 'right',
 		collision: 'flipfit',
 		collisionWithin: $window, // bound the popup within
 		showArrow: true,

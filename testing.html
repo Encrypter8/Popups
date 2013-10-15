@@ -174,7 +174,8 @@ $(function() {
 
 	// new position testing
 	var $newPos = $('<div class="popup">' + lorem() + '</div>');
-	$('#new-position').on('click', function() {
+	$('#new-position').on('click', function(e) {
+		e.preventDefault();
 		if (!$newPos.data('popup')) {
 			$newPos.popup({
 				attachTo: this,
@@ -199,8 +200,6 @@ $(function() {
 		collision: "flip fit",
 		within: $('.relative').first()
 	});
-
-	console.log($('.relative').first());
 
 
 	return;
