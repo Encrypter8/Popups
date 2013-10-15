@@ -17,21 +17,9 @@
 +function ($, document, window) {
 
 	// globally used variables
-	// we always want to use the top frame, this will allow iframe appcliations to always display relative to the viewport properly
-	var win, doc, body;
-	try {
-		win = window.top;
-		doc = win.document;
-		body = doc.body;
-	}
-	catch(e) {
-		win = window;
-		doc = win.document;
-		body = doc.body;
-	}
-	var $window = $(win);
-	var $document = $(doc);
-	var $body = $(body);
+	var $window = $(window);
+	var $document = $(document);
+	var $body = $(document.body);
 
 	// regex to match offset
 	// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
@@ -232,8 +220,6 @@
 				case 'left':
 					arrPos = { top: -$arrow.outerHeight()/2 + offset, right: -$arrow.outerWidth() }; break;
 			}
-
-			console.log(arrPos);
 
 			$arrow.css(arrPos);
 		}
