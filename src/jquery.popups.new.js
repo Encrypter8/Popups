@@ -16,6 +16,8 @@
 
 +function ($, document, window) {
 
+	"use strict";
+
 	// globally used variables
 	var $window = $(window);
 	var $document = $(document);
@@ -49,7 +51,6 @@
 		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
 		this.$attachTo = $(o.attachTo);
-		this.$container = $(o.container);
 		this.$triggerEl = $(o.triggerEl);
 
 		// create popup container
@@ -66,9 +67,12 @@
 			});
 		}
 
-		// append popup-container to o.container
-		// hide, if o.autoOpen, popup will open below
-		this.$popup.append(this.$el).appendTo(this.$container).hide();
+		// always hide here, if o.autoOpen, popup will open below
+		this.$popup.append(this.$el).hide();
+		// append popup-container to o.container if defined
+		if (o.container) {
+			this.$popup.appendTo(o.container);
+		}
 
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
@@ -83,94 +87,8 @@
 		// set triggering element with event to open/close dialog
 	};
 
-
 	Popup.prototype.positionPopup = function() {
-	
-		var placement = this.placePopup(this.placement);
-		var newPlacement;
-
-		// if this.collision == true, replace if needed
-		// it's easiest to place the Popup in it's intended position first, and then check if it needs to be moved
-		if (this.collision) {
-			newPlacement = this.collitionDetection(placement);
-			if (placement !== newPlacement) {
-				placement = this.placePopup(newPlacement);
-			}
-		}
-
-		return;		
-	};
-
-
-	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
-	Popup.prototype.getPosition = function($el) {
-		if (!$el || !$el[0]) {
-			return { left: 0, top: 0 };
-		}
-
-		var el = $el[0];
-
-		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
-			width: el.offsetWidth,
-			height: el.offsetHeight
-		}, $el.offset());
-
-		// below doesn't work as I expected, keeping here becase I may want to add bottom and right eventually for when not uysing get.BoundingClientRect
-		
-		if ($.isFunction(el.getBoundingClientRect)) {
-			return el.getBoundingClientRect();
-		}
-
-		var offset = $el.offset();
-
-		return $.extend({}, {
-			height: el.offsetHeight,
-			width: el.offsetWidth,
-		}, offset, {
-			bottom: el.offsetHeight + offset.top,
-			right: el.offsetWidth + offset.left
-		});
-	};
-
-	// return new placement if collition is detected
-	// if no collition, returns original placement
-	Popup.prototype.collitionDetection = function(placement) {
-		if (!placement || !rResponsivePlacementOptions.test(placement)) {
-			return placement;
-		}
-
-		var popupPosition = this.getPosition(this.$popup);
-
-		// currently just return what was submitted until method is written out
-		return placement;
-	
-	};
-
-	Popup.prototype.calculateOffset = function(placement) {
-		var parsedOffset = rOffsetMatch.exec(this.options.offset);
-		var elWidth = this.$popup[0].offsetWidth;
-		var elHeight = this.$popup[0].offsetHeight;
-		var offset = 0; // zero by default;
-
-		// if parsedOffset has a percent value
-		if (parsedOffset && parsedOffset[1]) {
-			if (placement === 'right' || placement === 'left') {
-				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
-			}
-			if (placement === 'top' || placement === 'bottom') {
-				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
-			}
-		}
-		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
-		if (parsedOffset && parsedOffset[2]) {
-			offset += parseFloat(parsedOffset[2]);
-		}
-
-		return offset;
-	};
-
-
-	Popup.prototype.placePopup = function(placement) {
+		var placement = this.placement;
 		var o = this.options;
 		var buffer = o.buffer;
 		var offset = this.calculateOffset(placement);
@@ -225,6 +143,61 @@
 		}
 
 		return placement;
+	};
+
+
+	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
+	Popup.prototype.getPosition = function($el) {
+		if (!$el || !$el[0]) {
+			return { left: 0, top: 0 };
+		}
+
+		var el = $el[0];
+
+		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+			width: el.offsetWidth,
+			height: el.offsetHeight
+		}, $el.offset());
+
+		// below doesn't work as I expected, keeping here becase I may want to add bottom and right eventually for when not uysing get.BoundingClientRect
+		
+		if ($.isFunction(el.getBoundingClientRect)) {
+			return el.getBoundingClientRect();
+		}
+
+		var offset = $el.offset();
+
+		return $.extend({}, {
+			height: el.offsetHeight,
+			width: el.offsetWidth,
+		}, offset, {
+			bottom: el.offsetHeight + offset.top,
+			right: el.offsetWidth + offset.left
+		});
+	};
+
+
+	Popup.prototype.calculateOffset = function(placement) {
+		var parsedOffset = rOffsetMatch.exec(this.options.offset);
+		var elWidth = this.$popup[0].offsetWidth;
+		var elHeight = this.$popup[0].offsetHeight;
+		var offset = 0; // zero by default;
+
+		// if parsedOffset has a percent value
+		if (parsedOffset && parsedOffset[1]) {
+			if (placement === 'right' || placement === 'left') {
+				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
+			}
+			if (placement === 'top' || placement === 'bottom') {
+				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
+			}
+		}
+		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
+		if (parsedOffset && parsedOffset[2]) {
+			offset += parseFloat(parsedOffset[2]);
+		}
+
+		return offset;
 	};
 
 
@@ -349,7 +322,7 @@
 		attachTo: null,
 		autoOpen: false,
 		buffer: 10,
-		container: $body,
+		container: null,
 		destroyOnClose: false,
 		classes: null,
 		offset: '50%', 
