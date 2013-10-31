@@ -85,6 +85,13 @@
 
 		//TODO
 		// set triggering element with event to open/close dialog
+
+		// auto re-position on window resize
+		this.windowEvent = $window.on('resize.popup', function() {
+			if (that.isOpen) {
+				that.positionPopup();
+			}
+		});
 	};
 
 	Popup.prototype.positionPopup = function() {
@@ -242,6 +249,7 @@
 			this.$attachTo.removeData('popup-ref');
 		}
 		this.$el.trigger('destroy.popup');
+		$window.off(this.windowEvent);
 		this.$popup.remove();
 	};
 
