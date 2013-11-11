@@ -37,6 +37,24 @@
 	// responsive placement options
 	var rResponsivePlacementOptions = /top|bottom|right|left/;
 
+	// valid Event Types
+	var rValidEventTypes = /click/; // TODO: expand this list
+
+	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
+	function getPosition($el) {
+		if (!$el || !$el[0]) {
+			return { left: 0, top: 0 };
+		}
+
+		var el = $el[0];
+
+		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+			width: el.offsetWidth,
+			height: el.offsetHeight
+		}, $el.offset());
+	};
+	
+
 	// define Popup
 	var Popup = function ($el, options) {
 		var that = this;
@@ -54,7 +72,7 @@
 		this.$triggerEl = $(o.triggerEl);
 
 		// create popup container
-		this.$popup = this.popup = $('<div class="popup-container">').addClass(o.classes);
+		var $popup = this.$popup = $('<div class="popup-container">').addClass(o.classes);
 
 		// create close and arrow if needed
 		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
@@ -67,12 +85,19 @@
 			});
 		}
 
-		// always hide here, if o.autoOpen, popup will open below
-		this.$popup.append(this.$el).hide();
-		// append popup-container to o.container if defined
+		// if .container, move $el to that container
+		// else if $el is not a child of document.body, add it
 		if (o.container) {
-			this.$popup.appendTo(o.container);
+			$(o.container).append($el);
 		}
+		else if (!$.contains(document.body, $el)) {
+			$body.append($el);
+		}
+
+		// move $el into $popup and place $popup where $el used to be
+		// always hide here, if o.autoOpen, popup will open below
+		$el.after($popup);
+		$popup.append($el).hide();
 
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
@@ -94,25 +119,42 @@
 		var offset = this.calculateOffset(placement);
 		var elWidth = this.$popup[0].offsetWidth;
 		var elHeight = this.$popup[0].offsetHeight;
-		var atPos = this.getPosition(this.$attachTo);
+		var atPos = getPosition(this.$attachTo);
 		var elPos = { top: null, left: null };
+
+		// TODO:
+		// figure out the correct placement for determining collision "flip"
+		if (placement !== 'free' && placement !== 'middle' && /flip/.test(o.collision)) {
+
+		}
+
+
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - buffer, left: atPos.left + atPos.width/2 - offset}; break;
+				elPos = { top: atPos.top - elHeight - buffer, left: atPos.left + atPos.width/2 - offset};
+				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + buffer, left: atPos.left + atPos.width/2 - offset }; break;
+				elPos = { top: atPos.top + atPos.height + buffer, left: atPos.left + atPos.width/2 - offset };
+				break;
 			case 'right':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + buffer }; break;
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + buffer };
+				break;
 			case 'left':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - buffer }; break;
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - buffer };
+				break;
 			case 'middle':
-				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 }; break;
+				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
+				break;
 			default:
 				// if placement is == to something other than what is in the switch statement,
 				// it is considered "free" and is left with the null vals
 				placement = 'free';
 		}
+
+		// TODO:
+		// add in collision "fit" check and adjustments here
+
 		
 		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
 		// elements is the first to have a position of absolute/relative/fixed
@@ -146,37 +188,6 @@
 	};
 
 
-	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
-	Popup.prototype.getPosition = function($el) {
-		if (!$el || !$el[0]) {
-			return { left: 0, top: 0 };
-		}
-
-		var el = $el[0];
-
-		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
-			width: el.offsetWidth,
-			height: el.offsetHeight
-		}, $el.offset());
-
-		// below doesn't work as I expected, keeping here becase I may want to add bottom and right eventually for when not uysing get.BoundingClientRect
-		
-		if ($.isFunction(el.getBoundingClientRect)) {
-			return el.getBoundingClientRect();
-		}
-
-		var offset = $el.offset();
-
-		return $.extend({}, {
-			height: el.offsetHeight,
-			width: el.offsetWidth,
-		}, offset, {
-			bottom: el.offsetHeight + offset.top,
-			right: el.offsetWidth + offset.left
-		});
-	};
-
-
 	Popup.prototype.calculateOffset = function(placement) {
 		var parsedOffset = rOffsetMatch.exec(this.options.offset);
 		var elWidth = this.$popup[0].offsetWidth;
@@ -198,6 +209,11 @@
 		}
 
 		return offset;
+	};
+
+
+	Popup.prototype.flipCollisionDetection = function() {
+		
 	};
 
 
