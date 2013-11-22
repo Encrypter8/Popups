@@ -16,52 +16,41 @@
 
 +function ($, document, window) {
 
-	"use strict";
+	//"use strict";
 
 	// globally used variables
-	var $window = $(window);
-	var $document = $(document);
-	var $body = $(document.body);
+	var i,
+		$window = $(window),
+		$document = $(document),
+		$body = $(document.body),
 
 	// regex to match offset
 	// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
 	// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
 	// point is to grab the separate percent and pixel value off the submitted input
-	var rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/;
+		rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/,
 
 	// this strips the px off a valid pixel input
 	// accepts: "25" or "25px"
 	// exec[1] will give 25 for the above cases
-	var rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/;
+		rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/,
 
 	// responsive placement options
-	var rResponsivePlacementOptions = /top|bottom|right|left/;
+		rResponsivePlacementOptions = /top|bottom|right|left/;
 
 	// valid Event Types
-	var rValidEventTypes = /click/; // TODO: expand this list
-
-	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
-	function getPosition($el) {
-		if (!$el || !$el[0]) {
-			return { left: 0, top: 0 };
-		}
-
-		var el = $el[0];
-
-		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
-			width: el.offsetWidth,
-			height: el.offsetHeight
-		}, $el.offset());
-	};
+	//var rValidEventTypes = /click/; // TODO: expand this list
 	
 
 	// define Popup
 	var Popup = function ($el, options) {
-		var that = this;
+		var that = this,
+			o = options,
+			$popup;
 
+		this.options = o;
 		this.$el = $el;
 		this.isOpen = false;
-		var o = this.options = options;
 
 		// process options that need processing
 		o.buffer = parseFloat(rPxMatch.exec(o.buffer));
@@ -72,7 +61,7 @@
 		this.$triggerEl = $(o.triggerEl);
 
 		// create popup container
-		var $popup = this.$popup = $('<div class="popup-container">').addClass(o.classes);
+		$popup = this.$popup = $('<div class="popup-container">').addClass(o.classes);
 
 		// create close and arrow if needed
 		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
@@ -113,19 +102,83 @@
 	};
 
 	Popup.prototype.positionPopup = function() {
-		var placement = this.placement;
-		var o = this.options;
-		var buffer = o.buffer;
-		var offset = this.calculateOffset(placement);
-		var elWidth = this.$popup[0].offsetWidth;
-		var elHeight = this.$popup[0].offsetHeight;
-		var atPos = getPosition(this.$attachTo);
-		var elPos = { top: null, left: null };
+		var placement = this.placement,
+			o = this.options,
+			buffer = o.buffer,
+			offset = calculateOffset.call(this, placement),
+			elWidth = this.$popup[0].offsetWidth,
+			elHeight = this.$popup[0].offsetHeight,
+			atPos = getPosition(this.$attachTo),
+			elPos = { top: null, left: null };
 
 		// TODO:
 		// figure out the correct placement for determining collision "flip"
 		if (placement !== 'free' && placement !== 'middle' && /flip/.test(o.collision)) {
+			console.log('flip');
+			var testOrder = [],
+				newPlacement = false,
+				willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop;
 
+			// define flip tests
+			willFitOnRight = function() {
+				if (atPos.left + atPos.width + elWidth + buffer > $window.width()) {
+					console.log(atPos.left + atPos.width + elWidth + buffer > $window.width());
+					return false;
+				}
+				return 'right';
+			};
+
+			willFitOnLeft = function() {
+				if (atPos.left - elWidth - buffer < 0) {
+					return false;
+				}
+				return 'left';
+			};
+
+			willFitOnBottom = function() {
+				if (atPos.top + atPos.height + elHeight + buffer > $document.scrollTop() + $window.height()) {
+					return false;
+				}
+				return 'bottom';
+			};
+
+			willFitOnTop = function() {
+				if (atPos.top - elHeight - buffer < $document.scrollTop()) {
+					return false;
+				}
+				return 'top';
+			};
+
+			// determine test order
+			switch (placement) {
+				case 'right':
+					console.log('right');
+					testOrder = [willFitOnRight, willFitOnLeft];
+					break;
+				case 'left':
+					testOrder = [willFitOnLeft, willFitOnRight];
+					break;
+				case 'bottom':
+					testOrder = [willFitOnBottom, willFitOnTop];
+					break;
+				case 'top':
+					testOrder = [willFitOnTop, willFitOnBottom];
+					break;
+			}
+
+			//run tests
+			for (i = 0; testOrder.length; i++) {
+				newPlacement = testOrder[i]();
+				if (newPlacement !== false) {
+					break;
+				}
+			}
+
+			// if all tests fail, set to middle
+			newPlacement === false && (newPlacement = 'middle');
+
+			// set display position
+			placement = newPlacement;
 		}
 
 
@@ -165,11 +218,13 @@
 
 		// position arrow, arrow also has point at middle of $attachTo
 		if (o.showArrow) {
-			var $arrow = this.$arrow;
-			var arrPos = { top: null, left: null };
-			// QUESTION
-			// for left and right, the 'left' attribute will always be static, should that be handled in css?
-			// same for the 'top' attribute when it's top and bottom
+			var $arrow = this.$arrow,
+				arrPos = { top: null, left: null };
+
+			// first, clear previous position
+			$arrow.css({ left: '', right: '', top: '', bottom: '' });
+			
+			// then place the arrow in the correct position
 			switch (placement) {
 				case 'top':
 					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
@@ -187,12 +242,26 @@
 		return placement;
 	};
 
+	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
+	function getPosition($el) {
+		if (!$el || !$el[0]) {
+			return { left: 0, top: 0 };
+		}
 
-	Popup.prototype.calculateOffset = function(placement) {
-		var parsedOffset = rOffsetMatch.exec(this.options.offset);
-		var elWidth = this.$popup[0].offsetWidth;
-		var elHeight = this.$popup[0].offsetHeight;
-		var offset = 0; // zero by default;
+		var el = $el[0];
+
+		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+			width: el.offsetWidth,
+			height: el.offsetHeight
+		}, $el.offset());
+	}
+
+
+	function calculateOffset(placement) {
+		var parsedOffset = rOffsetMatch.exec(this.options.offset),
+			elWidth = this.$popup[0].offsetWidth,
+			elHeight = this.$popup[0].offsetHeight,
+			offset = 0; // zero by default;
 
 		// if parsedOffset has a percent value
 		if (parsedOffset && parsedOffset[1]) {
@@ -209,12 +278,7 @@
 		}
 
 		return offset;
-	};
-
-
-	Popup.prototype.flipCollisionDetection = function() {
-		
-	};
+	}
 
 
 	Popup.prototype.open = function() {
@@ -330,6 +394,26 @@
 		return rtnValue || this;
 	};
 
+
+	// create static method for popups
+	// this is mostly to be used with jqXHR functions
+	// since to most developers this:
+	//	$.popup(jqXHR, {...});
+	// makes more since that doing this:
+	//	$(jqXHR).popup({...});
+	//
+	$.popup = function(el, option) {
+		var $el = $(el).first();
+
+		if ($el.length === 0) {
+			$.error('selector returned zero results');
+			return $el;
+		}
+
+		return $el.popup(option);
+	};
+
+
 	$.fn.popup.Constructor = Popup;
 
 	// these are the defaults value
@@ -344,11 +428,11 @@
 		offset: '50%', 
 		placement: 'right',
 		collision: 'flipfit',
-		within: $window, // bound the popup within
+		//within: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
-		triggerEl: null,
-		trigger: 'click'
+		//triggerEl: null,
+		//trigger: 'click'
 	};
 
 	// popup no conflict
