@@ -114,7 +114,6 @@
 		// TODO:
 		// figure out the correct placement for determining collision "flip"
 		if (placement !== 'free' && placement !== 'middle' && /flip/.test(o.collision)) {
-			console.log('flip');
 			var testOrder = [],
 				newPlacement = false,
 				willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop;
@@ -122,7 +121,6 @@
 			// define flip tests
 			willFitOnRight = function() {
 				if (atPos.left + atPos.width + elWidth + buffer > $window.width()) {
-					console.log(atPos.left + atPos.width + elWidth + buffer > $window.width());
 					return false;
 				}
 				return 'right';
@@ -152,7 +150,6 @@
 			// determine test order
 			switch (placement) {
 				case 'right':
-					console.log('right');
 					testOrder = [willFitOnRight, willFitOnLeft];
 					break;
 				case 'left':
@@ -167,7 +164,7 @@
 			}
 
 			//run tests
-			for (i = 0; testOrder.length; i++) {
+			for (i = 0; i < testOrder.length; i++) {
 				newPlacement = testOrder[i]();
 				if (newPlacement !== false) {
 					break;
@@ -399,7 +396,7 @@
 	// this is mostly to be used with jqXHR functions
 	// since to most developers this:
 	//	$.popup(jqXHR, {...});
-	// makes more since that doing this:
+	// makes more sense that doing this:
 	//	$(jqXHR).popup({...});
 	//
 	$.popup = function(el, option) {
@@ -421,7 +418,7 @@
 	$.fn.popup.defaults = {
 		attachTo: null,
 		autoOpen: false,
-		buffer: 10,
+		buffer: 15,
 		container: null,
 		destroyOnClose: false,
 		classes: null,

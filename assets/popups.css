@@ -3,6 +3,11 @@
  * this less file is too acompany Popups.js
  */
 /* variables */
+/* mixins */
+/* custom popup styles */
+.bubble .popup {
+  max-width: 500px;
+}
 /* popup styles */
 .popup-container {
   position: absolute;
@@ -13,7 +18,7 @@
 }
 .popup-container.bubble .popup-close {
   background-color: transparent;
-  background-image: url('./Popup_Close.png');
+  background-image: url('Popup_Close.png');
   background-repeat: no-repeat;
   border: none;
   cursor: pointer;

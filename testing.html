@@ -51,6 +51,7 @@
 <main>
 	<div class="container">
 		<h1>jquery.popups.js</h1>
+		<button id ="test" class="btn">Test Popup</button>
 	</div>
 	<div class="container">
 		<div class="row">
@@ -69,12 +70,34 @@
 			<h2 id="download">Download</h2>
 		</div>
 	</div>
-
 </main>
 
 <script type="text/javascript" src="./libs/Function.1.js"></script>
 <script type="text/javascript" src="./libs/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./src/jquery.popups.new.js"></script>
+<script type="text/javascript">
+	
+	var $testHtml = $('<div class="popup">' + lorem() + '</div>');
+	$('#test').on('click', function() {
+		console.log('click');
+		if (!$testHtml.data('popup')) {
+			$testHtml.popup({
+				attachTo: '#test',
+				autoOpen: true,
+				classes: 'bubble',
+				placement: 'right'
+			});
+		}
+		else {
+			$testHtml.popup();
+		}
+	});
+
+
+function lorem() {
+return "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+}
+</script>
 </body>
 </html>
