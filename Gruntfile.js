@@ -55,7 +55,7 @@ module.exports = function(grunt) {
     less: {
       test: {
         files: {
-          'test/popups.css': 'assets/Popups.less'
+          'assets/popups.css': 'assets/Popups.less'
         }
       },
     }
@@ -67,7 +67,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-qunit');
-  //grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-less');
   //grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
