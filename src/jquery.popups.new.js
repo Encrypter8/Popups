@@ -399,7 +399,7 @@
 	// this is mostly to be used with jqXHR functions
 	// since to most developers this:
 	//	$.popup(jqXHR, {...});
-	// makes more since that doing this:
+	// makes more since that doing this: test test test test
 	//	$(jqXHR).popup({...});
 	//
 	$.popup = function(el, option) {
