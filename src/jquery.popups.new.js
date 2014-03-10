@@ -108,8 +108,6 @@
 			atPos = getPosition(this.$attachTo),
 			elPos = { top: null, left: null };
 
-		console.log(elWidth, elHeight);
-
 		// TODO:
 		// figure out the correct placement for determining collision "flip"
 		if (placement !== 'free' && placement !== 'middle' && /flip/.test(o.collision)) {
@@ -203,9 +201,6 @@
 				// it is considered "free" and is left with the null vals
 				placement = 'free';
 		}
-
-		console.log(parseFloat(this.$popup.css('marginLeft')));
-		console.log(elPos);
 
 		// TODO:
 		// add in collision "fit" check and adjustments here

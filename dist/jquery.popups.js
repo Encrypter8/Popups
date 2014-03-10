@@ -1,7 +1,11 @@
-/*! jQuery Popups - v0.8.2 - 2013-09-20
+/*! jQuery Popups - v0.8.2 - 2014-03-10
 * https://github.com/Encrypter8/Popups
-* Copyright (c) 2013 Harris Miller; Licensed MIT */
+* Copyright (c) 2014 Harris Miller; Licensed MIT */
 +function ($, document, window) {
+
+	var $window = $(window);
+	var $document = $(document);
+	var $body = $(document.body);
 
 	var Popup = function ($el, options) {
 		this.options = options;
@@ -71,18 +75,17 @@
 	Popup.prototype.positionPopup_new = function() {
 
 		// return if this.options.attachTo.length
-		// return if this.options.attachTo.length == 0
 		if(!this.options.attachTo.length) { return; }
 
 		var that = this;
 		var o = this.options;
 
-		var $window = $(window);
-		var $document = $(document);
-
 		var $appendTo = $(o._appendTo);
 
-		var position = this.getPosition();
+		var pos = this.getPosition();
+
+		this.$popup.css({ 'left': pos.left, 'top': pos.top });
+		//this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
 	};
 
 	Popup.prototype.getPosition = function() {
