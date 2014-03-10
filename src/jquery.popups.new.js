@@ -238,44 +238,6 @@
 		return placement;
 	};
 
-	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
-	function getPosition($el) {
-		if (!$el || !$el[0]) {
-			return { left: 0, top: 0 };
-		}
-
-		var el = $el[0];
-
-		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
-			width: el.offsetWidth,
-			height: el.offsetHeight
-		}, $el.offset());
-	}
-
-
-	function calculateOffset(placement) {
-		var parsedOffset = rOffsetMatch.exec(this.options.offset),
-			elWidth = this.$popup[0].offsetWidth,
-			elHeight = this.$popup[0].offsetHeight,
-			offset = 0; // zero by default;
-
-		// if parsedOffset has a percent value
-		if (parsedOffset && parsedOffset[1]) {
-			if (placement === 'right' || placement === 'left') {
-				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
-			}
-			if (placement === 'top' || placement === 'bottom') {
-				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
-			}
-		}
-		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
-		if (parsedOffset && parsedOffset[2]) {
-			offset += parseFloat(parsedOffset[2]);
-		}
-
-		return offset;
-	}
-
 
 	Popup.prototype.open = function() {
 		if (this.isOpen) { return; }
@@ -443,6 +405,44 @@
 			return value + 'px';
 		}
 		return value;
+	}
+
+	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
+	function getPosition($el) {
+		if (!$el || !$el[0]) {
+			return { left: 0, top: 0 };
+		}
+
+		var el = $el[0];
+
+		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+			width: el.offsetWidth,
+			height: el.offsetHeight
+		}, $el.offset());
+	}
+
+	// calculates the pixel offset as given by placement = "50&-25px" format, which is the format for o.offset
+	function calculateOffset(placement) {
+		var parsedOffset = rOffsetMatch.exec(this.options.offset),
+			elWidth = this.$popup[0].offsetWidth,
+			elHeight = this.$popup[0].offsetHeight,
+			offset = 0; // zero by default;
+
+		// if parsedOffset has a percent value
+		if (parsedOffset && parsedOffset[1]) {
+			if (placement === 'right' || placement === 'left') {
+				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
+			}
+			if (placement === 'top' || placement === 'bottom') {
+				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
+			}
+		}
+		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
+		if (parsedOffset && parsedOffset[2]) {
+			offset += parseFloat(parsedOffset[2]);
+		}
+
+		return offset;
 	}
 
 }(jQuery, document, window);
