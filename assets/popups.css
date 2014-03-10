@@ -4,19 +4,21 @@
  */
 /* variables */
 /* mixins */
-/* custom popup styles */
-.bubble .popup {
+.markit {
+  /* custom popup styles */
+  /* popup styles */
+}
+.markit .bubble .popup {
   max-width: 500px;
 }
-/* popup styles */
-.popup-container {
+.markit .popup-container {
   position: absolute;
 }
-.popup-container.bubble {
+.markit .popup-container.bubble {
   background-color: #FFF;
   border: 2px solid #095b93;
 }
-.popup-container.bubble .popup-close {
+.markit .popup-container.bubble .popup-close {
   background-color: transparent;
   background-image: url('Popup_Close.png');
   background-repeat: no-repeat;
@@ -31,70 +33,70 @@
   top: -12px;
   width: 23px;
 }
-.popup-container.bubble .popup-arrow {
+.markit .popup-container.bubble .popup-arrow {
   height: 0;
   position: absolute;
   width: 0;
 }
-.popup-container.bubble .popup-arrow .inner-arrow {
+.markit .popup-container.bubble .popup-arrow .inner-arrow {
   height: 0;
   position: relative;
   width: 0;
 }
-.popup-container.bubble.bottom.show-arrow {
+.markit .popup-container.bubble.bottom.show-arrow {
   margin-top: 15px;
 }
-.popup-container.bubble.bottom .popup-arrow {
+.markit .popup-container.bubble.bottom .popup-arrow {
   border-bottom: 16px solid #095b93;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
 }
-.popup-container.bubble.bottom .popup-arrow .inner-arrow {
+.markit .popup-container.bubble.bottom .popup-arrow .inner-arrow {
   border-bottom: 12px solid #ffffff;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   left: -6px;
   top: 4px;
 }
-.popup-container.bubble.left.show-arrow {
+.markit .popup-container.bubble.left.show-arrow {
   margin-right: 15px;
 }
-.popup-container.bubble.left .popup-arrow {
+.markit .popup-container.bubble.left .popup-arrow {
   border-bottom: 8px solid transparent;
   border-left: 16px solid #095b93;
   border-top: 8px solid transparent;
 }
-.popup-container.bubble.left .popup-arrow .inner-arrow {
+.markit .popup-container.bubble.left .popup-arrow .inner-arrow {
   border-bottom: 6px solid transparent;
   border-left: 12px solid #ffffff;
   border-top: 6px solid transparent;
   left: -16px;
   top: -6px;
 }
-.popup-container.bubble.top.show-arrow {
+.markit .popup-container.bubble.top.show-arrow {
   margin-bottom: 15px;
 }
-.popup-container.bubble.top .popup-arrow {
+.markit .popup-container.bubble.top .popup-arrow {
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-top: 16px solid #095b93;
 }
-.popup-container.bubble.top .popup-arrow .inner-arrow {
+.markit .popup-container.bubble.top .popup-arrow .inner-arrow {
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 12px solid #ffffff;
   left: -6px;
   top: -16px;
 }
-.popup-container.bubble.right.show-arrow {
+.markit .popup-container.bubble.right.show-arrow {
   margin-left: 15px;
 }
-.popup-container.bubble.right .popup-arrow {
+.markit .popup-container.bubble.right .popup-arrow {
   border-bottom: 8px solid transparent;
   border-right: 16px solid #095b93;
   border-top: 8px solid transparent;
 }
-.popup-container.bubble.right .popup-arrow .inner-arrow {
+.markit .popup-container.bubble.right .popup-arrow .inner-arrow {
   border-bottom: 6px solid transparent;
   border-right: 12px solid #ffffff;
   border-top: 6px solid transparent;

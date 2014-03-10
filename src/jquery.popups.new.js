@@ -100,8 +100,7 @@
 	};
 
 	Popup.prototype.positionPopup = function() {
-		var that = this,
-			placement = this.placement,
+		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this, placement),
 			elWidth = this.$popup[0].offsetWidth,
@@ -185,16 +184,16 @@
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - parseFloat(that.$popup.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
+				elPos = { top: atPos.top - elHeight - parseFloat(this.$popup.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
 				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + parseFloat(that.$popup.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
+				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popup.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
 				break;
 			case 'right':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(that.$popup.css('margin-left')) };
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(this.$popup.css('margin-left')) };
 				break;
 			case 'left':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(that.$popup.css('margin-right')) };
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(this.$popup.css('margin-right')) };
 				break;
 			case 'middle':
 				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
@@ -205,7 +204,7 @@
 				placement = 'free';
 		}
 
-		console.log(parseFloat(that.$popup.css('marginLeft')));
+		console.log(parseFloat(this.$popup.css('marginLeft')));
 		console.log(elPos);
 
 		// TODO:
@@ -218,21 +217,24 @@
 		// position arrow, arrow also has point at middle of $attachTo
 		if (o.showArrow) {
 			var $arrow = this.$arrow,
-				arrPos = { top: null, left: null };
+				arrPos = { top: null, left: null },
+				popupBorderTop = parseFloat(this.$popup.css('border-top-width')),
+				popupBorderLeft = parseFloat(this.$popup.css('border-top-width'));
 
 			// first, clear previous position
 			$arrow.css({ left: '', right: '', top: '', bottom: '' });
 			
 			// then place the arrow in the correct position
+			// back out the arrow position to consider it's starting point to be at the border and not the padding
 			switch (placement) {
 				case 'top':
-					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
+					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset - popupBorderLeft }; break;
 				case 'bottom':
-					arrPos = { top: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset }; break;
+					arrPos = { top: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset - popupBorderLeft }; break;
 				case 'right':
-					arrPos = { top: -$arrow.outerHeight()/2 + offset, left: -$arrow.outerWidth() }; break;
+					arrPos = { top: -$arrow.outerHeight()/2 + offset - popupBorderTop, left: -$arrow.outerWidth() }; break;
 				case 'left':
-					arrPos = { top: -$arrow.outerHeight()/2 + offset, right: -$arrow.outerWidth() }; break;
+					arrPos = { top: -$arrow.outerHeight()/2 + offset - popupBorderTop, right: -$arrow.outerWidth() }; break;
 			}
 
 			$arrow.css(arrPos);

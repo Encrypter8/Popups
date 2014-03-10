@@ -68,131 +68,132 @@
 	filter: ~"alpha(opacity=@{opacity})";
 }
 
-
-/* custom popup styles */
-.bubble .popup {
-	max-width: 500px;
-}
-
-
-/* popup styles */
-
-.popup-container {
-	position: absolute;
-}
-
-.popup-container.bubble {
-	background-color: #FFF;
-	border: 2px solid @darkblue;
-
-	.popup-close {
-		background-color: transparent;
-		background-image: url('./Popup_Close.png');
-		background-repeat: no-repeat;
-		border: none;
-		cursor: pointer;
-		height: 24px;
-		margin: 0;
-		outline: none;
-		padding: 0;
-		position: absolute;
-		right: -12px;
-		top: -12px;
-		width: 23px;
+.markit {
+	/* custom popup styles */
+	.bubble .popup {
+		max-width: 500px;
 	}
 
-	.popup-arrow {
-		height: 0;
-		position: absolute;
-		width: 0;
 
-		.inner-arrow {
+	/* popup styles */
+
+	.popup-container {
+		position: absolute;
+	}
+
+	.popup-container.bubble {
+		background-color: #FFF;
+		border: 2px solid @darkblue;
+
+		.popup-close {
+			background-color: transparent;
+			background-image: url('./Popup_Close.png');
+			background-repeat: no-repeat;
+			border: none;
+			cursor: pointer;
+			height: 24px;
+			margin: 0;
+			outline: none;
+			padding: 0;
+			position: absolute;
+			right: -12px;
+			top: -12px;
+			width: 23px;
+		}
+
+		.popup-arrow {
 			height: 0;
-			position: relative;
+			position: absolute;
 			width: 0;
-		}
-	}
-
-	&.bottom {
-
-		&.show-arrow {
-			margin-top: @buffer;
-		}
-
-		.popup-arrow {
-			border-bottom: 16px solid @darkblue;
-			border-left: 8px solid transparent;
-			border-right: 8px solid transparent;
 
 			.inner-arrow {
-				border-bottom: 12px solid @white;
-				border-left: 6px solid transparent;
-				border-right: 6px solid transparent;
-				left: -6px;
-				top: 4px;
+				height: 0;
+				position: relative;
+				width: 0;
 			}
 		}
-	}
 
-	&.left {
+		&.bottom {
 
-		&.show-arrow {
-			margin-right: @buffer;
-		}
+			&.show-arrow {
+				margin-top: @buffer;
+			}
 
-		.popup-arrow {
-			border-bottom: 8px solid transparent;
-			border-left: 16px solid @darkblue;
-			border-top: 8px solid transparent;
+			.popup-arrow {
+				border-bottom: 16px solid @darkblue;
+				border-left: 8px solid transparent;
+				border-right: 8px solid transparent;
 
-			.inner-arrow {
-				border-bottom: 6px solid transparent;
-				border-left: 12px solid @white;
-				border-top: 6px solid transparent;
-				left: -16px;
-				top: -6px;
+				.inner-arrow {
+					border-bottom: 12px solid @white;
+					border-left: 6px solid transparent;
+					border-right: 6px solid transparent;
+					left: -6px;
+					top: 4px;
+				}
 			}
 		}
-	}
 
-	&.top {
+		&.left {
 
-		&.show-arrow {
-			margin-bottom: @buffer;
-		}
+			&.show-arrow {
+				margin-right: @buffer;
+			}
 
-		.popup-arrow {
-			border-left: 8px solid transparent;
-			border-right: 8px solid transparent;
-			border-top: 16px solid @darkblue;
+			.popup-arrow {
+				border-bottom: 8px solid transparent;
+				border-left: 16px solid @darkblue;
+				border-top: 8px solid transparent;
 
-			.inner-arrow {
-				border-left: 6px solid transparent;
-				border-right: 6px solid transparent;
-				border-top: 12px solid @white;
-				left: -6px;
-				top: -16px;
+				.inner-arrow {
+					border-bottom: 6px solid transparent;
+					border-left: 12px solid @white;
+					border-top: 6px solid transparent;
+					left: -16px;
+					top: -6px;
+				}
 			}
 		}
-	}
 
-	&.right {
+		&.top {
 
-		&.show-arrow {
-			margin-left: @buffer;
+			&.show-arrow {
+				margin-bottom: @buffer;
+			}
+
+			.popup-arrow {
+				border-left: 8px solid transparent;
+				border-right: 8px solid transparent;
+				border-top: 16px solid @darkblue;
+
+				.inner-arrow {
+					border-left: 6px solid transparent;
+					border-right: 6px solid transparent;
+					border-top: 12px solid @white;
+					left: -6px;
+					top: -16px;
+				}
+			}
 		}
 
-		.popup-arrow {
-			border-bottom: 8px solid transparent;
-			border-right: 16px solid @darkblue;
-			border-top: 8px solid transparent;
+		&.right {
 
-			.inner-arrow {
-				border-bottom: 6px solid transparent;
-				border-right: 12px solid @white;
-				border-top: 6px solid transparent;
-				left: 4px;
-				top: -6px;
+			&.show-arrow {
+				margin-left: @buffer;
+			}
+
+			.popup-arrow {
+				border-bottom: 8px solid transparent;
+				border-right: 16px solid @darkblue;
+				border-top: 8px solid transparent;
+
+				.inner-arrow {
+					border-bottom: 6px solid transparent;
+					border-right: 12px solid @white;
+					border-top: 6px solid transparent;
+					left: 4px;
+					top: -6px;
+				}
 			}
 		}
 	}
