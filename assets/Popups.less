@@ -8,6 +8,7 @@
 @darkblue: #095B93;
 @white: #FFF;
 @headerColor: #005690;
+@buffer: 15px;
 
 /* mixins */
 .clearfix() {
@@ -114,6 +115,10 @@
 
 	&.bottom {
 
+		&.show-arrow {
+			margin-top: @buffer;
+		}
+
 		.popup-arrow {
 			border-bottom: 16px solid @darkblue;
 			border-left: 8px solid transparent;
@@ -130,6 +135,10 @@
 	}
 
 	&.left {
+
+		&.show-arrow {
+			margin-right: @buffer;
+		}
 
 		.popup-arrow {
 			border-bottom: 8px solid transparent;
@@ -148,6 +157,10 @@
 
 	&.top {
 
+		&.show-arrow {
+			margin-bottom: @buffer;
+		}
+
 		.popup-arrow {
 			border-left: 8px solid transparent;
 			border-right: 8px solid transparent;
@@ -164,6 +177,10 @@
 	}
 
 	&.right {
+
+		&.show-arrow {
+			margin-left: @buffer;
+		}
 
 		.popup-arrow {
 			border-bottom: 8px solid transparent;

@@ -52,16 +52,14 @@
 		this.$el = $el;
 		this.isOpen = false;
 
-		// process options that need processing
-		o.buffer = parseFloat(rPxMatch.exec(o.buffer));
-
 		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
 		this.$attachTo = $(o.attachTo);
 		this.$triggerEl = $(o.triggerEl);
 
 		// create popup container
-		$popup = this.$popup = $('<div class="popup-container">').addClass(o.classes);
+		this.$popup = $('<div class="popup-container">').addClass(o.classes);
+		o.showArrow && this.$popup.addClass('show-arrow');
 
 		// create close and arrow if needed
 		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
@@ -85,8 +83,8 @@
 
 		// move $el into $popup and place $popup where $el used to be
 		// always hide here, if o.autoOpen, popup will open below
-		$el.after($popup);
-		$popup.append($el).hide();
+		$el.after(this.$popup);
+		this.$popup.append($el).hide();
 
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
@@ -102,14 +100,16 @@
 	};
 
 	Popup.prototype.positionPopup = function() {
-		var placement = this.placement,
+		var that = this,
+			placement = this.placement,
 			o = this.options,
-			buffer = o.buffer,
 			offset = calculateOffset.call(this, placement),
 			elWidth = this.$popup[0].offsetWidth,
 			elHeight = this.$popup[0].offsetHeight,
 			atPos = getPosition(this.$attachTo),
 			elPos = { top: null, left: null };
+
+		console.log(elWidth, elHeight);
 
 		// TODO:
 		// figure out the correct placement for determining collision "flip"
@@ -120,28 +120,28 @@
 
 			// define flip tests
 			willFitOnRight = function() {
-				if (atPos.left + atPos.width + elWidth + buffer > $window.width()) {
+				if (atPos.left + atPos.width + elWidth > $window.width()) {
 					return false;
 				}
 				return 'right';
 			};
 
 			willFitOnLeft = function() {
-				if (atPos.left - elWidth - buffer < 0) {
+				if (atPos.left - elWidth < 0) {
 					return false;
 				}
 				return 'left';
 			};
 
 			willFitOnBottom = function() {
-				if (atPos.top + atPos.height + elHeight + buffer > $document.scrollTop() + $window.height()) {
+				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height()) {
 					return false;
 				}
 				return 'bottom';
 			};
 
 			willFitOnTop = function() {
-				if (atPos.top - elHeight - buffer < $document.scrollTop()) {
+				if (atPos.top - elHeight < $document.scrollTop()) {
 					return false;
 				}
 				return 'top';
@@ -179,19 +179,22 @@
 		}
 
 
+		// add class to popup for styling (first remove all posible classes)
+		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
+
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - buffer, left: atPos.left + atPos.width/2 - offset};
+				elPos = { top: atPos.top - elHeight - parseFloat(that.$popup.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
 				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + buffer, left: atPos.left + atPos.width/2 - offset };
+				elPos = { top: atPos.top + atPos.height + parseFloat(that.$popup.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
 				break;
 			case 'right':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + buffer };
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(that.$popup.css('margin-left')) };
 				break;
 			case 'left':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - buffer };
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(that.$popup.css('margin-right')) };
 				break;
 			case 'middle':
 				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
@@ -202,16 +205,15 @@
 				placement = 'free';
 		}
 
+		console.log(parseFloat(that.$popup.css('marginLeft')));
+		console.log(elPos);
+
 		// TODO:
 		// add in collision "fit" check and adjustments here
-
 		
 		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
 		// elements is the first to have a position of absolute/relative/fixed
 		this.$popup.offset(elPos);
-
-		// add class to popup for styling (first remove all posible classes)
-		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
 
 		// position arrow, arrow also has point at middle of $attachTo
 		if (o.showArrow) {
@@ -418,7 +420,6 @@
 	$.fn.popup.defaults = {
 		attachTo: null,
 		autoOpen: false,
-		buffer: 15,
 		container: null,
 		destroyOnClose: false,
 		classes: null,

@@ -41,6 +41,9 @@
   position: relative;
   width: 0;
 }
+.popup-container.bubble.bottom.show-arrow {
+  margin-top: 15px;
+}
 .popup-container.bubble.bottom .popup-arrow {
   border-bottom: 16px solid #095b93;
   border-left: 8px solid transparent;
@@ -52,6 +55,9 @@
   border-right: 6px solid transparent;
   left: -6px;
   top: 4px;
+}
+.popup-container.bubble.left.show-arrow {
+  margin-right: 15px;
 }
 .popup-container.bubble.left .popup-arrow {
   border-bottom: 8px solid transparent;
@@ -65,6 +71,9 @@
   left: -16px;
   top: -6px;
 }
+.popup-container.bubble.top.show-arrow {
+  margin-bottom: 15px;
+}
 .popup-container.bubble.top .popup-arrow {
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
@@ -76,6 +85,9 @@
   border-top: 12px solid #ffffff;
   left: -6px;
   top: -16px;
+}
+.popup-container.bubble.right.show-arrow {
+  margin-left: 15px;
 }
 .popup-container.bubble.right .popup-arrow {
   border-bottom: 8px solid transparent;
