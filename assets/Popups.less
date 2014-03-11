@@ -79,6 +79,17 @@
 
 	.popup-container {
 		position: absolute;
+
+		.popup-inner {
+			min-height: 100px;
+			min-width: 100px;
+		}
+
+		&.loading {
+			background-image: url("./loading_spinner.gif");
+			background-position: center;
+			background-repeat: no-repeat;
+		}
 	}
 
 	.popup-container.bubble {

@@ -221,6 +221,7 @@
 			
 			// then place the arrow in the correct position
 			// back out the arrow position to consider it's starting point to be at the border and not the padding
+			// arrow will not be placed if placement is middle or free
 			switch (placement) {
 				case 'top':
 					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset - popupBorderLeft }; break;
@@ -298,8 +299,8 @@
 		
 		var rtnValue = null;
 		this.each(function() {
-			var $this = $(this);
-			var instance = $this.data('popup');
+			var $this = $(this),
+				instance = $this.data('popup');
 
 			// "if it looks like a duck, sounds like a duck, walks like a duck"
 			// test on this to see if it's an jqXHR object
@@ -329,7 +330,10 @@
 						if ($.isFunction(instance[option])) {
 							rtnValue = instance[option](arg);
 						}
-						// not allowing property access, so we do nothing and just fail silently
+						// if property
+						else {
+							rtnValue = instance[option];
+						}
 					}
 
 					// follow how jQuery gets only return the method/property value first in the collection when it's a get
@@ -354,7 +358,7 @@
 
 
 	// create static method for popups
-	// this is mostly to be used with jqXHR functions
+	// this is mostly to be used with jqXHR objects
 	// since to most developers this:
 	//	$.popup(jqXHR, {...});
 	// makes more sense that doing this:
@@ -421,7 +425,7 @@
 		}, $el.offset());
 	}
 
-	// calculates the pixel offset as given by placement = "50&-25px" format, which is the format for o.offset
+	// calculates the pixel offset as given by placement = "50%-25px" format, which is the format for o.offset
 	function calculateOffset(placement) {
 		var parsedOffset = rOffsetMatch.exec(this.options.offset),
 			elWidth = this.$popup[0].offsetWidth,

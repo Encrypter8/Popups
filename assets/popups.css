@@ -14,6 +14,15 @@
 .markit .popup-container {
   position: absolute;
 }
+.markit .popup-container .popup-inner {
+  min-height: 100px;
+  min-width: 100px;
+}
+.markit .popup-container.loading {
+  background-image: url("loading_spinner.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .markit .popup-container.bubble {
   background-color: #FFF;
   border: 2px solid #095b93;
