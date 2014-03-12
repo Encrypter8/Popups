@@ -6,18 +6,13 @@
 	<link href="./assets/popups.css" rel="stylesheet" type="text/css" />
 	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 	<style type="text/css">
-		body {
-			padding-top: 50px;
-		}
-		main {
-			height: 2000px;
-		}
 
-		div.row {
+		.row {
 			height: 300px;
 		}
 
-		div.row h2 {
+		/* sections need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
+		section {
 			padding-top: 50px;
 		}
 	</style>
@@ -48,30 +43,75 @@
 		</nav><!-- /.navbar-collapse -->
 	</div>
 </header>
-<main>
-	<div class="container">
+<main class="container">
+	<section>
 		<h1>jquery.popups.js</h1>
+		<h4>A css driven jquery plug-in for all your popup and dialog needs</h4>
+	</section>
+	<section id="about">
+		<h2>About</h2>
+	</section>
+	<section id="getting-started">
+		<h2>Getting Started</h2>
+	</section>
+	<section id="api">
+		<h2>API</h2>
+		<h3>Options</h3>
+		<p>The object properties that can be passed on creation of a popup</p>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 100px;">Name</th>
+						<th style="width: 100px;">type</th>
+						<th style="width: 100px;">default</th>
+						<th>description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>attachTo</td>
+					</tr>
+					<tr>
+						<td>autoOpen</td>
+					</tr>
+					<tr>
+						<td>classes</td>
+					</tr>
+					<tr>
+						<td>collision</td>
+					</tr>
+					<tr>
+						<td>container</td>
+					</tr>
+					<tr>
+						<td>destroyOnClose</td>
+					</tr>
+					<tr>
+						<td>offset</td>
+					</tr>
+					<tr>
+						<td>placement</td>
+					</tr>
+					<tr>
+						<td>showArrow</td>
+					</tr>
+					<tr>
+						<td>showClose</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+	</section>
+	<section id="examples">
+		<h2>Examples</h2>
 		<button id="test" class="btn">Test Popup</button>
 		<br />
 		<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
-	</div>
-	<div class="container">
-		<div class="row">
-			<h2 id="about">About</h2>
-		</div>
-		<div class="row">
-			<h2 id="getting-started">Getting Started</h2>
-		</div>
-		<div class="row">
-			<h2 id="api">API</h2>
-		</div>
-		<div class="row">
-			<h2 id="examples">Examples</h2>
-		</div>
-		<div class="row">
-			<h2 id="download">Download</h2>
-		</div>
-	</div>
+	</section>
+	<section id="download"
+		<h2>Download</h2>
+	</section>
 </main>
 
 <script type="text/javascript" src="./libs/Function.1.js"></script>
