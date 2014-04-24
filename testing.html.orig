@@ -151,12 +151,21 @@
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
+<<<<<<< HEAD
+				attachTo: '#test',
+				autoOpen: true,
+				classes: 'bubble',
+				collision: true,
+				placement: 'right',
+				offset: '50%-20px'
+=======
 				attachTo: $this,
 				classes: 'bubble set-width',
 				//collision: false,
 				destroyOnClose: true,
 				placement: placement
 			
+>>>>>>> d95031c16536ecf7742131f97032127e2eba242a
 			});
 		}
 		else {

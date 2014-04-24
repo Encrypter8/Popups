@@ -24,22 +24,28 @@
 		$document = $(document),
 		$body = $(document.body),
 
-	// regex to match offset
-	// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
-	// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
-	// point is to grab the separate percent and pixel value off the submitted input
+		// regex to match offset
+		// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
+		// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
+		// point is to grab the separate percent and pixel value off the submitted input
 		rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/,
 
-	// this strips the px off a valid pixel input
-	// accepts: "25" or "25px"
-	// exec[1] will give 25 for the above cases
+		// this strips the px off a valid pixel input
+		// accepts: "25" or "25px"
+		// exec[1] will give 25 for the above cases
 		rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/,
 
-	// responsive placement options
-		rResponsivePlacementOptions = /top|bottom|right|left/;
+		// responsive placement options
+		rResponsivePlacementOptions = /top|bottom|right|left/,
 
-	// valid Event Types
-	//var rValidEventTypes = /click/; // TODO: expand this list
+		// collision flip
+		rFlip = /flip/,
+
+		// collision fit
+		rFit = /fit/;
+
+		// valid Event Types
+		//var rValidEventTypes = /click/; // TODO: expand this list
 	
 
 	// define Popup
@@ -73,11 +79,11 @@
 		}
 
 		// if .container, move $el to that container
-		// else if $el is not a child of document.body, add it
+		// else if $el is not already a child of document.body, add it
 		if (o.container) {
 			$(o.container).append($el);
 		}
-		else if (!$.contains(document.body, $el)) {
+		else if (!$.contains(document.body, $el.get(0))) {
 			$body.append($el);
 		}
 
@@ -99,7 +105,7 @@
 		// set triggering element with event to open/close dialog
 	};
 
-	Popup.prototype.positionPopup = function() {
+	Popup.prototype.reposition = function() {
 		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this),
@@ -108,12 +114,11 @@
 			atPos = getPosition(this.$attachTo),
 			elPos = { top: null, left: null };
 
-		// TODO:
 		// figure out the correct placement for determining collision "flip"
-		if (placement !== 'free' && placement !== 'middle' && /flip/.test(o.collision)) {
+		// if placement is free or middle, we don't do collision detection
+		if (placement !== 'free' && placement !== 'middle' && rFlip.test(o.collision)) {
 			var testOrder = [],
 				newPlacement = false,
-				willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop;
 
 			// define flip tests
 			willFitOnRight = function() {
@@ -121,21 +126,21 @@
 					return false;
 				}
 				return 'right';
-			};
+			},
 
 			willFitOnLeft = function() {
 				if (atPos.left - elWidth < 0) {
 					return false;
 				}
 				return 'left';
-			};
+			},
 
 			willFitOnBottom = function() {
 				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height()) {
 					return false;
 				}
 				return 'bottom';
-			};
+			},
 
 			willFitOnTop = function() {
 				if (atPos.top - elHeight < $document.scrollTop()) {
@@ -245,7 +250,7 @@
 		this.isOpen = true;
 		this.$el.trigger('open.popup');
 		this.$popup.show();
-		this.positionPopup();
+		this.reposition();
 	};
 
 
@@ -287,7 +292,7 @@
 
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
-		this.positionPopup();
+		this.reposition();
 	};
 
 
@@ -342,7 +347,11 @@
 						return false;
 					}
 				}
-				else if (!option) {
+				// if nothing was passed OR the the options object was passed in again, just toggle
+				// Q: why do we toggle for the options object being passed in again?
+				// A: to avoid having to wrap your using .popup when you're not destroying on close
+				//    i.e. just re-open it since it still exists
+				else if (!option || $.isPlainObject(option)) {
 					instance.toggle();
 				}
 				else {
@@ -382,13 +391,14 @@
 	// feel free to change these to your liking
 	$.fn.popup.defaults = {
 		attachTo: null,
-		autoOpen: false,
+		autoOpen: true,
+		classes: null,
+		//closeOnOutsideClick: false,
 		container: null,
 		destroyOnClose: false,
-		classes: null,
 		offset: '50%', 
 		placement: 'right',
-		collision: 'flipfit',
+		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
 		//within: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
@@ -431,7 +441,12 @@
 			parsedOffset = rOffsetMatch.exec(this.options.offset),
 			elWidth = this.$popup[0].offsetWidth,
 			elHeight = this.$popup[0].offsetHeight,
-			offset = 0; // zero by default;
+			offset = 0; // zero by default
+
+		// if value of this.options.offset was invalid, use the default option
+		if (!parsedOffset) {
+			parsedOffset = rOffsetMatch.exec($.fn.popup.defaults.offset);
+		}
 
 		// if parsedOffset has a percent value
 		if (parsedOffset && parsedOffset[1]) {
@@ -447,6 +462,7 @@
 			offset += parseFloat(parsedOffset[2]);
 		}
 
+		// if offset is unintendedly 0 at this point, that means your $.fn.popup.defaults.offset is an invalid value
 		return offset;
 	}
 
