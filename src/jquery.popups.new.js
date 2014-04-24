@@ -102,7 +102,7 @@
 	Popup.prototype.positionPopup = function() {
 		var placement = this.placement,
 			o = this.options,
-			offset = calculateOffset.call(this, placement),
+			offset = calculateOffset.call(this),
 			elWidth = this.$popup[0].offsetWidth,
 			elHeight = this.$popup[0].offsetHeight,
 			atPos = getPosition(this.$attachTo),
@@ -402,7 +402,7 @@
 		return this;
 	};
 
-	// utility functions
+	// private functions
 	// add 'px' to the end of a number value, used for css
 	function addPX(value) {
 		if ($.isNumeric(value)) {
@@ -426,8 +426,9 @@
 	}
 
 	// calculates the pixel offset as given by placement = "50%-25px" format, which is the format for o.offset
-	function calculateOffset(placement) {
-		var parsedOffset = rOffsetMatch.exec(this.options.offset),
+	function calculateOffset() {
+		var placement = this.placement,
+			parsedOffset = rOffsetMatch.exec(this.options.offset),
 			elWidth = this.$popup[0].offsetWidth,
 			elHeight = this.$popup[0].offsetHeight,
 			offset = 0; // zero by default;
