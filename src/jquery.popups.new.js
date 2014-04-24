@@ -105,7 +105,7 @@
 		// set triggering element with event to open/close dialog
 	};
 
-	Popup.prototype.positionPopup = function() {
+	Popup.prototype.reposition = function() {
 		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this, placement),
@@ -119,7 +119,6 @@
 		if (placement !== 'free' && placement !== 'middle' && rFlip.test(o.collision)) {
 			var testOrder = [],
 				newPlacement = false,
-				willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop;
 
 			// define flip tests
 			willFitOnRight = function() {
@@ -127,21 +126,21 @@
 					return false;
 				}
 				return 'right';
-			};
+			},
 
 			willFitOnLeft = function() {
 				if (atPos.left - elWidth < 0) {
 					return false;
 				}
 				return 'left';
-			};
+			},
 
 			willFitOnBottom = function() {
 				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height()) {
 					return false;
 				}
 				return 'bottom';
-			};
+			},
 
 			willFitOnTop = function() {
 				if (atPos.top - elHeight < $document.scrollTop()) {
@@ -251,7 +250,7 @@
 		this.isOpen = true;
 		this.$el.trigger('open.popup');
 		this.$popup.show();
-		this.positionPopup();
+		this.reposition();
 	};
 
 
@@ -293,7 +292,7 @@
 
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
-		this.positionPopup();
+		this.reposition();
 	};
 
 
@@ -399,7 +398,7 @@
 		destroyOnClose: false,
 		offset: '50%', 
 		placement: 'right',
-		collision: 'flipfit',
+		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
 		//within: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
