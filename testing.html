@@ -7,6 +7,14 @@
 	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 	<style type="text/css">
 
+		#main-examples > div {
+			text-align: center;
+		}
+
+		#main-examples button {
+			margin-bottom: 20px;
+		}
+
 		.row {
 			height: 300px;
 		}
@@ -14,6 +22,10 @@
 		/* sections need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
 		section {
 			padding-top: 50px;
+		}
+
+		.bubble.set-width {
+			width: 500px;
 		}
 	</style>
 </head>
@@ -105,7 +117,21 @@
 	</section>
 	<section id="examples">
 		<h2>Examples</h2>
-		<button id="test" class="btn">Test Popup</button>
+		<div id="main-examples" class="row">
+			<div class="col-sm-3 col-xs-12">
+				<button class="btn main-demo" data-placement="left">Popup Left</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<button class="btn main-demo" data-placement="top">Popup Top</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<button class="btn main-demo" data-placement="bottom">Popup Bottom</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<button class="btn main-demo" data-placement="right">Popup Right</button>
+			</div>
+		</div>
+		
 		<br />
 		<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
 	</section>
@@ -120,21 +146,24 @@
 <script type="text/javascript" src="./src/jquery.popups.new.js"></script>
 <script type="text/javascript">
 	
-	var $testHtml = $('<div class="popup">' + lorem() + '</div>');
-	$('#test').on('click', function() {
-		console.log('click');
-		if (!$testHtml.data('popup')) {
+
+	$('.main-demo').on('click', function() {
+		var $testHtml = $('<div class="popup">' + lorem() + '</div>');
+		var $this = $(this);
+		var placement = $this.data('placement');
+
+		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
-				attachTo: '#test',
-				autoOpen: true,
-				classes: 'bubble',
-				collision: false,
-				placement: 'right',
-				offset: '50%-20px'
+				attachTo: $this,
+				classes: 'bubble set-width',
+				//collision: false,
+				destroyOnClose: true,
+				placement: placement
+			
 			});
 		}
 		else {
-			$testHtml.popup();
+			$this.data('popup-ref').popup('close');
 		}
 	});
 
@@ -158,7 +187,6 @@
 		var $echoPopup = $.popup($ajax,
 		{
 			attachTo: '#jqXHR-test',
-			autoOpen: true,
 			classes: 'bubble',
 			collision: false,
 			placement: 'right',
