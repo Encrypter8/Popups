@@ -79,11 +79,11 @@
 		}
 
 		// if .container, move $el to that container
-		// else if $el is not a child of document.body, add it
+		// else if $el is not already a child of document.body, add it
 		if (o.container) {
 			$(o.container).append($el);
 		}
-		else if (!$.contains(document.body, $el)) {
+		else if (!$.contains(document.body, $el.get(0))) {
 			$body.append($el);
 		}
 
@@ -114,8 +114,8 @@
 			atPos = getPosition(this.$attachTo),
 			elPos = { top: null, left: null };
 
-		// TODO:
 		// figure out the correct placement for determining collision "flip"
+		// if placement is free or middle, we don't do collision detection
 		if (placement !== 'free' && placement !== 'middle' && rFlip.test(o.collision)) {
 			var testOrder = [],
 				newPlacement = false,
