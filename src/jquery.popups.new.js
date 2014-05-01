@@ -42,7 +42,13 @@
 		rFlip = /flip/,
 
 		// collision fit
-		rFit = /fit/;
+		rFit = /fit/,
+
+		// positions for horizontal fit
+		rHorizontal = /top|bottom|middle/,
+
+		// positions for vertical fit
+		rVertical = /right|left|middle/;
 
 		// valid Event Types
 		//var rValidEventTypes = /click/; // TODO: expand this list
@@ -61,7 +67,10 @@
 		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
 		this.$attachTo = $(o.attachTo);
-		this.$triggerEl = $(o.triggerEl);
+		//this.$triggerEl = $(o.triggerEl); // TODO: figure out exactly what we're doing with this one
+		this.buffer = calculateBuffer.call(this);
+
+		console.log(this.buffer);
 
 		// create popup container
 		this.$popup = $('<div class="popup-container">').addClass(o.classes);
@@ -112,7 +121,8 @@
 			elWidth = this.$popup[0].offsetWidth,
 			elHeight = this.$popup[0].offsetHeight,
 			atPos = getPosition(this.$attachTo),
-			elPos = { top: null, left: null };
+			elPos = { top: null, left: null },
+			buffer = this.buffer;
 
 		// figure out the correct placement for determining collision "flip"
 		// if placement is free or middle, we don't do collision detection
@@ -207,8 +217,51 @@
 				placement = 'free';
 		}
 
-		// TODO:
-		// add in collision "fit" check and adjustments here
+		// reposition the popup along the opposite axis of how it's positioned
+		// ie: if position is right or left, reposition alone the virtical axis
+		// if the popup excedes the limit of the window
+		// don't do if placement == free
+		// always do for middle along BOTH axes
+		// and of course if the collision flag contains 'fit' for all other situations
+		if (rFit.test(o.collision)) {
+			var adj; //the adjustment to be made
+
+			// fit in horizontal axis
+			if (rHorizontal.test(placement)) {
+				// shift popup to the left
+				if (elPos.left + elWidth > $window.width() - buffer.right) {
+					adj = (elPos.left + elWidth) - ($window.width() - buffer.right);
+					elPos.left -= adj;
+					offset += adj;
+				}
+
+				// shift popup to the 
+				// always do this incase the shift left pushed popup beyond window right edge
+				if (elPos.left < buffer.left) {
+					adj = (-elPos.left + buffer.left);
+					elPos.left += adj;
+					offset -= adj;
+				}
+			}
+
+			// fit in vertical axis
+			if (rVertical.test(placement)) {
+				// shift popup up
+				if (elPos.top + elHeight > $document.scrollTop() + $window.height() - buffer.bottom) {
+					adj = (elPos.top + elHeight) - ($document.scrollTop() + $window.height() - buffer.bottom);
+					elPos.top -= adj;
+					offset += adj;
+				}
+
+				// shift popup down
+				// again, always do this incase the shift up pushed popup beyond the window top edge
+				if (elPos.top < $document.scrollTop() + buffer.top) {
+					adj = (($document.scrollTop() - elPos.top) + buffer.top);
+					elPos.top += adj;
+					offset -= adj;
+				}
+			}
+		}
 		
 		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
 		// elements is the first to have a position of absolute/relative/fixed
@@ -219,7 +272,7 @@
 			var $arrow = this.$arrow,
 				arrPos = { top: null, left: null },
 				popupBorderTop = parseFloat(this.$popup.css('border-top-width')),
-				popupBorderLeft = parseFloat(this.$popup.css('border-top-width'));
+				popupBorderLeft = parseFloat(this.$popup.css('border-left-width'));
 
 			// first, clear previous position
 			$arrow.css({ left: '', right: '', top: '', bottom: '' });
@@ -392,8 +445,9 @@
 	$.fn.popup.defaults = {
 		attachTo: null,
 		autoOpen: true,
+		buffer: 10,
 		classes: null,
-		//closeOnOutsideClick: false,
+		//closeOnOutsideClick: false, // TODO: maybe replace with a space delimited set up options (ie, outsideclick, escape, etc)
 		container: null,
 		destroyOnClose: false,
 		offset: '50%', 
@@ -464,6 +518,37 @@
 
 		// if offset is unintendedly 0 at this point, that means your $.fn.popup.defaults.offset is an invalid value
 		return offset;
+	}
+
+	// calculate buffer object
+	function calculateBuffer() {
+		var parse = this.options.buffer.split(' '),
+			i;
+
+		// if the parse has incorrect length, return 0s
+		if (parse.length < 1 || parse > 4) {
+			return { top: 0, right: 0, bottom: 0, left: 0 };
+		}
+
+		// turn all entries into floats, if parseFloat returns NaN, set to 0
+		for (i = 0; i < parse.length; i++) {
+			parse[i] = parseFloat(parse[i]) || 0;
+		}
+
+		// check for all 4 cases
+		switch(parse.length) {
+			case 4:
+				return { top: parse[0], right: parse[1], bottom: parse[2], left: parse[3] };
+			case 3:
+				return { top: parse[0], right: parse[1], bottom: parse[2], left: parse[1] };
+			case 2:
+				return { top: parse[0], right: parse[1], bottom: parse[0], left: parse[1] };
+			case 1:
+				return { top: parse[0], right: parse[0], bottom: parse[0], left: parse[0] };
+			default:
+				// impossible to reach here, but just in case
+				return { top: 0, right: 0, bottom: 0, left: 0 };
+		}
 	}
 
 }(jQuery, document, window);

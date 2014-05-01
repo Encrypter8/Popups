@@ -8,10 +8,16 @@
 	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 	<style type="text/css">
 
-		#main-examples > div {
+		#room-to-scroll {
+			height: 600px;
+		}
+
+		#main-examples > div,
+		#fit-examples > div {
 			text-align: center;
 		}
 
+		#fit-examples button,
 		#main-examples button {
 			margin-bottom: 20px;
 		}
@@ -23,6 +29,16 @@
 
 		.bubble.set-width {
 			width: 500px;
+		}
+
+		.bubble.fit-width {
+			max-width: none;
+			width: 800px;
+		}
+
+		.bubble.fit-height {
+			max-width: none;
+			height: 300px;
 		}
 	</style>
 </head>
@@ -129,12 +145,32 @@
 			</div>
 		</div>
 		
+		<div id="fit-examples" class="row">
+			<div class="col-sm-3 col-xs-12">
+				<button class="btn fit-demo" data-placement="bottom">No Fit</button>
+				<br />
+				<button class="btn fit-demo fit" data-placement="bottom">Fit</button>
+			</div>
+			<div class="col-sm-6 col-xs-12">
+				<button class="btn vert fit-demo" data-placement="right">No Fit</button>
+				<br />
+				<button class="btn vert fit-demo fit" data-placement="right">Fit</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<button class="btn front fit-demo" data-placement="bottom">No Fit</button>
+				<br />
+				<button class="btn front fit-demo fit" data-placement="bottom">Fit</button>
+			</div>
+		</div>
+
 		<br />
 		<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
 	</section>
 	<section id="download">
 		<h2>Download</h2>
 	</section>
+
+	<div id="room-to-scroll"></div>
 </main>
 
 <script type="text/javascript" src="./libs/Function.1.js"></script>
@@ -156,12 +192,33 @@
 				//collision: false,
 				destroyOnClose: true,
 				placement: placement
-			
 			});
 		}
 		else {
 			$this.data('popup-ref').popup('close');
 		}
+	});
+
+	$('.fit-demo').on('click', function() {
+
+		var $testHtml = $('<div class="popup">' + lorem() + "</div>");
+		var $this = $(this);
+
+		if (!$this.data('popup-ref')) {
+			$testHtml.popup({
+				attachTo: $this,
+				buffer: '50 10 10 10',
+				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
+				collision: $this.hasClass('fit') ? 'fit' : null,
+				destroyOnClose: true,
+				placement: $this.data('placement'),
+				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px'
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('close');
+		}
+
 	});
 
 	$('#jqXHR-test').on('click', function() {
