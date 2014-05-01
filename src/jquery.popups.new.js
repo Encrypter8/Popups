@@ -70,8 +70,6 @@
 		//this.$triggerEl = $(o.triggerEl); // TODO: figure out exactly what we're doing with this one
 		this.buffer = calculateBuffer.call(this);
 
-		console.log(this.buffer);
-
 		// create popup container
 		this.$popup = $('<div class="popup-container">').addClass(o.classes);
 		o.showArrow && this.$popup.addClass('show-arrow');
@@ -209,7 +207,7 @@
 				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(this.$popup.css('margin-right')) };
 				break;
 			case 'middle':
-				elPos = { top: $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
+				elPos = { top: $document.scrollTop() + $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
 				break;
 			default:
 				// if placement is == to something other than what is in the switch statement,
@@ -522,6 +520,10 @@
 
 	// calculate buffer object
 	function calculateBuffer() {
+		// normalize o.buffer
+		if (!this.options.buffer && this.options.buffer !== 0) { this.options.buffer = '0'; }
+		if ($.isNumeric(this.options.buffer)) { this.options.buffer = this.options.buffer.toString(); }
+
 		var parse = this.options.buffer.split(' '),
 			i;
 
