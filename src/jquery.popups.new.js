@@ -68,7 +68,7 @@
 		this.placement = o.placement.toLowerCase();
 		this.$attachTo = $(o.attachTo);
 		//this.$triggerEl = $(o.triggerEl); // TODO: figure out exactly what we're doing with this one
-		this.buffer = calculateBuffer.call(this);
+		this.boundary = calculateBoundary.call(this);
 
 		// create popup container
 		this.$popup = $('<div class="popup-container">').addClass(o.classes);
@@ -120,7 +120,7 @@
 			elHeight = this.$popup[0].offsetHeight,
 			atPos = getPosition(this.$attachTo),
 			elPos = { top: null, left: null },
-			buffer = this.buffer;
+			boundary = this.boundary;
 
 		// figure out the correct placement for determining collision "flip"
 		// if placement is free or middle, we don't do collision detection
@@ -227,16 +227,16 @@
 			// fit in horizontal axis
 			if (rHorizontal.test(placement)) {
 				// shift popup to the left
-				if (elPos.left + elWidth > $window.width() - buffer.right) {
-					adj = (elPos.left + elWidth) - ($window.width() - buffer.right);
+				if (elPos.left + elWidth > $window.width() - boundary.right) {
+					adj = (elPos.left + elWidth) - ($window.width() - boundary.right);
 					elPos.left -= adj;
 					offset += adj;
 				}
 
 				// shift popup to the 
 				// always do this incase the shift left pushed popup beyond window right edge
-				if (elPos.left < buffer.left) {
-					adj = (-elPos.left + buffer.left);
+				if (elPos.left < boundary.left) {
+					adj = (-elPos.left + boundary.left);
 					elPos.left += adj;
 					offset -= adj;
 				}
@@ -245,16 +245,16 @@
 			// fit in vertical axis
 			if (rVertical.test(placement)) {
 				// shift popup up
-				if (elPos.top + elHeight > $document.scrollTop() + $window.height() - buffer.bottom) {
-					adj = (elPos.top + elHeight) - ($document.scrollTop() + $window.height() - buffer.bottom);
+				if (elPos.top + elHeight > $document.scrollTop() + $window.height() - boundary.bottom) {
+					adj = (elPos.top + elHeight) - ($document.scrollTop() + $window.height() - boundary.bottom);
 					elPos.top -= adj;
 					offset += adj;
 				}
 
 				// shift popup down
 				// again, always do this incase the shift up pushed popup beyond the window top edge
-				if (elPos.top < $document.scrollTop() + buffer.top) {
-					adj = (($document.scrollTop() - elPos.top) + buffer.top);
+				if (elPos.top < $document.scrollTop() + boundary.top) {
+					adj = (($document.scrollTop() - elPos.top) + boundary.top);
 					elPos.top += adj;
 					offset -= adj;
 				}
@@ -443,7 +443,7 @@
 	$.fn.popup.defaults = {
 		attachTo: null,
 		autoOpen: true,
-		buffer: 10,
+		boundary: 10,
 		classes: null,
 		//closeOnOutsideClick: false, // TODO: maybe replace with a space delimited set up options (ie, outsideclick, escape, etc)
 		container: null,
@@ -518,13 +518,13 @@
 		return offset;
 	}
 
-	// calculate buffer object
-	function calculateBuffer() {
-		// normalize o.buffer
-		if (!this.options.buffer && this.options.buffer !== 0) { this.options.buffer = '0'; }
-		if ($.isNumeric(this.options.buffer)) { this.options.buffer = this.options.buffer.toString(); }
+	// calculate boundary object
+	function calculateBoundary() {
+		// normalize o.boundary
+		if (!this.options.boundary && this.options.boundary !== 0) { this.options.boundary = '0'; }
+		if ($.isNumeric(this.options.boundary)) { this.options.boundary = this.options.boundary.toString(); }
 
-		var parse = this.options.buffer.split(' '),
+		var parse = this.options.boundary.split(' '),
 			i;
 
 		// if the parse has incorrect length, return 0s
