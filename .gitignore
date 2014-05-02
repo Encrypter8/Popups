@@ -13,3 +13,5 @@ Desktop.ini
 ## NPM
 #############
 node_modules/
+/src/jquery.popups.old.js
+/src/jquery.modal.old.js
