@@ -1,0 +1,37 @@
+// demo.less
+
+#room-to-scroll {
+	height: 600px;
+}
+
+#main-examples,
+#fit-examples {
+	> div {
+		text-align: center;
+	}
+
+	button {
+		margin-bottom: 20px;
+	}
+}
+
+/* sections need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
+section {
+	padding-top: 50px;
+}
+
+.bubble {
+	&.set-width {
+		width: 500px;
+	}
+
+	&.fit-width {
+		max-width: none;
+		width: 800px;
+	}
+
+	&.fit-height {
+		max-width: none;
+		height: 300px;
+	}
+}

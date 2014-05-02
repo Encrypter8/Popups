@@ -50,9 +50,10 @@ module.exports = function(grunt) {
       },
     },
     less: {
-      test: {
+      demo: {
         files: {
-          'assets/popups.css': 'assets/Popups.less'
+          'assets/popups.css': 'assets/popups.less',
+          'demo/demo.css': 'demo/demo.less'
         }
       },
     }
@@ -67,6 +68,6 @@ module.exports = function(grunt) {
   //grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'clean', 'less', 'concat', 'uglify']);
 
 };
