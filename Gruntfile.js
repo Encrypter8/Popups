@@ -37,7 +37,7 @@ module.exports = function(grunt) {
         }
       },
       files: {
-        src: ['src/jquery.popups.js', 'src/jquery.modal.js', 'src/jquery.popups.new.js']
+        src: ['src/jquery.popups.js', 'src/jquery.modal.js']
       }
     },
     uglify: {
