@@ -288,6 +288,7 @@
 		this.$el.trigger('open.popup');
 		this.$popup.show();
 		this.reposition();
+		this.$el.trigger('opened.popup');
 	};
 
 
@@ -301,13 +302,14 @@
 
 		if (!this.isOpen) { return; }
 
+		this.$el.trigger('close.popup');
+
+		this.isOpen = false;
+			this.$popup.hide();
+			this.$el.trigger('closed.popup');
+
 		if (this.options.destroyOnClose) {
 			this.destroy();
-		}
-		else {
-			this.isOpen = false;
-			this.$popup.hide();
-			this.$el.trigger('close.popup');
 		}
 	};
 
@@ -322,6 +324,7 @@
 		if (this.$attachTo) {
 			this.$attachTo.removeData('popup-ref');
 		}
+
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
 	};
@@ -445,13 +448,13 @@
 	};
 
 	/*
-	 * Events ( * == implemented) :
-	 * create.popup *
-	 * show.popup
-	 * shown.popup
-	 * hide.popup
-	 * hidden.popup
-	 * destroy.popup *
+	 * Events
+	 * create.popup
+	 * open.popup
+	 * opened.popup
+	 * close.popup
+	 * closed.popup
+	 * destroy.popup
 	 */
 
 	// popup no conflict
