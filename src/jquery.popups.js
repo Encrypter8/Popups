@@ -1,18 +1,4 @@
-/*
- * jquery.popup.js
- * By: Harris Miller
- * Rewrite
- */
-
-/*
- * Events:
- * create.popup
- * show.popup
- * shown.popup
- * hide.popup
- * hidden.popup
- * destroy.popup
- */
+//@BANNER
 
 +function ($, document, window) {
 
@@ -457,6 +443,16 @@
 		//triggerEl: null,
 		//trigger: 'click'
 	};
+
+	/*
+	 * Events ( * == implemented) :
+	 * create.popup *
+	 * show.popup
+	 * shown.popup
+	 * hide.popup
+	 * hidden.popup
+	 * destroy.popup *
+	 */
 
 	// popup no conflict
 	$.fn.popup.noConflict = function() {

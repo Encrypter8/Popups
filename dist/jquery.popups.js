@@ -1,15 +1,9 @@
-/*! jQuery Popups - v1.0.0-RC1 - 2014-05-01
-* https://github.com/Encrypter8/Popups
-* Copyright (c) 2014 Harris Miller; Licensed MIT */
-/*
- * Events:
- * create.popup
- * show.popup
- * shown.popup
- * hide.popup
- * hidden.popup
- * destroy.popup
+/* jQuery Popups - v1.0.0-beta - 2014-05-02
+ * https://github.com/Encrypter8/Popups
+ * Copyright (c) 2014 Harris Miller
+ * Licensed MIT 
  */
+
 
 +function ($, document, window) {
 
@@ -455,6 +449,16 @@
 		//trigger: 'click'
 	};
 
+	/*
+	 * Events ( * == implemented) :
+	 * create.popup *
+	 * show.popup
+	 * shown.popup
+	 * hide.popup
+	 * hidden.popup
+	 * destroy.popup *
+	 */
+
 	// popup no conflict
 	$.fn.popup.noConflict = function() {
 		$.fn.popup = old;
@@ -551,35 +555,3 @@
 	}
 
 }(jQuery, document, window);
-+function ($, document, window) {
-
-	var cachedScrollbarWidth;
-
-
-
-
-	function scrollbarWidth() {
-		if (cachedScrollbarWidth !== undefined) {
-			return cachedScrollbarWidth;
-		}
-		var div = $('<div style="display:block;position:absolute;width:50px;height:50px;overflow:hidden;""><div style="height:100px;width:auto;""></div></div>'),
-			innerDiv = div.children()[0],
-			w1, w2;
-
-		$('body').append(div);
-		w1 = innerDiv.offsetWidth;
-		div.css('overflow', 'scroll');
-
-		w2 = innerDiv.offsetWidth;
-
-		if (w1 === w2) {
-			w2 = div[0].clientWidth;
-		}
-
-		div.remove();
-
-		cachedScrollbarWidth = w1 - w2;
-		return cachedScrollbarWidth;
-	}
-
- }(jQuery, document, window);

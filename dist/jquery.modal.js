@@ -1,4 +1,9 @@
-//@BANNER
+/* jQuery Modal - v1.0.0-beta - 2014-05-02
+ * https://github.com/Encrypter8/Popups
+ * Copyright (c) 2014 Harris Miller
+ * Licensed MIT 
+ */
+
 
 +function ($, document, window) {
 
