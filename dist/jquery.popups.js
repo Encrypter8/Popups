@@ -1,344 +1,316 @@
-/*! jQuery Popups - v0.8.2 - 2014-03-10
+/*! jQuery Popups - v1.0.0-RC1 - 2014-05-01
 * https://github.com/Encrypter8/Popups
 * Copyright (c) 2014 Harris Miller; Licensed MIT */
+/*
+ * Events:
+ * create.popup
+ * show.popup
+ * shown.popup
+ * hide.popup
+ * hidden.popup
+ * destroy.popup
+ */
+
 +function ($, document, window) {
 
-	var $window = $(window);
-	var $document = $(document);
-	var $body = $(document.body);
+	//"use strict";
 
+	// globally used variables
+	var i,
+		$window = $(window),
+		$document = $(document),
+		$body = $(document.body),
+
+		// regex to match offset
+		// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
+		// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
+		// point is to grab the separate percent and pixel value off the submitted input
+		rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/,
+
+		// this strips the px off a valid pixel input
+		// accepts: "25" or "25px"
+		// exec[1] will give 25 for the above cases
+		rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/,
+
+		// responsive placement options
+		rResponsivePlacementOptions = /top|bottom|right|left/,
+
+		// collision flip
+		rFlip = /flip/,
+
+		// collision fit
+		rFit = /fit/,
+
+		// positions for horizontal fit
+		rHorizontal = /top|bottom|middle/,
+
+		// positions for vertical fit
+		rVertical = /right|left|middle/;
+
+		// valid Event Types
+		//var rValidEventTypes = /click/; // TODO: expand this list
+	
+
+	// define Popup
 	var Popup = function ($el, options) {
-		this.options = options;
+		var that = this,
+			o = options,
+			$popup;
+
+		this.options = o;
 		this.$el = $el;
 		this.isOpen = false;
 
-		this._create();
-	};
+		// handle special cases that I also what to be properties
+		this.placement = o.placement.toLowerCase();
+		this.$attachTo = $(o.attachTo);
+		//this.$triggerEl = $(o.triggerEl); // TODO: figure out exactly what we're doing with this one
+		this.boundary = calculateBoundary.call(this);
 
-	Popup.prototype._create = function() {
+		// create popup container
+		this.$popup = $('<div class="popup-container">').addClass(o.classes);
+		o.showArrow && this.$popup.addClass('show-arrow');
 
-		var that = this;
-		var o = this.options;
+		// create close and arrow if needed
+		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
+		this.$arrow = o.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popup) : null;
 
-		// us to add px to end of value is just a number is passed
-		var addPX = function(value) {
-			if (typeof value == 'number') {
-				return value + 'px';
-			}
-			return value;
-		};
-
-		var popupStyles = [
-			'style=" position: absolute; ',
-			o.height ? 'height: ' + addPX(o.height) + '; ' : '',
-			o.maxHeight ? 'max-height: ' + addPX(o.maxHeight) + '; ': '',
-			o.maxWidth ? 'max-width: ' + addPX(o.maxWidth) + '; ' : '',
-			o.minHeight ? 'min-height: ' + addPX(o.minHeight) + '; '  : '',
-			o.minWidth ? 'min-width: ' + addPX(o.minWidth) + '; ' : '',
-			o.width ? 'width: ' + addPX(o.width) + '; ' : '',
-			'z-index: ' + o.zIndex + '"',
-		].join('');
-
-
-		// create popup and add to DOM
-		this.$popup = $([
-			'<div class="popup-container ' + o.popupClass + '" ' + popupStyles + '>',
-				o.showClose ? '<button class="popup-close" type="button"></button>' : '',
-				o.showArrow ? '<div class="popup-arrow"><div class="inner-arrow"></div></div>' : '',
-			'</div>'
-		].join(''));
-
-		this.$arrow = this.$popup.find('.popup-arrow');
-
-		// _appendTo so the plug-in knows where in the DOM to place
-		// right now this should only be used by the modal plugin
-		// ie, this property is NOT PUBLIC
-		o._appendTo = o._appendTo || 'body';
-
-		this.$popup.append(this.$el).appendTo(o._appendTo).hide(); // hide for autoOpen = false, if true, this.open will be called below
-
-		o.saveTo && $(o.saveTo).data('popup-ref', this.$el);
-
-		// if options.showClose, bind click to close popup
-		if (o.showClose) {
-			this.$popup.find('.popup-close').on('click.popup', function () {
+		// if showClose, bind click event
+		if (this.$closeButton) {
+			this.$closeButton.on('click', function() {
 				that.close();
 			});
 		}
 
-		o.attachTo = $(o.attachTo);
+		// if .container, move $el to that container
+		// else if $el is not already a child of document.body, add it
+		if (o.container) {
+			$(o.container).append($el);
+		}
+		else if (!$.contains(document.body, $el.get(0))) {
+			$body.append($el);
+		}
 
+		// move $el into $popup and place $popup where $el used to be
+		// always hide here, if o.autoOpen, popup will open below
+		$el.after(this.$popup);
+		this.$popup.append($el).hide();
+
+		// if attachTo, save ref of popup
+		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
+
+		// trigger create event
+		$el.trigger('create.popup');
+
+		// finally, if autoOpen, open!
 		o.autoOpen && this.open();
+
+		//TODO
+		// set triggering element with event to open/close dialog
 	};
 
-	// positionPopup_new is a rewrite to allow of the originally intended appendTo option as well as to account for iFrames
-	Popup.prototype.positionPopup_new = function() {
+	Popup.prototype.reposition = function() {
+		var placement = this.placement,
+			o = this.options,
+			offset = calculateOffset.call(this),
+			elWidth = this.$popup[0].offsetWidth,
+			elHeight = this.$popup[0].offsetHeight,
+			atPos = getPosition(this.$attachTo),
+			elPos = { top: null, left: null },
+			boundary = this.boundary;
 
-		// return if this.options.attachTo.length
-		if(!this.options.attachTo.length) { return; }
+		// figure out the correct placement for determining collision "flip"
+		// if placement is free or middle, we don't do collision detection
+		if (placement !== 'free' && placement !== 'middle' && rFlip.test(o.collision)) {
+			var testOrder = [],
+				newPlacement = false,
 
-		var that = this;
-		var o = this.options;
-
-		var $appendTo = $(o._appendTo);
-
-		var pos = this.getPosition();
-
-		this.$popup.css({ 'left': pos.left, 'top': pos.top });
-		//this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
-	};
-
-	Popup.prototype.getPosition = function() {
-		var $attachTo = this.options.attachTo;
-		var el = $attachTo[0];
-		return $.extend({}, ($.isFunction(el.getBoundingClientRect)) ? el.getBoundingClientRect() : {
-			height: el.offsetHeight,
-			width: el.offsetWidth
-		}, $attachTo.offset());
-	};
-
-	Popup.prototype.positionPopup = function() {
-
-		// return if this.options.attachTo.length == 0
-		if(!this.options.attachTo.length) { return; }
-
-		var that = this;
-		var o = this.options;
-
-		var $window = $(window);
-		var $document = $(document);
-
-		var $appendTo = $(o._appendTo);
-		var appTop = $appendTo.offset().top;
-		var appLeft = $appendTo.offset().left;
-
-		var elOffset = o.attachTo.offset();
-		var elWidth = o.attachTo.outerWidth();
-		var elHeight = o.attachTo.outerHeight();
-		var popWidth = this.$popup.outerWidth();
-
-		var popHeight = this.$popup.outerHeight();
-		var posLeft = 0;
-		var posTop = 0;
-
-		var arrowClass = '';
-		var arrowLeft = 0;
-		var arrowTop = 0;
-
-		/*
-		 * Responsive Alignment
-		 * run only if flag is set and if position != middle (because middle does not position the popup relative to the attachTo element)
-		 * we change the position of the pop-up based on if it will fit in the visible window of it's orientation
-		 * ie, if position is set to right, will the entire pop-up fit to the right of the binding element, if not, try left side
-		 * will try to first fit in the same axis (ie, left will try right first, while top will try bottom first)
-		 * will attept other axis if cannot fit in same one, when trying other axis, first attempt will be right/bottom (respectively)
-		 * will position to middle if cannot fit in right, left, top, or bottom
-		 */
-		var origAlign = o.align;
-		if (o.responsiveAlignment === true && o.align !== 'middle') {
-			// declare login tests
-			var willFitOnRight = function () {
-				if (elOffset.left + elWidth + popWidth + o.popupBuffer > $window.width()) {
+			// define flip tests
+			willFitOnRight = function() {
+				if (atPos.left + atPos.width + elWidth > $window.width()) {
 					return false;
 				}
 				return 'right';
-			};
+			},
 
-			var willFitOnLeft = function () {
-				if (elOffset.left - popWidth - o.popupBuffer < 0) {
+			willFitOnLeft = function() {
+				if (atPos.left - elWidth < 0) {
 					return false;
 				}
 				return 'left';
-			};
+			},
 
-			var willFitOnBottom = function () {
-				if (elOffset.top + elHeight + popHeight + o.popupBuffer > $document.scrollTop() + $window.height()) {
+			willFitOnBottom = function() {
+				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height()) {
 					return false;
 				}
 				return 'bottom';
-			};
+			},
 
-			var willFitOnTop = function () {
-				if (elOffset.top - popHeight - o.popupBuffer < $document.scrollTop()) {
+			willFitOnTop = function() {
+				if (atPos.top - elHeight < $document.scrollTop()) {
 					return false;
 				}
 				return 'top';
 			};
 
-			/*
-			 * define the order to test based on position set
-			 * if options.position was incorrectly set, the code below will re-set options.position = 'middle'
-			 * also if you know a better way to go about this, let me know --Harris
-			 */
-			var testOrder = [];
-			switch (o.align) {
+			// determine test order
+			switch (placement) {
 				case 'right':
-					testOrder = [willFitOnRight, willFitOnLeft, willFitOnBottom, willFitOnTop];
+					testOrder = [willFitOnRight, willFitOnLeft];
 					break;
 				case 'left':
-					testOrder = [willFitOnLeft, willFitOnRight, willFitOnBottom, willFitOnTop];
+					testOrder = [willFitOnLeft, willFitOnRight];
 					break;
 				case 'bottom':
-					testOrder = [willFitOnBottom, willFitOnTop, willFitOnRight, willFitOnLeft];
+					testOrder = [willFitOnBottom, willFitOnTop];
 					break;
 				case 'top':
-					testOrder = [willFitOnTop, willFitOnBottom, willFitOnRight, willFitOnLeft];
+					testOrder = [willFitOnTop, willFitOnBottom];
 					break;
 			}
 
-			// run the tests
-			var newAlign = false;
-			for (var i = 0; i < testOrder.length; i++) {
-				newAlign = testOrder[i].call();
-				if (newAlign !== false) {
+			//run tests
+			for (i = 0; i < testOrder.length; i++) {
+				newPlacement = testOrder[i]();
+				if (newPlacement !== false) {
 					break;
 				}
 			}
 
 			// if all tests fail, set to middle
-			if (newAlign === false) {
-				newAlign = 'middle';
-			}
+			newPlacement === false && (newPlacement = 'middle');
 
-			o.align = newAlign;
-		}
-		// end Responsive Alignment
-
-		// define Constraint functions
-		var keepInVerticalConstraints = function () {
-			var diff;
-			// shift pop-up up if will display below bottom of window
-			if (posTop + popHeight > $document.scrollTop() + $window.height()) {
-				diff = (posTop + popHeight) - ($document.scrollTop() + $window.height());
-				posTop -= diff;
-				arrowTop += diff;
-			}
-
-			// shift pop-up down if will display above top of window
-			if (posTop < $document.scrollTop()) {
-				diff = $document.scrollTop() - posTop;
-				posTop += diff;
-				arrowTop -= diff;
-			}
-		};
-
-		var keepInHorizontalConstraints = function () {
-			var diff;
-			// shift pop-up left if will display past right edge of window (with 10px buffer)
-			if (posLeft + popWidth > $window.width()) {
-				diff = (posLeft + popWidth) - $window.width();
-				posLeft -= diff;
-				arrowLeft += diff;
-			}
-
-			// shift pop-up right if will display past left edge of window (with 10px buffer);
-			if (posLeft < 0) {
-				diff = -posLeft;
-				posLeft += diff;
-				arrowLeft -= diff;
-			}
-		};
-
-		// position popup next to attachTo
-		var offset;
-		this.$arrow.removeClass('pointing-up pointing-down pointing-left pointing-right');
-		if (o.align == 'top') {
-			offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
-			posLeft = elOffset.left + (elWidth / 2) - offset;
-			posTop = elOffset.top - popHeight - o.popupBuffer;
-
-			this.$arrow.addClass('pointing-down');
-			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'), 10);
-			arrowTop = this.$popup.height();
-
-			if (o.responsiveToEdges) {
-				keepInHorizontalConstraints();
-			}
-		}
-		else if (o.align == 'right') {
-			offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
-			posLeft = elOffset.left + elWidth + o.popupBuffer;
-			posTop = elOffset.top + (elHeight / 2) - offset; // set top of popup to align with middle of binding element
-
-			// add class to arrow
-			// we do this now because $arrow needs to have a height/width on it to grab first to determine where to position it
-			this.$arrow.addClass('pointing-left');
-
-			arrowLeft = -this.$arrow.outerWidth();
-			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width'), 10); // pop-ups borderwidth needs to be accounted for here
-
-			if (o.responsiveToEdges) {
-				keepInVerticalConstraints();
-			}
-		}
-		else if (o.align == 'bottom') {
-			offset = (popWidth * (o.offsetPercentage * 0.01)) + o.offsetPixels;
-			posLeft = elOffset.left + (elWidth / 2) - offset;
-			posTop = elOffset.top + elHeight + o.popupBuffer;
-
-			this.$arrow.addClass('pointing-up');
-			arrowLeft = offset - (this.$arrow.outerWidth() / 2) - parseInt(this.$popup.css('border-left-width'), 10);
-			arrowTop = -this.$arrow.outerHeight();
-
-			if (o.responsiveToEdges) {
-				keepInHorizontalConstraints();
-			}
-		}
-		else if (o.align == 'left') {
-			offset = (popHeight * (o.offsetPercentage * 0.01)) + o.offsetPixels;
-			posLeft = elOffset.left - popWidth - o.popupBuffer;
-			posTop = elOffset.top + (elHeight / 2) - offset; // set top of popup to align with middle of binding element
-
-			this.$arrow.addClass('pointing-right');
-			arrowLeft = this.$popup.width(); // we use $popup.width() here instead of popWidth because popWidth includes the popup's borders
-			arrowTop = offset - (this.$arrow.outerHeight() / 2) - parseInt(this.$popup.css('border-top-width'), 10); // pop-ups borderwidth needs to be accounted for here
-
-			if (o.responsiveToEdges) {
-				keepInVerticalConstraints();
-			}
-		}
-		else if (o.align == 'middle') {
-			posLeft = ($window.width() / 2) - (popWidth / 2);
-			if (posLeft < 0) {
-				posLeft = 0;
-			}
-
-			posTop = $appendTo.scrollTop() + ($window.height() / 2) - (popHeight / 2);
-			if (posTop < $appendTo.scrollTop()) {
-				posTop = $appendTo.scrollTop();
-			}
+			// set display position
+			placement = newPlacement;
 		}
 
-		// set positioning
-		this.$popup.css({ 'left': posLeft, 'top': posTop });
-		this.$arrow.css({ 'left': arrowLeft, 'top': arrowTop });
 
-		o.align = origAlign;
+		// add class to popup for styling (first remove all posible classes)
+		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
+
+
+		switch (placement) {
+			case 'top':
+				elPos = { top: atPos.top - elHeight - parseFloat(this.$popup.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
+				break;
+			case 'bottom':
+				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popup.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
+				break;
+			case 'right':
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(this.$popup.css('margin-left')) };
+				break;
+			case 'left':
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(this.$popup.css('margin-right')) };
+				break;
+			case 'middle':
+				elPos = { top: $document.scrollTop() + $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
+				break;
+			default:
+				// if placement is == to something other than what is in the switch statement,
+				// it is considered "free" and is left with the null vals
+				placement = 'free';
+		}
+
+		// reposition the popup along the opposite axis of how it's positioned
+		// ie: if position is right or left, reposition alone the virtical axis
+		// if the popup excedes the limit of the window
+		// don't do if placement == free
+		// always do for middle along BOTH axes
+		// and of course if the collision flag contains 'fit' for all other situations
+		if (rFit.test(o.collision)) {
+			var adj; //the adjustment to be made
+
+			// fit in horizontal axis
+			if (rHorizontal.test(placement)) {
+				// shift popup to the left
+				if (elPos.left + elWidth > $window.width() - boundary.right) {
+					adj = (elPos.left + elWidth) - ($window.width() - boundary.right);
+					elPos.left -= adj;
+					offset += adj;
+				}
+
+				// shift popup to the 
+				// always do this incase the shift left pushed popup beyond window right edge
+				if (elPos.left < boundary.left) {
+					adj = (-elPos.left + boundary.left);
+					elPos.left += adj;
+					offset -= adj;
+				}
+			}
+
+			// fit in vertical axis
+			if (rVertical.test(placement)) {
+				// shift popup up
+				if (elPos.top + elHeight > $document.scrollTop() + $window.height() - boundary.bottom) {
+					adj = (elPos.top + elHeight) - ($document.scrollTop() + $window.height() - boundary.bottom);
+					elPos.top -= adj;
+					offset += adj;
+				}
+
+				// shift popup down
+				// again, always do this incase the shift up pushed popup beyond the window top edge
+				if (elPos.top < $document.scrollTop() + boundary.top) {
+					adj = (($document.scrollTop() - elPos.top) + boundary.top);
+					elPos.top += adj;
+					offset -= adj;
+				}
+			}
+		}
+		
+		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
+		// elements is the first to have a position of absolute/relative/fixed
+		this.$popup.offset(elPos);
+
+		// position arrow, arrow also has point at middle of $attachTo
+		if (o.showArrow) {
+			var $arrow = this.$arrow,
+				arrPos = { top: null, left: null },
+				popupBorderTop = parseFloat(this.$popup.css('border-top-width')),
+				popupBorderLeft = parseFloat(this.$popup.css('border-left-width'));
+
+			// first, clear previous position
+			$arrow.css({ left: '', right: '', top: '', bottom: '' });
+			
+			// then place the arrow in the correct position
+			// back out the arrow position to consider it's starting point to be at the border and not the padding
+			// arrow will not be placed if placement is middle or free
+			switch (placement) {
+				case 'top':
+					arrPos = { bottom: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset - popupBorderLeft }; break;
+				case 'bottom':
+					arrPos = { top: -$arrow.outerHeight(), left: -$arrow.outerWidth()/2 + offset - popupBorderLeft }; break;
+				case 'right':
+					arrPos = { top: -$arrow.outerHeight()/2 + offset - popupBorderTop, left: -$arrow.outerWidth() }; break;
+				case 'left':
+					arrPos = { top: -$arrow.outerHeight()/2 + offset - popupBorderTop, right: -$arrow.outerWidth() }; break;
+			}
+
+			$arrow.css(arrPos);
+		}
+
+		return placement;
 	};
+
 
 	Popup.prototype.open = function() {
-		if (this.isOpen) {
-			return;
-		}
+		if (this.isOpen) { return; }
 		this.isOpen = true;
-		this.$el.trigger('popupOpen');
+		this.$el.trigger('open.popup');
 		this.$popup.show();
-		if (this.options.align != 'free') {
-			this.positionPopup();
-		}
+		this.reposition();
 	};
 
-	Popup.prototype.close = function() {
-		if (!this.isOpen) {
-			return;
-		}
 
-		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to 
-		if (this.options.jqXHR && this.options.jqXHR.state() == "pending") {
-			this.options.jqXHR.abort();
-			// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
+	Popup.prototype.close = function() {
+		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to abort the XHR call
+		// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
+		if (this.jqXHR && this.jqXHR.state() === 'pending') {
+			this.jqXHR.abort();
 			this.destroy();
 		}
+
+		if (!this.isOpen) { return; }
 
 		if (this.options.destroyOnClose) {
 			this.destroy();
@@ -346,37 +318,42 @@
 		else {
 			this.isOpen = false;
 			this.$popup.hide();
-			this.$el.trigger('popupClose');
+			this.$el.trigger('close.popup');
 		}
 	};
+
 
 	Popup.prototype.toggle = function() {
-		this[this.isOpen ? 'close' : 'open']();
+		if (this.isOpen) { return this.close(); }
+		return this.open();
 	};
 
+
 	Popup.prototype.destroy = function() {
-		if (this.options.saveTo) {
-			$(this.options.saveTo).removeData('popup-ref');
+		if (this.$attachTo) {
+			this.$attachTo.removeData('popup-ref');
 		}
-		this.$el.trigger('popupDestroy');
+		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
 	};
 
+
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
-		this.positionPopup();
+		this.reposition();
 	};
 
 
-	//
-	// Define $.fn.popup
-	//
-	$.fn.popup = function (option, args) {
+	// save reference to existing definition for no conflict
+	var old = $.fn.popup;
 
+	// define $.fn.popup
+	$.fn.popup = function(option, arg) {
+		
 		var rtnValue = null;
 		this.each(function() {
-			var $this = $(this);
-			var instance = $this.data('popup');
+			var $this = $(this),
+				instance = $this.data('popup');
 
 			// "if it looks like a duck, sounds like a duck, walks like a duck"
 			// test on this to see if it's an jqXHR object
@@ -391,360 +368,218 @@
 				rtnValue = $html;
 				return false;
 			}
-			// if node that popup has yet to be instanciated on
+			// else if popup has not yet been instantiated
 			else if (!instance) {
-				var options = $.extend({}, $.fn.popup.defaults, typeof option == 'object' && option);
-				$this.data('popup', (instance = new Popup($this, options)));
+				option = $.extend({}, $.fn.popup.defaults, $.isPlainObject(option) && option);
+				$this.data('popup', (instance = new Popup($this, option)));
 			}
-			// if node already has popup instanciated
+			// if popup has been instantiated
 			else {
-				if (typeof option == 'string') {
-					// if method/property exists and is not private (all private methods begin with _)
-					if (instance[option] && !option.match(/^_/)) {
+
+				if (typeof option === 'string') {
+					// if method/property exists
+					if (instance[option]) {
 						// if function
-						if (typeof instance[option] == 'function') {
-							rtnValue = instance[option](args);
+						if ($.isFunction(instance[option])) {
+							rtnValue = instance[option](arg);
 						}
 						// if property
 						else {
 							rtnValue = instance[option];
 						}
-
-						if (rtnValue) {
-							return false; // break out of .each
-						}
 					}
-					else {
-						$.error("fn.Modal says: Method or Property you are trying to call is either private or does not exist");
+
+					// follow how jQuery gets only return the method/property value first in the collection when it's a get
+					// so we want to break out of the .each here
+					if (rtnValue) {
+						return false;
 					}
 				}
-				// if .popup is just called and has already been instanciated, trigger .toggle()
-				else if (!option) {
+				// if nothing was passed OR the the options object was passed in again, just toggle
+				// Q: why do we toggle for the options object being passed in again?
+				// A: to avoid having to wrap your using .popup when you're not destroying on close
+				//    i.e. just re-open it since it still exists
+				else if (!option || $.isPlainObject(option)) {
 					instance.toggle();
 				}
-				// if some other invalid value was passed as option (say a function or a number), nothing will happen
+				else {
+					$.error('fn.popup says: Method or Property you are trying to access does not exist');
+				}
 			}
-			
+			// if some other invalid value was passed as options, fail silently
 		});
 
+		// return value (if it exists) or return this (for chaining)
 		return rtnValue || this;
 	};
 
+
+	// create static method for popups
+	// this is mostly to be used with jqXHR objects
+	// since to most developers this:
+	//	$.popup(jqXHR, {...});
+	// makes more sense that doing this:
+	//	$(jqXHR).popup({...});
+	//
+	$.popup = function(el, option) {
+		var $el = $(el).first();
+
+		if ($el.length === 0) {
+			$.error('selector returned zero results');
+			return $el;
+		}
+
+		return $el.popup(option);
+	};
+
+
 	$.fn.popup.Constructor = Popup;
 
+	// these are the defaults value
+	// feel free to change these to your liking
 	$.fn.popup.defaults = {
-		align: 'free',
 		attachTo: null,
 		autoOpen: true,
+		boundary: 10,
+		classes: null,
+		//closeOnOutsideClick: false, // TODO: maybe replace with a space delimited set up options (ie, outsideclick, escape, etc)
+		container: null,
 		destroyOnClose: false,
-		popupClass: '',
-		height: 0,
-		maxHeight: 0,
-		maxWidth: 0,
-		minHeight: 0,
-		minWidth: 0,
-		offsetPercentage: 0,
-		offsetPixels: 0,
-		popupBuffer: 0,
-		responsiveAlignment: true,
-		responsiveToEdges: true,
-		saveTo: null,
+		offset: '50%', 
+		placement: 'right',
+		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
+		//within: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
-		width: 0,
-		zIndex: 1000
+		//triggerEl: null,
+		//trigger: 'click'
 	};
+
+	// popup no conflict
+	$.fn.popup.noConflict = function() {
+		$.fn.popup = old;
+		return this;
+	};
+
+	// private functions
+	// add 'px' to the end of a number value, used for css
+	function addPX(value) {
+		if ($.isNumeric(value)) {
+			return value + 'px';
+		}
+		return value;
+	}
+
+	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
+	function getPosition($el) {
+		if (!$el || !$el[0]) {
+			return { left: 0, top: 0 };
+		}
+
+		var el = $el[0];
+
+		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+			width: el.offsetWidth,
+			height: el.offsetHeight
+		}, $el.offset());
+	}
+
+	// calculates the pixel offset as given by placement = "50%-25px" format, which is the format for o.offset
+	function calculateOffset() {
+		var placement = this.placement,
+			parsedOffset = rOffsetMatch.exec(this.options.offset),
+			elWidth = this.$popup[0].offsetWidth,
+			elHeight = this.$popup[0].offsetHeight,
+			offset = 0; // zero by default
+
+		// if value of this.options.offset was invalid, use the default option
+		if (!parsedOffset) {
+			parsedOffset = rOffsetMatch.exec($.fn.popup.defaults.offset);
+		}
+
+		// if parsedOffset has a percent value
+		if (parsedOffset && parsedOffset[1]) {
+			if (placement === 'right' || placement === 'left') {
+				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
+			}
+			if (placement === 'top' || placement === 'bottom') {
+				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
+			}
+		}
+		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
+		if (parsedOffset && parsedOffset[2]) {
+			offset += parseFloat(parsedOffset[2]);
+		}
+
+		// if offset is unintendedly 0 at this point, that means your $.fn.popup.defaults.offset is an invalid value
+		return offset;
+	}
+
+	// calculate boundary object
+	function calculateBoundary() {
+		// normalize o.boundary
+		if (!this.options.boundary && this.options.boundary !== 0) { this.options.boundary = '0'; }
+		if ($.isNumeric(this.options.boundary)) { this.options.boundary = this.options.boundary.toString(); }
+
+		var parse = this.options.boundary.split(' '),
+			i;
+
+		// if the parse has incorrect length, return 0s
+		if (parse.length < 1 || parse > 4) {
+			return { top: 0, right: 0, bottom: 0, left: 0 };
+		}
+
+		// turn all entries into floats, if parseFloat returns NaN, set to 0
+		for (i = 0; i < parse.length; i++) {
+			parse[i] = parseFloat(parse[i]) || 0;
+		}
+
+		// check for all 4 cases
+		switch(parse.length) {
+			case 4:
+				return { top: parse[0], right: parse[1], bottom: parse[2], left: parse[3] };
+			case 3:
+				return { top: parse[0], right: parse[1], bottom: parse[2], left: parse[1] };
+			case 2:
+				return { top: parse[0], right: parse[1], bottom: parse[0], left: parse[1] };
+			case 1:
+				return { top: parse[0], right: parse[0], bottom: parse[0], left: parse[0] };
+			default:
+				// impossible to reach here, but just in case
+				return { top: 0, right: 0, bottom: 0, left: 0 };
+		}
+	}
 
 }(jQuery, document, window);
 +function ($, document, window) {
 
-	if (!$.fn.popup) {
-		$.error('jquery.modal.js requires jquery.popups.js');
-		return;
+	var cachedScrollbarWidth;
+
+
+
+
+	function scrollbarWidth() {
+		if (cachedScrollbarWidth !== undefined) {
+			return cachedScrollbarWidth;
+		}
+		var div = $('<div style="display:block;position:absolute;width:50px;height:50px;overflow:hidden;""><div style="height:100px;width:auto;""></div></div>'),
+			innerDiv = div.children()[0],
+			w1, w2;
+
+		$('body').append(div);
+		w1 = innerDiv.offsetWidth;
+		div.css('overflow', 'scroll');
+
+		w2 = innerDiv.offsetWidth;
+
+		if (w1 === w2) {
+			w2 = div[0].clientWidth;
+		}
+
+		div.remove();
+
+		cachedScrollbarWidth = w1 - w2;
+		return cachedScrollbarWidth;
 	}
 
-	// integrated transitionEnd module
-	// from Twitter Boostrap (boostrap-transition.js)
-	var transitionEnd = (function() {
-		var el = document.createElement('modal');
-		var transEndEventNames = {
-			'WebkitTransition' : 'webkitTransitionEnd',
-			'MozTransition' : 'transitionend',
-			'OTransition' : 'oTransitionEnd otransitionend',
-			'transition' : 'transitionend'
-		};
-
-		for(var name in transEndEventNames) {
-			if (el.style[name] !== undefined) {
-				return transEndEventNames[name];
-			}
-		}
-
-		// return null is browser does not support transitions
-		return null;
-	})();
-
-	// left: 37, up: 38, right: 39, down: 40,
-	// spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
-	var keys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
-
-	// this function should disable scrolling on the window when the model is open
-	// is doesn't actuallyu "disable" scrolling, but it does catch all the key-commands that would make it scroll
-	// NOTE: normally, if you focus within the popup-container, the above keys will scroll that (if it's longer enough)
-	// this disableScroll will display that as well, but I think it's an acceptable loss
-	var disableScroll = function() {
-		$(document.body).on('keydown.modal', function(e) {
-			for (var i = 0; i < keys.length; i++) {
-				if (e.keyCode == keys[i]) {
-					e.preventDefault();
-					return;
-				}
-			}
-		});
-	};
-
-	var enableScroll = function() {
-		$(document.body).off('keydown.modal');
-	};
-
-	var Modal = function($el, options) {
-		this.options = options;
-		this.$el = $el;
-		if (window == window.top) {
-			this._$body = $(document.body);
-			this.inIframe = false;
-		}
-		else {
-			this._$body = $(window.top.document.body);
-			this.inIframe = true;
-		}
-		this.isOpen = false;
-
-		this._create();
-	};
-
-	Modal.prototype._create = function() {
-		var that = this;
-		var o = this.options;
-
-		// background-image is a base64 encodement of a 1x1 px png of rgba(0,0,0,.7)
-		// we do this too support down to IE8, otherwise I would just do:  'background-color: rgba(0,0,0,.7);',
-		var overlayStyles = [
-			'style="',
-			'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGDYDAAAuAC0TCbBxgAAAABJRU5ErkJggg==);',
-			'bottom: 0;',
-			'left: 0;',
-			'opacity: 0;',
-			'overflow-x: auto;',
-			'overflow-y: auto;',
-			'position: fixed;',
-			'right: 0;',
-			'top: 0;',
-			'transition: opacity ' + o.transitionTime + 's;',
-			'width: 100%;',
-			'z-index: ' + o.zIndex + ';',
-			'"'
-		].join('');
-
-		this.$overlay = $('<div class="overlay" ' + overlayStyles + '></div>').appendTo(this._$body);
-
-		var constant_options = {
-			align : 'middle',
-			_appendTo : that.$overlay,
-			attachTo : that.$overlay,
-			showArrow : false,
-			zIndex : o.zIndex + 5
-		};
-		
-		o.saveTo && $(o.saveTo).data('modal-ref', this.$el);
-
-		$.extend(o, constant_options);
-
-		// popup_options.saveTo = null, since we are saving 'modal-ref' instead
-		o.saveTo = null;
-
-		o.popupClass = 'modal' + (o.popupClass ? ' ' + o.popupClass : '');
-
-		this.$el.popup(o);
-		this.$overlay.hide();
-
-		// reset $.fn.popup's .popup-close functionality
-		this.$overlay.find('.popup-close').off('click.popup').on('click.modal', function() {
-			that.close();
-		});
-
-		if (o.autoOpen) {
-			that.open();
-		}
-	};
-
-
-	Modal.prototype.open = function() {
-		var that = this;
-
-		// already open?
-		if (this.isOpen) {
-			return;
-		}
-
-		disableScroll();
-
-		this.isOpen = true;
-		this.$overlay.show().addClass('show');
-		// timeout so DOM renderer can change element's state first before applying transition
-		// as recommended: https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions#Which_CSS_properties_are_animatable.3F
-		window.setTimeout(function() {
-			that.$overlay.css('opacity', 1);
-		}, 20);
-
-		this._$body.css('overflow', 'hidden');
-
-		// close on escape
-		if (this.options.closeOnEscape) {
-			this._$body.on('keydown.modal', function(e) {
-				// keycode 27 = escape
-				if (e.keyCode == 27) {
-					that.close();
-				}
-			});
-		}
-	};
-
-	Modal.prototype.close = function() {
-		var that = this;
-
-		enableScroll();
-
-		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to 
-		if (this.options.jqXHR && this.options.jqXHR.state() == "pending") {
-			this.options.jqXHR.abort();
-			// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
-			this.destroy();
-		}
-		if (this.options.destroyOnClose) {
-			this.destroy();
-		}
-		else {
-			this.isOpen = false;
-			// transition close if set and browser can
-			if (this.options.transition && transitionEnd) {
-				this.$overlay.one(transitionEnd, function() {
-					that._closeModal();
-				});
-				this.$overlay.css('opacity', 0);
-			}
-			else{
-				this._closeModal();
-			}
-		}
-	};
-
-	Modal.prototype.toggle = function() {
-		this.isOpen ? this.close() : this.open();
-	};
-
-	Modal.prototype.destroy = function() {
-		var that = this;
-
-		// remove saveTo ref
-		if (this.options.saveTo) {
-			$(this.options.saveTo).removeData('modal-ref');
-		}
-		this.$el.trigger('modalDestroy');
-		// transition close if set and browser can
-		if (this.options.transition && transitionEnd) {
-			this.$overlay.one(transitionEnd, function() {
-				that._closeModal();
-			});
-			this.$overlay.css('opacity', 0);
-		}
-		else {
-			that._closeModal();
-		}
-	};
-
-	Modal.prototype.replaceContent = function(content) {
-		this.$el.popup('replaceContent', content);
-	};
-
-	Modal.prototype._closeModal = function() {
-		this.options.destoryOnClse ? this.$overlay.remove() : this.$overlay.hide();
-		this._$body.css('overflow', 'visible').off('.modal');
-	};
-
-
-	//
-	// Define $.fn.Modal
-	//
-	$.fn.modal = function (option, args) {
-		var rtnValue = null;
-		this.each(function() {
-			var $this = $(this);
-			var instance = $this.data('modal');
-
-			// "if it looks like a duck, sounds like a duck, walks like a duck"
-			// test on this to see if it's an jqXHR object
-			if (this.readyState && this.promise) {
-				option.jqXHR = this;
-				var $html = $('<div>').modal(option);
-				$html.popup('$popup').addClass('loading');
-				this.always(function() {
-					$html.popup('$popup').removeClass('loading');
-				});
-				// return single jquery object of newly created node with popup instanciated on it
-				rtnValue = $html;
-				return false;
-			}
-
-			if (!instance) {
-				var options = $.extend({}, $.fn.modal.defaults, typeof option == 'object' && option);
-				$this.data('modal', (instance = new Modal($this, options)));
-			}
-			else {
-				if (typeof option == 'string') {
-					// if method/property exists and is not private (all private methods begin with _)
-					if (instance[option] && !option.match(/^_/)) {
-						// if function
-						if (typeof instance[option] == 'function') {
-							rtnValue = instance[option](args);
-						}
-						// if property
-						else {
-							rtnValue = instance[option];
-						}
-
-						if (rtnValue) {
-							return false; // break out of .each
-						}
-					}
-					else {
-						$.error("fn.Modal says: Method or Property you are trying to call is either private or does not exist");
-					}
-				}
-				// if option was not passed, toggle the modal
-				else if(!option) {
-					instance.toggle();
-				}
-				// if some other invalid value was passed as option (say a function or a number), nothing will happen
-			}
-		});
-
-		// return either the value returned a method of the instance called, or simply return itself
-		return rtnValue || this;
-	};
-
-	$.fn.modal.Constructor = Modal;
-
-	$.fn.modal.defaults = {
-		autoOpen: true,
-		closeOnEscape: true,
-		destroyOnClose: false,
-		popupClass: '',
-		saveTo: null,
-		showClose: true,
-		transition: true,
-		transitionTime: 0.6,
-		zIndex: 5000
-	};
-
-}(jQuery, document, window);
+ }(jQuery, document, window);

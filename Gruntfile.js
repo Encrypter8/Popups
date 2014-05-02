@@ -49,9 +49,6 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.min.js'
       },
     },
-    qunit: {
-      files: ['test/**/*.html']
-    },
     less: {
       test: {
         files: {
@@ -66,11 +63,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-less');
   //grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', /*'qunit',*/ 'clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'clean', 'concat', 'uglify']);
 
 };
