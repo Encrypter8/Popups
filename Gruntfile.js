@@ -97,6 +97,13 @@ module.exports = function(grunt) {
 					'demo/demo.css': 'demo/demo.less'
 				}
 			},
+		},
+
+		watch: {
+			less: {
+				files: ['./assets/*.less', './demo/*.less'],
+				tasks: ['less']
+			}
 		}
 
 	});
@@ -107,7 +114,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
-	//grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'clean', 'less', 'copy', 'uglify']);

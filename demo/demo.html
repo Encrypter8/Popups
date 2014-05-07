@@ -5,8 +5,9 @@
 	<meta charset="UTF-8">
 	<!--[if lt IE 9]><script type="text/javascript" src="https://rawgithub.com/scottjehl/Respond/master/dest/respond.src.js"></script><![endif]-->
 	<link href="../assets/popups.css" rel="stylesheet" type="text/css" />
-	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./assets/bootstrap.min.css" rel="stylesheet">
 	<link href="./demo.css" rel="stylesheet" type="text/css" />
+	<link href="../assets/prism-twilight.css" rel="stylesheet" type="text/css" />
 </head>
 <body data-spy="scroll" data-target="#navbar">
 
@@ -35,43 +36,135 @@
 	</div>
 </header>
 <main class="container">
-	<section>
+	<article>
 		<h1>jquery.popups.js</h1>
 		<h4>A css driven jquery plug-in for all your popup and dialog needs</h4>
-	</section>
+	</article>
 
-	<section id="about">
+	<article id="about">
 		<h2>About</h2>
-	</section>
+	</article>
 
-	<section id="getting-started">
+	<article id="getting-started">
 		<h2>Getting Started</h2>
-		<article>
+
+		<section>
 			<div class="row">
-				<div class="col-sm-5">
-					<pre>
-						<code>
-$('&lt;div class=&quot;my-class&quot;&gt;').popup()
-						</code>
-					</pre>
-				</div>
-				<div class="col-sm-2">
-					Will give you
-				</div>
-				<div class="col-sm-5">
-					<pre>
-						<code>
-&lt;div class=&quot;popup-container&quot;&gt;
-	&lt;div class=&quot;my-class&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-						</code>
-					</pre>
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-javascript"><code>$('&lt;div class=&quot;my-class&quot;&gt;').popup();</code></pre>
 				</div>
 			</div>
-		</article>
-	</section>
+			<p>Will simply Render:</p>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-markup"><code>&lt;div class=&quot;popup-container&quot;&gt;
+	&lt;div class=&quot;my-class&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+				</div>
+			</div>
+		</section>
 
-	<section id="api">
+		<section>
+			<p>An example where you already have the markup in the DOM</p>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-javascript"><code>$('.notification').popup();</code></pre>
+				</div>
+			</div>
+			<p>Will turn this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+			<p>Into this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;div class=&quot;popup-container&quot;&gt;
+		&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<p>A full example with several options passed</p>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-javascript"><code>$('.notification').popup({
+	attachTo: '.notify-btn',
+	classes: 'bubble',
+	collision: false,
+	position: right,
+	showArrow: true,
+	showClose: true
+});</code></pre>
+				</div>
+			</div>
+			<p>Will turn this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;button class=&quot;btn notify-btn&quot;&gt;Notify!&lt;/button&gt;
+	&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<button class="btn notify-btn">Notify!</button>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+			<p>Into this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;button class=&quot;btn notify-btn&quot;&gt;Notify!&lt;/button&gt;
+	&lt;div class=&quot;popup-container&quot;&gt;
+		&lt;button class=&quot;popup-close&quot; type=&quot;button&quot;&gt;&lt;/button&gt;
+		&lt;div class=&quot;popup-arrow&quot;&gt;
+			&lt;div class=&quot;inner-arrow&quot;&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<button class="btn notify-btn">Notify!</button>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+			</div>
+		</section>
+
+	</article>
+
+	<article id="api">
 		<h2>API</h2>
 		<h3>Options</h3>
 		<p>The object properties that can be passed on creation of a popup</p>
@@ -118,9 +211,45 @@ $('&lt;div class=&quot;my-class&quot;&gt;').popup()
 					</tr>
 				</tbody>
 			</table>
-		</div>	
-	</section>
-	<section id="examples">
+		</div>
+		<h3>Events</h3>
+		<p>This are the events you can hook into. All the Events are called on the element .popup() was called upon.</p>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 100px;">Name</th>
+						<th>description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>create.popup</td>
+					</tr>
+					<tr>
+						<td>open.popup</td>
+					</tr>
+					<tr>
+						<td>opened.popup</td>
+					</tr>
+					<tr>
+						<td>positioned.popup</td>
+					</tr>
+					<tr>
+						<td>close.popup</td>
+					</tr>
+					<tr>
+						<td>closed.popup</td>
+					</tr>
+					<tr>
+						<td>destroy.popup</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</article>
+
+	<article id="examples">
 		<h2>Examples</h2>
 		<div id="main-examples" class="row">
 			<div class="col-sm-3 col-xs-12">
@@ -157,17 +286,19 @@ $('&lt;div class=&quot;my-class&quot;&gt;').popup()
 
 		<br />
 		<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
-	</section>
-	<section id="download">
+	</article>
+
+	<article id="download">
 		<h2>Download</h2>
-	</section>
+	</article>
 
 	<div id="room-to-scroll"></div>
 </main>
 
 <script type="text/javascript" src="../libs/jquery-1.9.1.js"></script>
-<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./assets/bootstrap.min.js"></script>
 <script type="text/javascript" src="../src/jquery.popups.js"></script>
+<script type="text/javascript" src="../assets/prism.js"></script>
 <script type="text/javascript" src="./demo.js"></script>
 
 </body>

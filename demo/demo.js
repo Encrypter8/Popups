@@ -1,5 +1,21 @@
 $(function() {
 
+	// notification
+	$('.notification').eq(1).popup({
+		showArrow: false,
+		showClose: false
+	});
+
+	$('.notification').eq(3).popup({
+		attachTo: $('.notify-btn').eq(1),
+		classes: 'bubble',
+		collision: false,
+		position: 'right',
+		showArrow: true,
+		showClose: true
+	});
+
+
 	$('.main-demo').on('click', function() {
 		var $testHtml = $('<div class="popup">' + lorem() + '</div>');
 		var $this = $(this);

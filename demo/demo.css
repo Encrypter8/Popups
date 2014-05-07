@@ -9,9 +9,16 @@
 #fit-examples button {
   margin-bottom: 20px;
 }
-/* sections need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
-section {
+/* articles need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
+article {
   padding-top: 50px;
+}
+aside {
+  margin-top: 20px;
+}
+.popup-container {
+  border: 1px solid black;
+  padding: 10px;
 }
 .bubble.set-width {
   width: 500px;
