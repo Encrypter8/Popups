@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0-beta - 2014-05-02
+/* jQuery Popups - v1.0.0-beta - 2014-05-06
  * https://github.com/Encrypter8/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -103,7 +103,7 @@
 		// set triggering element with event to open/close dialog
 	};
 
-	Popup.prototype.reposition = function() {
+	Popup.prototype.position = function() {
 		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this),
@@ -283,9 +283,12 @@
 			$arrow.css(arrPos);
 		}
 
+		this.$el.trigger('positioned.popup');
+
 		return placement;
 	};
 
+	Popup.prototype.reposition = Popup.prototype.position;
 
 	Popup.prototype.open = function() {
 		if (this.isOpen) { return; }
@@ -293,6 +296,7 @@
 		this.$el.trigger('open.popup');
 		this.$popup.show();
 		this.reposition();
+		this.$el.trigger('opened.popup');
 	};
 
 
@@ -306,13 +310,14 @@
 
 		if (!this.isOpen) { return; }
 
+		this.$el.trigger('close.popup');
+
+		this.isOpen = false;
+			this.$popup.hide();
+			this.$el.trigger('closed.popup');
+
 		if (this.options.destroyOnClose) {
 			this.destroy();
-		}
-		else {
-			this.isOpen = false;
-			this.$popup.hide();
-			this.$el.trigger('close.popup');
 		}
 	};
 
@@ -327,6 +332,7 @@
 		if (this.$attachTo) {
 			this.$attachTo.removeData('popup-ref');
 		}
+
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
 	};
@@ -434,29 +440,30 @@
 	$.fn.popup.defaults = {
 		attachTo: null,
 		autoOpen: true,
+		//autoTrigger: 'click'
 		boundary: 10,
 		classes: null,
 		//closeOnOutsideClick: false, // TODO: maybe replace with a space delimited set up options (ie, outsideclick, escape, etc)
+		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
 		destroyOnClose: false,
 		offset: '50%', 
 		placement: 'right',
-		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
-		//within: $window, // bound the popup within
 		showArrow: true,
 		showClose: true,
 		//triggerEl: null,
-		//trigger: 'click'
+		//within: $window, // bound the popup within
 	};
 
 	/*
-	 * Events ( * == implemented) :
-	 * create.popup *
-	 * show.popup
-	 * shown.popup
-	 * hide.popup
-	 * hidden.popup
-	 * destroy.popup *
+	 * Events
+	 * create.popup
+	 * open.popup
+	 * opened.popup
+	 * positioned.popup
+	 * close.popup
+	 * closed.popup
+	 * destroy.popup
 	 */
 
 	// popup no conflict
