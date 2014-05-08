@@ -6,7 +6,7 @@
 
 
 
-
+	// credit: jQuery UI
 	function scrollbarWidth() {
 		if (cachedScrollbarWidth !== undefined) {
 			return cachedScrollbarWidth;
