@@ -23,6 +23,10 @@ aside {
 .bubble.set-width {
   width: 500px;
 }
+.bubble.set-width.middle {
+  margin: 0 20px;
+  width: auto;
+}
 .bubble.fit-width {
   max-width: none;
   width: 800px;
