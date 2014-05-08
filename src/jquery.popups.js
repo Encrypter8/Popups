@@ -10,6 +10,8 @@
 		$document = $(document),
 		$body = $(document.body),
 
+		guid = 0,
+
 		// regex to match offset
 		// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
 		// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
@@ -50,6 +52,8 @@
 		this.$el = $el;
 		this.isOpen = false;
 
+		this.guid = "popup" + ++guid;
+
 		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
 		this.$attachTo = $(o.attachTo);
@@ -88,6 +92,11 @@
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
 
+		// position on window resize (when neccessary)
+		if (this.placement !== 'free' && (rFit.test(o.collision)) || rFlip.test(o.collision)) {
+			$window.on('resize.' + this.guid, $.proxy(this.position, this));
+		}
+
 		// trigger create event
 		$el.trigger('create.popup');
 
@@ -99,6 +108,10 @@
 	};
 
 	Popup.prototype.position = function() {
+
+		// no point in positioning if we're not open
+		if (!this.isOpen) { return; }
+
 		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this),
@@ -328,6 +341,9 @@
 			this.$attachTo.removeData('popup-ref');
 		}
 
+		// remove resize event
+		$window.off('resize.' + this.guid);
+
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
 	};
@@ -459,6 +475,7 @@
 	 * close.popup
 	 * closed.popup
 	 * destroy.popup
+	 *
 	 */
 
 	// popup no conflict
