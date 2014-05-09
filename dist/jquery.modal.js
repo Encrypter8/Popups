@@ -1,4 +1,4 @@
-/* jQuery Modal - v1.0.0-beta - 2014-05-06
+/* jQuery Modal - v1.0.0-beta - 2014-05-08
  * https://github.com/Encrypter8/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -11,7 +11,7 @@
 
 
 
-
+	// credit: jQuery UI
 	function scrollbarWidth() {
 		if (cachedScrollbarWidth !== undefined) {
 			return cachedScrollbarWidth;

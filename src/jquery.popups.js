@@ -52,7 +52,7 @@
 		this.$el = $el;
 		this.isOpen = false;
 
-		this.guid = "popup" + ++guid;
+		this.guid = "popup" + (++guid);
 
 		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
@@ -215,7 +215,7 @@
 		}
 
 		// reposition the popup along the opposite axis of how it's positioned
-		// ie: if position is right or left, reposition alone the virtical axis
+		// ie: if position is right or left, reposition along the virtical axis
 		// if the popup excedes the limit of the window
 		// don't do if placement == free
 		// always do for middle along BOTH axes
@@ -296,14 +296,12 @@
 		return placement;
 	};
 
-	Popup.prototype.reposition = Popup.prototype.position;
-
 	Popup.prototype.open = function() {
 		if (this.isOpen) { return; }
 		this.isOpen = true;
 		this.$el.trigger('open.popup');
 		this.$popup.show();
-		this.reposition();
+		this.position();
 		this.$el.trigger('opened.popup');
 	};
 
@@ -351,7 +349,7 @@
 
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
-		this.reposition();
+		this.position();
 	};
 
 
