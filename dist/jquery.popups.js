@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0-beta - 2014-05-06
+/* jQuery Popups - v1.0.0-beta - 2014-05-08
  * https://github.com/Encrypter8/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -14,6 +14,8 @@
 		$window = $(window),
 		$document = $(document),
 		$body = $(document.body),
+
+		guid = 0,
 
 		// regex to match offset
 		// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
@@ -55,6 +57,8 @@
 		this.$el = $el;
 		this.isOpen = false;
 
+		this.guid = "popup" + (++guid);
+
 		// handle special cases that I also what to be properties
 		this.placement = o.placement.toLowerCase();
 		this.$attachTo = $(o.attachTo);
@@ -93,6 +97,11 @@
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
 
+		// position on window resize (when neccessary)
+		if (this.placement !== 'free' && (rFit.test(o.collision)) || rFlip.test(o.collision)) {
+			$window.on('resize.' + this.guid, $.proxy(this.position, this));
+		}
+
 		// trigger create event
 		$el.trigger('create.popup');
 
@@ -104,6 +113,10 @@
 	};
 
 	Popup.prototype.position = function() {
+
+		// no point in positioning if we're not open
+		if (!this.isOpen) { return; }
+
 		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this),
@@ -207,7 +220,7 @@
 		}
 
 		// reposition the popup along the opposite axis of how it's positioned
-		// ie: if position is right or left, reposition alone the virtical axis
+		// ie: if position is right or left, reposition along the virtical axis
 		// if the popup excedes the limit of the window
 		// don't do if placement == free
 		// always do for middle along BOTH axes
@@ -288,14 +301,12 @@
 		return placement;
 	};
 
-	Popup.prototype.reposition = Popup.prototype.position;
-
 	Popup.prototype.open = function() {
 		if (this.isOpen) { return; }
 		this.isOpen = true;
 		this.$el.trigger('open.popup');
 		this.$popup.show();
-		this.reposition();
+		this.position();
 		this.$el.trigger('opened.popup');
 	};
 
@@ -333,6 +344,9 @@
 			this.$attachTo.removeData('popup-ref');
 		}
 
+		// remove resize event
+		$window.off('resize.' + this.guid);
+
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
 	};
@@ -340,7 +354,7 @@
 
 	Popup.prototype.replaceContent = function(content) {
 		this.$el.empty().append(content);
-		this.reposition();
+		this.position();
 	};
 
 
@@ -464,6 +478,7 @@
 	 * close.popup
 	 * closed.popup
 	 * destroy.popup
+	 *
 	 */
 
 	// popup no conflict
