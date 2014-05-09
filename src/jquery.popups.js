@@ -50,7 +50,7 @@
 
 		this.options = o;
 		this.$el = $el;
-		this.isOpen = false;
+		this.isOpen = false; // consider: rename to 'isShowing'
 
 		this.guid = "popup" + (++guid);
 
@@ -296,6 +296,7 @@
 		return placement;
 	};
 
+	// consider: rename to 'show'
 	Popup.prototype.open = function() {
 		if (this.isOpen) { return; }
 		this.isOpen = true;
@@ -305,7 +306,7 @@
 		this.$el.trigger('opened.popup');
 	};
 
-
+	// consider: rename to 'hide'
 	Popup.prototype.close = function() {
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to abort the XHR call
 		// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
@@ -448,7 +449,7 @@
 	// feel free to change these to your liking
 	$.fn.popup.defaults = {
 		attachTo: null,
-		autoOpen: true,
+		autoOpen: true, // if we change 'open' to 'show', this should be renamed to 'autoShow'
 		//autoTrigger: 'click'
 		boundary: 10,
 		classes: null,
@@ -458,8 +459,8 @@
 		destroyOnClose: false,
 		offset: '50%', 
 		placement: 'right',
-		showArrow: true,
-		showClose: true,
+		showArrow: true, // consider: rename to 'addArrow'
+		showClose: true, // consider: rename to 'addClose'
 		//triggerEl: null,
 		//within: $window, // bound the popup within
 	};
@@ -467,11 +468,11 @@
 	/*
 	 * Events
 	 * create.popup
-	 * open.popup
-	 * opened.popup
+	 * open.popup 		// if open is changed to show, these need to change to show
+	 * opened.popup 	// and shown
 	 * positioned.popup
-	 * close.popup
-	 * closed.popup
+	 * close.popup 		// if close is changed to hide, these need to change to hide
+	 * closed.popup 	// and hidden
 	 * destroy.popup
 	 *
 	 */
