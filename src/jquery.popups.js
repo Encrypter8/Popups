@@ -461,7 +461,7 @@
 		offset: '50%', 
 		placement: 'right',
 		showArrow: true,
-		showClose: true,
+		showClose: true
 		//triggerEl: null,
 		//within: $window, // bound the popup within
 	};

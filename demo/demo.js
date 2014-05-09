@@ -43,7 +43,7 @@ $(function() {
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
 				attachTo: $this,
-				buffer: '50 10 10 10',
+				boundary: '50 10 10 10',
 				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
 				collision: $this.hasClass('fit') ? 'fit' : null,
 				destroyOnClose: true,
@@ -74,8 +74,7 @@ $(function() {
 			$echoPopup.find('.echo').text(data.echo);
 		});
 
-		var $echoPopup = $.popup($ajax,
-		{
+		var $echoPopup = $.popup($ajax, {
 			attachTo: '#jqXHR-test',
 			classes: 'bubble',
 			collision: false,
