@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0-beta - 2014-05-08
+/* jQuery Popups - v1.0.0-beta - 2014-05-11
  * https://github.com/Encrypter8/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -55,7 +55,7 @@
 
 		this.options = o;
 		this.$el = $el;
-		this.isOpen = false;
+		this.isShowing = false;
 
 		this.guid = "popup" + (++guid);
 
@@ -74,13 +74,9 @@
 		this.$arrow = o.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popup) : null;
 
 		// if showClose, bind click event
-		if (this.$closeButton) {
-			this.$closeButton.on('click', function() {
-				that.close();
-			});
-		}
+		this.$closeButton && this.$closeButton.on('click', $.proxy(this.hide, this));
 
-		// if .container, move $el to that container
+		// if o.container, move $el to that container
 		// else if $el is not already a child of document.body, add it
 		if (o.container) {
 			$(o.container).append($el);
@@ -90,7 +86,7 @@
 		}
 
 		// move $el into $popup and place $popup where $el used to be
-		// always hide here, if o.autoOpen, popup will open below
+		// always hide here, if o.autoShow, popup will open below
 		$el.after(this.$popup);
 		this.$popup.append($el).hide();
 
@@ -105,8 +101,8 @@
 		// trigger create event
 		$el.trigger('create.popup');
 
-		// finally, if autoOpen, open!
-		o.autoOpen && this.open();
+		// finally, if autoShow, open!
+		o.autoShow && this.show();
 
 		//TODO
 		// set triggering element with event to open/close dialog
@@ -114,8 +110,8 @@
 
 	Popup.prototype.position = function() {
 
-		// no point in positioning if we're not open
-		if (!this.isOpen) { return; }
+		// no point in positioning if we're not showing
+		if (!this.isShowing) { return; }
 
 		var placement = this.placement,
 			o = this.options,
@@ -301,17 +297,18 @@
 		return placement;
 	};
 
-	Popup.prototype.open = function() {
-		if (this.isOpen) { return; }
-		this.isOpen = true;
-		this.$el.trigger('open.popup');
+	// consider: rename to 'show'
+	Popup.prototype.show = function() {
+		if (this.isShowing) { return; }
+		this.isShowing = true;
+		this.$el.trigger('show.popup');
 		this.$popup.show();
 		this.position();
-		this.$el.trigger('opened.popup');
+		this.$el.trigger('shown.popup');
 	};
 
-
-	Popup.prototype.close = function() {
+	// consider: rename to 'hide'
+	Popup.prototype.hide = function() {
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to abort the XHR call
 		// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
 		if (this.jqXHR && this.jqXHR.state() === 'pending') {
@@ -319,23 +316,23 @@
 			this.destroy();
 		}
 
-		if (!this.isOpen) { return; }
+		if (!this.isShowing) { return; }
 
-		this.$el.trigger('close.popup');
+		this.$el.trigger('hide.popup');
 
-		this.isOpen = false;
+		this.isShowing = false;
 			this.$popup.hide();
-			this.$el.trigger('closed.popup');
+			this.$el.trigger('hidden.popup');
 
-		if (this.options.destroyOnClose) {
+		if (this.options.destroyOnHide) {
 			this.destroy();
 		}
 	};
 
 
 	Popup.prototype.toggle = function() {
-		if (this.isOpen) { return this.close(); }
-		return this.open();
+		if (this.isShowing) { return this.hide(); }
+		return this.show();
 	};
 
 
@@ -453,30 +450,30 @@
 	// feel free to change these to your liking
 	$.fn.popup.defaults = {
 		attachTo: null,
-		autoOpen: true,
+		autoShow: true,
 		//autoTrigger: 'click'
 		boundary: 10,
 		classes: null,
 		//closeOnOutsideClick: false, // TODO: maybe replace with a space delimited set up options (ie, outsideclick, escape, etc)
 		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
-		destroyOnClose: false,
+		destroyOnHide: false,
 		offset: '50%', 
 		placement: 'right',
-		showArrow: true,
-		showClose: true,
+		showArrow: true, // consider: rename to 'addArrow'
+		showClose: true  // consider: rename to 'addClose'
 		//triggerEl: null,
 		//within: $window, // bound the popup within
 	};
 
 	/*
-	 * Events
+	 * Events:
 	 * create.popup
-	 * open.popup
-	 * opened.popup
+	 * show.popup
+	 * shown.popup
 	 * positioned.popup
-	 * close.popup
-	 * closed.popup
+	 * hide.popup
+	 * hidden.popup
 	 * destroy.popup
 	 *
 	 */

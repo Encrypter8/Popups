@@ -1,4 +1,4 @@
-/* jQuery Modal - v1.0.0-beta - 2014-05-08
+/* jQuery Modal - v1.0.0-beta - 2014-05-11
  * https://github.com/Encrypter8/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -9,6 +9,12 @@
 
 	var cachedScrollbarWidth;
 
+
+	//
+	//
+	// Test Change to see how gh-pages can update with rebasing
+	//
+	//
 
 
 	// credit: jQuery UI
