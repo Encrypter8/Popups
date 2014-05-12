@@ -26,12 +26,12 @@ $(function() {
 				attachTo: $this,
 				classes: 'bubble set-width',
 				//collision: false,
-				destroyOnClose: true,
+				destroyOnHide: true,
 				placement: placement
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('close');
+			$this.data('popup-ref').popup('hide');
 		}
 	});
 
@@ -46,13 +46,13 @@ $(function() {
 				boundary: '50 10 10 10',
 				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
 				collision: $this.hasClass('fit') ? 'fit' : null,
-				destroyOnClose: true,
+				destroyOnHide: true,
 				placement: $this.data('placement'),
 				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px'
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('close');
+			$this.data('popup-ref').popup('hide');
 		}
 
 	});
@@ -79,7 +79,7 @@ $(function() {
 			classes: 'bubble',
 			collision: false,
 			placement: 'right',
-			destroyOnClose: true
+			destroyOnHide: true
 		});
 	});
 
