@@ -334,8 +334,9 @@
 			this.$attachTo.removeData('popup-ref');
 		}
 
-		// remove resize event
+		// remove events
 		$window.off('resize.' + this.guid);
+		this.$el.off('.popup');
 
 		this.$el.trigger('destroy.popup');
 		this.$popup.remove();
@@ -429,7 +430,7 @@
 		var $el = $(el).first();
 
 		if ($el.length === 0) {
-			$.error('selector returned zero results');
+			$.error('fn.popup says: selector returned zero results');
 			return $el;
 		}
 
