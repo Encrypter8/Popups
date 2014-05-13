@@ -2,7 +2,7 @@
 	"name": "jquery.popups",
 	"title": "jQuery Popups",
 	"description": "A jQuery Plugin for all your popup, popover, tooltip, dropdown, dialog, and modal needs",
-	"version": "1.0.0-beta",
+	"version": "1.0.0-RC1",
 	"main": "dist/jquery.popups.js",
 	"homepage": "https://github.com/harris-miller/Popups",
 	"author": {
