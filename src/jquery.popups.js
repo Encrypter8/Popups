@@ -123,28 +123,28 @@
 
 			// define flip tests
 			willFitOnRight = function() {
-				if (atPos.left + atPos.width + elWidth > $window.width()) {
+				if (atPos.left + atPos.width + elWidth > $window.width() - boundary.right) {
 					return false;
 				}
 				return 'right';
 			},
 
 			willFitOnLeft = function() {
-				if (atPos.left - elWidth < 0) {
+				if (atPos.left - elWidth < boundary.left) {
 					return false;
 				}
 				return 'left';
 			},
 
 			willFitOnBottom = function() {
-				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height()) {
+				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height() - boundary.bottom) {
 					return false;
 				}
 				return 'bottom';
 			},
 
 			willFitOnTop = function() {
-				if (atPos.top - elHeight < $document.scrollTop()) {
+				if (atPos.top - elHeight < $document.scrollTop() + boundary.top) {
 					return false;
 				}
 				return 'top';

@@ -17,7 +17,8 @@ $(function() {
 
 
 	$('.main-demo').on('click', function() {
-		var $testHtml = $('<div class="popup">' + lorem() + '</div>');
+
+		var $testHtml = $lorem();
 		var $this = $(this);
 		var placement = $this.data('placement');
 
@@ -25,7 +26,7 @@ $(function() {
 			$testHtml.popup({
 				attachTo: $this,
 				classes: 'bubble set-width',
-				//collision: false,
+				collision: null,
 				destroyOnHide: true,
 				placement: placement
 			});
@@ -35,9 +36,10 @@ $(function() {
 		}
 	});
 
+
 	$('#offset-test').on('click', function() {
 
-		var $testHtml = $('<div class="popup">' + lorem() + "</div>");
+		var $testHtml = $lorem();
 		var $this = $(this);
 
 		var offset = $('#offset-input').val();
@@ -56,9 +58,10 @@ $(function() {
 		}
 	});
 
+
 	$('.fit-demo').on('click', function() {
 
-		var $testHtml = $('<div class="popup">' + lorem() + "</div>");
+		var $testHtml = $lorem();
 		var $this = $(this);
 
 		if (!$this.data('popup-ref')) {
@@ -75,8 +78,29 @@ $(function() {
 		else {
 			$this.data('popup-ref').popup('hide');
 		}
-
 	});
+
+
+	$('.flip-demo').on('click', function() {
+
+		var $testHtml = $lorem();
+		var $this = $(this);
+
+		if (!$this.data('popup-ref')) {
+			$testHtml.popup({
+				attachTo: $this,
+				boundary: '50 10 10 10',
+				classes: 'bubble flip-width',
+				collision: 'flip',
+				destroyOnHide: true,
+				placement: $this.data('placement')
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('hide');
+		}
+	});
+
 
 	$('#jqXHR-test').on('click', function() {
 
@@ -105,6 +129,12 @@ $(function() {
 		});
 	});
 
+
+
+
+	function $lorem() {
+		return $('<div class="popup">' + lorem() + "</div>");
+	}
 
 	function lorem() {
 		return "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";

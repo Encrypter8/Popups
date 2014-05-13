@@ -21,7 +21,7 @@ aside {
   padding: 10px;
 }
 .bubble.set-width {
-  width: 500px;
+  width: 300px;
 }
 .bubble.set-width.middle {
   margin: 0 20px;
@@ -34,6 +34,9 @@ aside {
 .bubble.fit-height {
   max-width: none;
   height: 300px;
+}
+.bubble.flip-width {
+  width: 500px;
 }
 #examples label {
   margin-right: 15px;

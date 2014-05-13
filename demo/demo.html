@@ -7,7 +7,8 @@
 	<link href="../assets/popups.css" rel="stylesheet" type="text/css" />
 	<link href="./assets/bootstrap.min.css" rel="stylesheet">
 	<link href="./demo.css" rel="stylesheet" type="text/css" />
-	<link href="../assets/prism-twilight.css" rel="stylesheet" type="text/css" />
+	<link href="../assets/prism.css" rel="stylesheet" type="text/css" />
+	<!-- <link href="../assets/prism-twilight.css" rel="stylesheet" type="text/css" /> -->
 </head>
 <body data-spy="scroll" data-target="#navbar">
 
@@ -410,6 +411,39 @@
 				<button class="btn front fit-demo" data-placement="bottom">No Fit</button>
 				<br />
 				<button class="btn front fit-demo fit" data-placement="bottom">Fit</button>
+			</div>
+
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'left'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="left">Popup Left</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'top'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="top">Popup Top</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'bottom'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="bottom">Popup Bottom</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'right'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="right">Popup Right</button>
 			</div>
 		</div>
 
