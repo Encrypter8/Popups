@@ -1,5 +1,5 @@
-/* jQuery Popups - v1.0.0-beta - 2014-05-12
- * https://github.com/Encrypter8/Popups
+/* jQuery Popups - v1.0.0-beta - 2014-05-13
+ * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
  */
