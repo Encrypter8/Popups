@@ -172,54 +172,138 @@
 			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
-						<th style="width: 100px;">Name</th>
-						<th style="width: 100px;">type</th>
-						<th style="width: 100px;">default</th>
-						<th>description</th>
+						<th style="width: 150px;">Name</th>
+						<th style="width: 200px;">Type</th>
+						<th style="width: 100px;">Default</th>
+						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>attachTo</td>
+						<td>jQuery | element | string</td>
+						<td>null</td>
 					</tr>
 					<tr>
 						<td>autoShow</td>
+						<td>boolean</td>
+						<td>true</td>
+					</tr>
+					<tr>
+						<td>boundary</td>
+						<td>number</td>
+						<td>10</td>
 					</tr>
 					<tr>
 						<td>classes</td>
+						<td>string</td>
+						<td>null</td>
 					</tr>
 					<tr>
 						<td>collision</td>
+						<td>string</td>
+						<td>'fitflip'</td>
 					</tr>
 					<tr>
 						<td>container</td>
+						<td>jQuery | element | string</td>
+						<td>null</td>
 					</tr>
 					<tr>
 						<td>destroyOnClose</td>
+						<td>boolean</td>
+						<td>false</td>
 					</tr>
 					<tr>
 						<td>offset</td>
+						<td>string</td>
+						<td>'50%'</td>
 					</tr>
 					<tr>
 						<td>placement</td>
+						<td>string</td>
+						<td>'right'</td>
 					</tr>
 					<tr>
 						<td>showArrow</td>
+						<td>boolean</td>
+						<td>true</td>
 					</tr>
 					<tr>
 						<td>showClose</td>
+						<td>boolean</td>
+						<td>true</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
+
+		<h3>Methods</h3>
+		<p>There are methods that can be called for your programming convenience.</p>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Name</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>show</td>
+					</tr>
+					<tr>
+						<td>hide</td>
+					</tr>
+					<tr>
+						<td>toggle</td>
+					</tr>
+					<tr>
+						<td>destroy</td>
+					</tr>
+					<tr>
+						<td>setContent</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h3>Properties</h3>
+		<p>Get only properties for your programming convenience</p>
+		<div class="table0-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Name</th>
+						<th style="width: 150px">Return Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>$popup</td>
+						<td>jQuery</td>
+					</tr>
+					<tr>
+						<td>$el</td>
+						<td>jQuery</td>
+					</tr>
+					<tr>
+						<td>isShowing</td>
+						<td>boolean</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
 		<h3>Events</h3>
 		<p>This are the events you can hook into. All the Events are called on the element .popup() was called upon.</p>
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
-						<th style="width: 100px;">Name</th>
-						<th>description</th>
+						<th style="width: 150px;">Name</th>
+						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -252,40 +336,118 @@
 	<article id="examples">
 		<h2>Examples</h2>
 		<div id="main-examples" class="row">
+			<h3 class="col-xs-12">Placement</h3>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'left'
+});</code></pre>
 				<button class="btn main-demo" data-placement="left">Popup Left</button>
 			</div>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'top'
+});</code></pre>
 				<button class="btn main-demo" data-placement="top">Popup Top</button>
 			</div>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'bottom'
+});</code></pre>
 				<button class="btn main-demo" data-placement="bottom">Popup Bottom</button>
 			</div>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'right'
+});</code></pre>
 				<button class="btn main-demo" data-placement="right">Popup Right</button>
+			</div>
+		</div>
+
+		<div id="offset-examples" class="row">
+			<h3 class="col-xs-12">Offset</h3>
+			<div class="col-sm-6 col-xs-12">
+				<pre class="language-javascript"><code>$.element.popup({
+	offset: '50%-30px'
+	placement: 'right'
+});</code></pre>
+				<label>Set the offset:</label>
+				<input id="offset-input" type="text" value="50%-30px">
+				<button id="offset-test" class="btn">Offset</button>
 			</div>
 		</div>
 		
 		<div id="fit-examples" class="row">
-			<div class="col-sm-3 col-xs-12">
+			<h3 class="col-xs-12">Collision and Boundry</h3>
+			<div class="col-sm-4 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'fit',
+	offset: '100%-50px',
+	placement: 'bottom'
+});</code></pre>
 				<button class="btn fit-demo" data-placement="bottom">No Fit</button>
 				<br />
 				<button class="btn fit-demo fit" data-placement="bottom">Fit</button>
 			</div>
-			<div class="col-sm-6 col-xs-12">
+			<div class="col-sm-4 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'fit',
+	offset: '50%',
+	placement: 'right'
+});</code></pre>
 				<button class="btn vert fit-demo" data-placement="right">No Fit</button>
 				<br />
 				<button class="btn vert fit-demo fit" data-placement="right">Fit</button>
 			</div>
-			<div class="col-sm-3 col-xs-12">
+			<div class="col-sm-4 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'fit',
+	offset: '50px'
+	placement: 'bottom'
+});</code></pre>
 				<button class="btn front fit-demo" data-placement="bottom">No Fit</button>
 				<br />
 				<button class="btn front fit-demo fit" data-placement="bottom">Fit</button>
 			</div>
 		</div>
 
-		<br />
-		<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
+		<div id="ajax-examples" class="row">
+			<h3 class="col-xs-12">jqXHR</h3>
+			<div class="col-sm-6 col-xs-12">
+				<pre class="language-javascript"><code>$('#jqXHR-test').on('click', function() {
+
+	var echo = $('#jqXHR-echo').val();
+
+	var $ajax = $.ajax({
+		type: 'GET',
+		url: 'http://jsfiddle.net/echo/jsonp/',
+		data: {
+			html: '<div class="popup">Here is your Echo:<br /><span class="echo"></span></div>',
+			echo: echo,
+			delay: 3
+		},
+		dataType: 'jsonp'
+	}).done(function(data) {
+		$echoPopup.popup('setContent', data.html);
+		$echoPopup.find('.echo').text(data.echo);
+	});
+
+	var $echoPopup = $.popup($ajax, {
+		attachTo: '#jqXHR-test',
+		classes: 'bubble',
+		collision: false,
+		placement: 'right',
+		destroyOnHide: true
+	});
+});</code></pre>
+				<label>This text will be echo'd back:</label>
+				<input id="jqXHR-echo" class="form-control" type="text" placeholder="Enter your echo" />
+				<br />
+				<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
+			</div>
+		</div>
 	</article>
 
 	<article id="download">

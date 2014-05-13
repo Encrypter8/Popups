@@ -35,6 +35,27 @@ $(function() {
 		}
 	});
 
+	$('#offset-test').on('click', function() {
+
+		var $testHtml = $('<div class="popup">' + lorem() + "</div>");
+		var $this = $(this);
+
+		var offset = $('#offset-input').val();
+
+		if (!$this.data('popup-ref')) {
+			$testHtml.popup({
+				attachTo: $this,
+				classes: 'bubble',
+				destroyOnHide: true,
+				offset: offset,
+				placement: 'right'
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('hide');
+		}
+	});
+
 	$('.fit-demo').on('click', function() {
 
 		var $testHtml = $('<div class="popup">' + lorem() + "</div>");
@@ -47,8 +68,8 @@ $(function() {
 				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
 				collision: $this.hasClass('fit') ? 'fit' : null,
 				destroyOnHide: true,
-				placement: $this.data('placement'),
-				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px'
+				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px',
+				placement: $this.data('placement')
 			});
 		}
 		else {
@@ -58,19 +79,20 @@ $(function() {
 	});
 
 	$('#jqXHR-test').on('click', function() {
-		console.log('ajax-click');
+
+		var echo = $('#jqXHR-echo').val();
 
 		var $ajax = $.ajax({
 			type: 'GET',
 			url: 'http://jsfiddle.net/echo/jsonp/',
 			data: {
 				html: '<div class="popup">Here is your Echo:<br /><span class="echo"></span></div>',
+				echo: echo,
 				delay: 3
 			},
 			dataType: 'jsonp'
 		}).done(function(data) {
-			console.log(data);
-			$echoPopup.popup('replaceContent', data.html);
+			$echoPopup.popup('setContent', data.html);
 			$echoPopup.find('.echo').text(data.echo);
 		});
 

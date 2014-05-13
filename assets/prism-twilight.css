@@ -139,7 +139,7 @@ pre[data-line] {
 /* Make the tokens sit above the line highlight so the colours don't look faded. */
 .token {
 	position:relative;
-	z-index:1;
+	/*z-index:1;*/
 }
 .line-highlight {
 	background: -moz-linear-gradient(left, hsla(0, 0%, 33%,.1) 70%, hsla(0, 0%, 33%,0)); /* #545454 */

@@ -35,3 +35,10 @@ aside {
   max-width: none;
   height: 300px;
 }
+#examples label {
+  margin-right: 15px;
+}
+#examples .form-control {
+  display: inline-block;
+  width: 200px;
+}

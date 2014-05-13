@@ -88,10 +88,8 @@
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
 
-		// position on window resize (when neccessary)
-		if (this.placement !== 'free' && (rFit.test(o.collision)) || rFlip.test(o.collision)) {
-			$window.on('resize.' + this.guid, $.proxy(this.position, this));
-		}
+		// position on window resize
+		$window.on('resize.' + this.guid, $.proxy(this.position, this));
 
 		// trigger create event
 		$el.trigger('create.popup');
@@ -327,7 +325,7 @@
 
 	Popup.prototype.toggle = function() {
 		if (this.isShowing) { return this.hide(); }
-		return this.show();
+		this.show();
 	};
 
 
@@ -344,7 +342,7 @@
 	};
 
 
-	Popup.prototype.replaceContent = function(content) {
+	Popup.prototype.setContent = function(content) {
 		this.$el.empty().append(content);
 		this.position();
 	};
