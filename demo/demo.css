@@ -33,6 +33,7 @@ aside {
 }
 .bubble.fit-height {
   max-width: none;
+  width: 400px;
   height: 300px;
 }
 .bubble.flip-width {
