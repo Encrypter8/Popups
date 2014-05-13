@@ -5,8 +5,8 @@ jquery.popups.js - a jQuery Popups Plugin
 ## Getting Started
 Download the [production version][prod] or the [development version][dev].
 
-[prod]: https://raw.github.com/Encrypter8/Popups/master/dist/jquery.popups.min.js
-[dev]: https://raw.github.com/Encrypter8/Popups/master/dist/jquery.popups.js
+[prod]: https://raw.github.com/harris-miller/Popups/master/dist/jquery.popups.min.js
+[dev]: https://raw.github.com/harris-miller/Popups/master/dist/jquery.popups.js
 
 In your web page:
 

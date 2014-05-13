@@ -1,5 +1,5 @@
 /* jQuery Modal - v1.0.0-beta - 2014-05-12
- * https://github.com/Encrypter8/Popups
+ * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
  */
