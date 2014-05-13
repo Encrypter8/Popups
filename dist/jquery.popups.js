@@ -28,8 +28,8 @@
 		// exec[1] will give 25 for the above cases
 		rPxMatch = /^(\d*(?:\.\d+)?)(?:px)?$/,
 
-		// responsive placement options
-		rResponsivePlacementOptions = /top|bottom|right|left/,
+		// placement options
+		rPlacementOptions = /top|bottom|right|left|middle|free/,
 
 		// collision flip
 		rFlip = /flip/,
@@ -59,8 +59,12 @@
 
 		this.guid = "popup" + (++guid);
 
-		// handle special cases that I also what to be properties
-		this.placement = o.placement.toLowerCase();
+		// normalize o.placement
+		typeof o.placement !== 'string' && (o.placement = 'free');
+		o.placement = o.placement.toLowerCase();
+		!rPlacementOptions.test(o.placement) && (o.placement = 'free');
+		this.placement = o.placement;
+
 		this.$attachTo = $(o.attachTo);
 		//this.$triggerEl = $(o.triggerEl); // TODO: figure out exactly what we're doing with this one
 		this.boundary = calculateBoundary.call(this);
