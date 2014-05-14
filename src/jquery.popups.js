@@ -26,17 +26,17 @@
 		// placement options
 		rPlacementOptions = /top|bottom|right|left|middle|free/,
 
-		// collision flip
-		rFlip = /flip/,
-
-		// collision fit
-		rFit = /fit/,
-
 		// positions for horizontal fit
 		rHorizontal = /top|bottom|middle/,
 
 		// positions for vertical fit
-		rVertical = /right|left|middle/;
+		rVertical = /right|left|middle/,
+
+		// collision flip
+		rFlip = /flip/,
+
+		// collision fit
+		rFit = /fit/;
 
 		// valid Event Types
 		//var rValidEventTypes = /click/; // TODO: expand this list
@@ -183,7 +183,7 @@
 		}
 
 
-		// add class to popup for styling (first remove all posible classes)
+		// add class to popup for styling (first remove all possible classes)
 		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
 
 

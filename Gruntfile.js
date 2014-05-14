@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 		less: {
 			demo: {
 				files: {
-					'assets/popups.css': 'assets/popups.less',
+					'dist/popups.css': 'src/popups.less',
 					'demo/demo.css': 'demo/demo.less'
 				}
 			},
@@ -101,7 +101,7 @@ module.exports = function(grunt) {
 
 		watch: {
 			less: {
-				files: ['./assets/*.less', './demo/*.less'],
+				files: ['./src/*.less', './demo/*.less'],
 				tasks: ['less']
 			}
 		}

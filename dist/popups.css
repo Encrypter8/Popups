@@ -9,7 +9,7 @@
   min-width: 100px;
 }
 .popup-container.loading {
-  background-image: url("loading_spinner.gif");
+  background-image: url("../demo/assets/loading_spinner.gif");
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -19,7 +19,7 @@
 }
 .popup-container.bubble .popup-close {
   background-color: transparent;
-  background-image: url('Popup_Close.png');
+  background-image: url('../demo/assets/Popup_Close.png');
   background-repeat: no-repeat;
   border: none;
   cursor: pointer;
