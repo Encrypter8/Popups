@@ -42,9 +42,6 @@
 
 		// collision fit
 		rFit = /fit/;
-
-		// valid Event Types
-		//var rValidEventTypes = /click/; // TODO: expand this list
 	
 
 	// define Popup
