@@ -2,6 +2,8 @@
 
 +function ($, document, window) {
 
+	"use strict";
+
 	var cachedScrollbarWidth;
 
 

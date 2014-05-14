@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0-RC1 - 2014-05-13
+/* jQuery Popups - v1.0.0-RC1 - 2014-05-14
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -7,7 +7,7 @@
 
 +function ($, document, window) {
 
-	//"use strict";
+	"use strict";
 
 	// globally used variables
 	var i,
@@ -31,17 +31,17 @@
 		// placement options
 		rPlacementOptions = /top|bottom|right|left|middle|free/,
 
-		// collision flip
-		rFlip = /flip/,
-
-		// collision fit
-		rFit = /fit/,
-
 		// positions for horizontal fit
 		rHorizontal = /top|bottom|middle/,
 
 		// positions for vertical fit
-		rVertical = /right|left|middle/;
+		rVertical = /right|left|middle/,
+
+		// collision flip
+		rFlip = /flip/,
+
+		// collision fit
+		rFit = /fit/;
 
 		// valid Event Types
 		//var rValidEventTypes = /click/; // TODO: expand this list
@@ -188,7 +188,7 @@
 		}
 
 
-		// add class to popup for styling (first remove all posible classes)
+		// add class to popup for styling (first remove all possible classes)
 		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
 
 

@@ -1,4 +1,4 @@
-/* jQuery Modal - v1.0.0-RC1 - 2014-05-13
+/* jQuery Modal - v1.0.0-RC1 - 2014-05-14
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -6,6 +6,8 @@
 
 
 +function ($, document, window) {
+
+	"use strict";
 
 	var cachedScrollbarWidth;
 

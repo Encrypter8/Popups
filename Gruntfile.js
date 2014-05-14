@@ -55,6 +55,7 @@ module.exports = function(grunt) {
 
 		jshint: {
 			options: {
+				"validthis": true,
 				"curly": true,
 				"eqnull": true,
 				"eqeqeq": false,

@@ -2,7 +2,7 @@
 
 +function ($, document, window) {
 
-	//"use strict";
+	"use strict";
 
 	// globally used variables
 	var i,
