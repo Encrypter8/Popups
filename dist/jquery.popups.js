@@ -65,8 +65,8 @@
 		!rPlacementOptions.test(o.placement) && (o.placement = 'free');
 		this.placement = o.placement;
 
+		// set $attachTo and calculate Boundary
 		this.$attachTo = $(o.attachTo);
-		//this.$triggerEl = $(o.triggerEl); // TODO: figure out exactly what we're doing with this one
 		this.boundary = calculateBoundary.call(this);
 
 		// create popup container
@@ -105,9 +105,6 @@
 
 		// finally, if autoShow, open!
 		o.autoShow && this.show();
-
-		//TODO
-		// set triggering element with event to open/close dialog
 	};
 
 	Popup.prototype.position = function() {
@@ -454,10 +451,8 @@
 	$.fn.popup.defaults = {
 		attachTo: null,
 		autoShow: true,
-		//autoTrigger: 'click'
 		boundary: 10,
 		classes: null,
-		//closeOnOutsideClick: false, // TODO: maybe replace with a space delimited set up options (ie, outsideclick, escape, etc)
 		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
 		destroyOnHide: false,
@@ -465,7 +460,6 @@
 		placement: 'right',
 		showArrow: true, // consider: rename to 'addArrow'
 		showClose: true  // consider: rename to 'addClose'
-		//triggerEl: null,
 		//within: $window, // bound the popup within
 	};
 
