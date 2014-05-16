@@ -51,6 +51,9 @@
 
 		this.guid = "popup" + (++guid);
 
+		// set animate is lack of support
+		!$.support.transition.end && !$.fn.emulateTransitionEnd && (o.animate = false);
+
 		// normalize o.placement
 		typeof o.placement !== 'string' && (o.placement = 'free');
 		o.placement = o.placement.toLowerCase();
@@ -85,6 +88,9 @@
 		// always hide here, if o.autoShow, popup will open below
 		$el.after(this.$popup);
 		this.$popup.append($el).hide();
+
+		// add visibility hidden when o.animate == true
+		o.animate && this.$popup.css('visibility', 'hidden');
 
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
@@ -290,16 +296,31 @@
 
 	// consider: rename to 'show'
 	Popup.prototype.show = function() {
+		var that = this;
+
 		if (this.isShowing) { return; }
 		this.isShowing = true;
 		this.$el.trigger('show.popup');
 		this.$popup.show();
 		this.position();
+
+		if (this.options.animate) {
+			//delays and queues are to defeat race conditions
+			this.$popup
+				.addClass('ani-start')
+				.css('visibility', "visible")
+				.delay(0)
+				.queue(function() { that.$popup.addClass('ani').dequeue(); })
+				.delay(0)
+				.queue(function() { that.$popup.removeClass('ani-start').dequeue(); });
+		}
+
 		this.$el.trigger('shown.popup');
 	};
 
 	// consider: rename to 'hide'
 	Popup.prototype.hide = function() {
+		var that = this;
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to abort the XHR call
 		// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
 		if (this.jqXHR && this.jqXHR.state() === 'pending') {
@@ -311,12 +332,27 @@
 
 		this.$el.trigger('hide.popup');
 
-		this.isShowing = false;
-			this.$popup.hide();
-			this.$el.trigger('hidden.popup');
+		if (this.options.animate) {
+			this.$popup.one($.support.transition.end, function() {
+				that.$popup.removeClass('ani ani-finish').css('visibility', 'hidden');
+				finishHide();
+			}).emulateTransitionEnd();
 
-		if (this.options.destroyOnHide) {
-			this.destroy();
+			this.$popup.addClass('ani-finish');
+		}
+		else {
+			finishHide();
+		}
+
+		function finishHide() {
+
+			that.isShowing = false;
+			that.$popup.hide();
+			that.$el.trigger('hidden.popup');
+
+			if (that.options.destroyOnHide) {
+				that.destroy();
+			}
 		}
 	};
 
@@ -441,6 +477,7 @@
 	// these are the defaults value
 	// feel free to change these to your liking
 	$.fn.popup.defaults = {
+		animate: false,
 		attachTo: null,
 		autoShow: true,
 		boundary: 10,

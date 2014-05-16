@@ -134,7 +134,68 @@ $(function() {
 		});
 	});
 
+	$('#fade-test').on('click', function() {
 
+		var $testHtml = $lorem();
+		var $this = $(this);
+
+		if (!$this.data('popup-ref')) {
+			$testHtml.popup({
+				animate: true,
+				attachTo: $this,
+				classes: 'bubble fading',
+				destroyOnHide: true,
+				placement: 'right',
+				showArrow: true,
+				showClose: true
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('hide');
+		}
+	});
+
+	$('#grow-test').on('click', function() {
+
+		var $testHtml = $lorem();
+		var $this = $(this);
+
+		if (!$this.data('popup-ref')) {
+			$testHtml.popup({
+				animate: true,
+				attachTo: $this,
+				classes: 'bubble grow',
+				destroyOnHide: true,
+				placement: 'right',
+				showArrow: true,
+				showClose: true
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('hide');
+		}
+	});
+
+	$('#spin-test').on('click', function() {
+
+		var $testHtml = $lorem();
+		var $this = $(this);
+
+		if (!$this.data('popup-ref')) {
+			$testHtml.popup({
+				animate: true,
+				attachTo: $this,
+				classes: 'bubble spin',
+				destroyOnHide: true,
+				placement: 'right',
+				showArrow: true,
+				showClose: true
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('hide');
+		}
+	});
 
 
 	function $lorem() {

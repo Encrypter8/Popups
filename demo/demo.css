@@ -35,3 +35,34 @@ aside {
   display: inline-block;
   width: 200px;
 }
+.popup-container.fading {
+  opacity: 1;
+}
+.popup-container.fading.ani {
+  transition: opacity 0.7s;
+}
+.popup-container.fading.ani-start,
+.popup-container.fading.ani-finish {
+  opacity: 0;
+}
+.popup-container.grow {
+  height: 300px;
+}
+.popup-container.grow.ani {
+  transition: height 0.7s, margin 0.7s;
+}
+.popup-container.grow.ani-start,
+.popup-container.grow.ani-finish {
+  height: 30px;
+}
+.popup-container.spin {
+  opacity: 1;
+}
+.popup-container.spin.ani {
+  transition: transform 0.7s, opacity 0.7s;
+}
+.popup-container.spin.ani-start,
+.popup-container.spin.ani-finish {
+  opacity: 0;
+  transform: rotate(180deg);
+}

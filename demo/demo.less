@@ -52,3 +52,50 @@ aside {
 		width: 200px;
 	}
 }
+
+
+// animations
+.popup-container.fading {
+	opacity: 1;
+
+	&.ani {
+		transition: opacity 0.7s;
+	}
+
+	&.ani-start, &.ani-finish {
+		opacity: 0;
+	}
+}
+
+.popup-container.grow {
+	height: 300px;	
+
+	&.ani {
+		transition: height 0.7s, margin 0.7s;
+		// .popup-arrow {
+		// 	transition: margin: 0.7s;
+		// }
+	}
+
+	&.ani-start, &.ani-finish {
+		height: 30px;
+		//margin-top: 115px;
+
+		// .popup-arrow {
+		// 	margin-top: -115px;
+		// }
+	}
+}
+
+.popup-container.spin {
+	opacity: 1;
+
+	&.ani {
+		transition: transform 0.7s, opacity 0.7s;
+	}
+
+	&.ani-start, &.ani-finish {
+		opacity: 0;
+		transform:rotate(180deg);
+	}
+}
