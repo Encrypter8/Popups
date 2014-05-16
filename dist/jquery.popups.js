@@ -316,9 +316,14 @@
 				.css('visibility', "visible")
 				.delay(30)
 				.queue(function() {
-					that.$popup.addClass('ani-show').one($.support.transition.end, function() {
-						that.$popup.removeClass('ani-show');
-						finishShow();
+					that.$popup.addClass('ani-show');
+					var longestTransition = that.$popup.getLongestTransition();
+					that.$popup.on($.support.transition.end, function(e, isEmulate) {
+						if (isEmulate || e.originalEvent.propertyName == longestTransition) {
+							that.$popup.off($.support.transition.end);
+							that.$popup.removeClass('ani-show');
+							finishShow();
+						}
 					}).emulateTransitionEnd().dequeue();
 				}).delay(30)
 				.queue(function() { that.$popup.removeClass('ani-start').dequeue(); });
@@ -349,11 +354,14 @@
 		this.$popup.removeClass('showing');
 
 		if (this.options.animate) {
+			this.$popup.addClass('ani-hide');
+			var longestTransition = that.$popup.getLongestTransition();
 			this.$popup
-				.addClass('ani-hide')
-				.one($.support.transition.end, function() {
-					that.$popup.removeClass('ani-hide ani-finish').css('visibility', 'hidden');
-					finishHide();
+				.on($.support.transition.end, function(e, isEmulate) {
+						if (isEmulate || e.originalEvent.propertyName == longestTransition) {
+							that.$popup.removeClass('ani-hide ani-finish').css('visibility', 'hidden');
+							finishHide();
+						}
 				}).emulateTransitionEnd()
 				.delay(30)
 				.queue(function() { that.$popup.addClass('ani-finish').dequeue(); });
