@@ -60,8 +60,8 @@ aside {
 }
 .popup-container.grow.ani-start,
 .popup-container.grow.ani-finish {
-  height: 30px;
-  margin-top: 135px;
+  height: 40px;
+  margin-top: 130px;
   opacity: 0;
   width: 30px;
 }

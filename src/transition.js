@@ -48,8 +48,37 @@
       max = max < total ? total : max
     }
 
-    return max * 1000
+    return max * 1000 + 30 // plus 30 to avoid race conditions
   }
+
+  $.fn.getLongestTransition = function() {
+    var $this = this
+
+    var maxTime = 0
+    var maxProperty
+    var property = $this.css('transition-property')
+    var duration = $this.css('transition-duration')
+    var delay = $this.css('transition-delay')
+
+    // for browsers that don't support transitions
+    if (property == undefined) return undefined
+
+    property = property.split(', ')
+    duration = duration.split(', ')
+    delay = delay.split(', ')
+
+    for (var i = 0; i < property.length; i++) {
+      var total = parseFloat(duration[i]) + parseFloat(delay[i])
+      if (maxTime < total) {
+        maxTime = total
+        maxProperty = property[i]
+      }
+    }
+
+    return maxProperty
+  }
+
+
 
   // http://blog.alexmaccaw.com/css-transitions
   $.fn.emulateTransitionEnd = function (duration) {
@@ -58,7 +87,7 @@
     duration = duration || determineTotalTransitionTime($this)
 
     $this.one($.support.transition.end, function () { called = true })
-    var callback = function () { if (!called) $this.trigger($.support.transition.end) }
+    var callback = function () { if (!called) $this.trigger($.support.transition.end, [true]) }
     setTimeout(callback, duration)
     return $this
   }
