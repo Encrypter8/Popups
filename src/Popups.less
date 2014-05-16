@@ -3,13 +3,6 @@
 // this less file is too acompany Popups.js
 //
 
-// variables
-
-@darkblue: #095B93;
-@white: #FFF;
-@headerColor: #005690;
-@buffer: 15px;
-
 // mixins
 .clearfix() {
 	*zoom: 1;
@@ -67,6 +60,31 @@
 	opacity: @opacity / 100;
 	filter: ~"alpha(opacity=@{opacity})";
 }
+
+// reset button
+// remove all the default button styles so it's a blank canvas
+.button-reset() {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	padding: 0;
+}
+
+// variables
+@darkblue: #095B93;
+@white: #FFF;
+@headerColor: #005690;
+@buffer: 15px;
+
+@loading-image: "../demo/assets/loading_spinner.gif";
+@close-image: "../demo/assets/Simple_close_icon.png";
+
+@container-background: #FFF;
+@container-border-width: 2px;
+@container-border-color: #999;
+
+@arrow-width: 12px;
+@arrow-inner-width: 12px;
 
 
 // popup styles

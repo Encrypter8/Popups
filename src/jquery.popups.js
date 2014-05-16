@@ -450,8 +450,8 @@
 		destroyOnHide: false,
 		offset: '50%', 
 		placement: 'right',
-		showArrow: true, // consider: rename to 'addArrow'
-		showClose: true  // consider: rename to 'addClose'
+		showArrow: false, // consider: rename to 'addArrow'
+		showClose: false  // consider: rename to 'addClose'
 		//within: $window, // bound the popup within
 	};
 

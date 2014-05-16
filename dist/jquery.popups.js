@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0-RC1 - 2014-05-14
+/* jQuery Popups - v1.0.0-RC1 - 2014-05-15
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -455,8 +455,8 @@
 		destroyOnHide: false,
 		offset: '50%', 
 		placement: 'right',
-		showArrow: true, // consider: rename to 'addArrow'
-		showClose: true  // consider: rename to 'addClose'
+		showArrow: false, // consider: rename to 'addArrow'
+		showClose: false  // consider: rename to 'addClose'
 		//within: $window, // bound the popup within
 	};
 

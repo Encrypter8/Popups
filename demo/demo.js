@@ -1,18 +1,13 @@
 $(function() {
 
 	// notification
-	$('.notification').eq(1).popup({
-		showArrow: false,
-		showClose: false
-	});
+	$('.notification').eq(1).popup();
 
 	$('.notification').eq(3).popup({
 		attachTo: $('.notify-btn').eq(1),
 		classes: 'bubble',
 		collision: false,
-		position: 'right',
-		showArrow: true,
-		showClose: true
+		position: 'right'
 	});
 
 
@@ -28,7 +23,9 @@ $(function() {
 				classes: 'bubble set-width',
 				collision: null,
 				destroyOnHide: true,
-				placement: placement
+				placement: placement,
+				showArrow: true,
+				showClose: true
 			});
 		}
 		else {
@@ -50,7 +47,9 @@ $(function() {
 				classes: 'bubble',
 				destroyOnHide: true,
 				offset: offset,
-				placement: 'right'
+				placement: 'right',
+				showArrow: true,
+				showClose: true
 			});
 		}
 		else {
@@ -72,7 +71,9 @@ $(function() {
 				collision: $this.hasClass('fit') ? 'fit' : null,
 				destroyOnHide: true,
 				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px',
-				placement: $this.data('placement')
+				placement: $this.data('placement'),
+				showArrow: true,
+				showClose: true
 			});
 		}
 		else {
@@ -93,7 +94,9 @@ $(function() {
 				classes: 'bubble flip-width',
 				collision: 'flip',
 				destroyOnHide: true,
-				placement: $this.data('placement')
+				placement: $this.data('placement'),
+				showArrow: true,
+				showClose: true
 			});
 		}
 		else {
@@ -125,7 +128,9 @@ $(function() {
 			classes: 'bubble',
 			collision: false,
 			placement: 'right',
-			destroyOnHide: true
+			destroyOnHide: true,
+			showArrow: true,
+			showClose: true
 		});
 	});
 
