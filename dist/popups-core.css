@@ -40,10 +40,10 @@
   margin-bottom: 12px;
 }
 .popup-container.top .popup-arrow {
-  border-top: 12px solid #999999;
+  border-top-color: #999999;
 }
 .popup-container.top .popup-arrow .inner-arrow {
-  border-top: 12px solid #ffffff;
+  border-top-color: #ffffff;
   left: -12px;
   top: -14px;
 }
@@ -51,10 +51,10 @@
   margin-left: 12px;
 }
 .popup-container.right .popup-arrow {
-  border-right: 12px solid #999999;
+  border-right-color: #999999;
 }
 .popup-container.right .popup-arrow .inner-arrow {
-  border-right: 12px solid #ffffff;
+  border-right-color: #ffffff;
   left: -10px;
   top: -12px;
 }
@@ -62,10 +62,10 @@
   margin-top: 12px;
 }
 .popup-container.bottom .popup-arrow {
-  border-bottom: 12px solid #999999;
+  border-bottom-color: #999999;
 }
 .popup-container.bottom .popup-arrow .inner-arrow {
-  border-bottom: 12px solid #ffffff;
+  border-bottom-color: #ffffff;
   left: -12px;
   top: -10px;
 }
@@ -73,10 +73,10 @@
   margin-right: 12px;
 }
 .popup-container.left .popup-arrow {
-  border-left: 12px solid #999999;
+  border-left-color: #999999;
 }
 .popup-container.left .popup-arrow .inner-arrow {
-  border-left: 12px solid #ffffff;
+  border-left-color: #ffffff;
   left: -14px;
   top: -12px;
 }

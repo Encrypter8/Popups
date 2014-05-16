@@ -94,13 +94,13 @@ module.exports = function(grunt) {
 		less: {
 			core: {
 				files: {
-					'dist/popups.css': 'src/popups.less',
-					'dist/popups-core.css': 'src/popups-core.less'
+					'dist/popups-core.css': 'src/popups-core.less',
 				}
 			},
 			demo: {
 				files: {
-					'demo/demo.css': 'demo/demo.less'
+					'demo/demo.css': 'demo/demo.less',
+					'demo/popups-bubble.css': 'demo/popups-bubble.less'
 				}
 			},
 		},
@@ -113,6 +113,10 @@ module.exports = function(grunt) {
 			lessCore: {
 				files: ['./src/*.less'],
 				tasks: ['less:core']
+			},
+			lessDemo: {
+				files: ['./demo/*.less'],
+				tasks: ['less:demo']	
 			}
 		}
 

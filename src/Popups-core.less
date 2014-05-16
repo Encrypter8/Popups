@@ -17,7 +17,7 @@
 @loading-image: "../demo/assets/loading_spinner.gif";
 @close-image: "../demo/assets/Simple_close_icon.png";
 
-@container-background: #FFF;
+@container-background-color: #FFF;
 @container-border-width: 2px;
 @container-border-color: #999;
 
@@ -30,7 +30,7 @@
 // make all your core changes here!!
 
 .popup-container {
-	background-color: @container-background;
+	background-color: @container-background-color;
 	border: @container-border-width solid @container-border-color;
 	min-height: 100px;
 	min-width: 150px;
@@ -82,10 +82,10 @@
 		}
 
 		.popup-arrow {
-			border-top: @arrow-width solid @container-border-color;
+			border-top-color: @container-border-color;
 
 			.inner-arrow {
-				border-top: @arrow-width solid @container-background;
+				border-top-color: @container-background-color;
 				left: -@arrow-width;
 				top: -14px;
 			}
@@ -98,10 +98,10 @@
 		}
 
 		.popup-arrow {
-			border-right:  @arrow-width solid @container-border-color;
+			border-right-color: @container-border-color;
 
 			.inner-arrow {
-				 border-right: @arrow-width solid @container-background;
+				 border-right-color: @container-background-color;
 				 left: -10px;
 				 top: -@arrow-width;
 			}
@@ -114,10 +114,10 @@
 		}
 
 		.popup-arrow {
-			border-bottom: @arrow-width solid @container-border-color;
+			border-bottom-color: @container-border-color;
 
 			.inner-arrow {
-				border-bottom: @arrow-width solid @container-background;
+				border-bottom-color: @container-background-color;
 				left: -@arrow-width;
 				top: -10px;
 			}
@@ -130,10 +130,10 @@
 		}
 
 		.popup-arrow {
-			border-left: @arrow-width solid @container-border-color;
+			border-left-color: @container-border-color;
 
 			.inner-arrow {
-				border-left: @arrow-width solid @container-background;
+				border-left-color: @container-background-color;
 				left: -14px;
 				top: -@arrow-width;
 			}

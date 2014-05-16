@@ -16,13 +16,6 @@ article {
 aside {
   margin-top: 20px;
 }
-.bubble.set-width {
-  width: 300px;
-}
-.bubble.set-width.middle {
-  margin: 0 20px;
-  width: auto;
-}
 .bubble.fit-width {
   max-width: none;
   width: 800px;

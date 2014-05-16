@@ -20,7 +20,7 @@ $(function() {
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
 				attachTo: $this,
-				classes: 'bubble set-width',
+				classes: 'bubble',
 				collision: null,
 				destroyOnHide: true,
 				placement: placement,
@@ -138,7 +138,7 @@ $(function() {
 
 
 	function $lorem() {
-		return $('<div class="popup">' + lorem() + "</div>");
+		return $('<div class="popup"><h3 class="heading">Speach Bubble</h3><div class="body">' + lorem() + "</div></div>");
 	}
 
 	function lorem() {
