@@ -43,23 +43,23 @@ aside {
   transition: opacity 0.7s linear;
 }
 .popup-container.fading.ani-start,
-.popup-container.fading.ani-finish {
+.popup-container.fading.ani-end {
   opacity: 0;
 }
 .popup-container.grow {
   height: 300px;
   opacity: 1;
   overflow: hidden;
-  width: 310px;
+  width: 304px;
 }
 .popup-container.grow.ani-show {
   transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s;
 }
 .popup-container.grow.ani-hide {
-  transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease 0.7s;
+  transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease 1s;
 }
 .popup-container.grow.ani-start,
-.popup-container.grow.ani-finish {
+.popup-container.grow.ani-end {
   height: 40px;
   margin-top: 130px;
   opacity: 0;
@@ -76,7 +76,7 @@ aside {
   transition: transform 0.7s, opacity 0.7s;
 }
 .popup-container.spin.ani-start,
-.popup-container.spin.ani-finish {
+.popup-container.spin.ani-end {
   opacity: 0;
   transform: rotate(180deg);
 }

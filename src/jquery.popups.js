@@ -354,12 +354,12 @@
 			this.$popup
 				.on($.support.transition.end, function(e, isEmulate) {
 						if (isEmulate || e.originalEvent.propertyName == longestTransition) {
-							that.$popup.removeClass('ani-hide ani-finish').css('visibility', 'hidden');
+							that.$popup.removeClass('ani-hide ani-end').css('visibility', 'hidden');
 							finishHide();
 						}
 				}).emulateTransitionEnd()
 				.delay(30)
-				.queue(function() { that.$popup.addClass('ani-finish').dequeue(); });
+				.queue(function() { that.$popup.addClass('ani-end').dequeue(); });
 		}
 		else {
 			finishHide();
