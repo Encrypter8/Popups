@@ -445,7 +445,7 @@
 		autoShow: true,
 		boundary: 10,
 		classes: null,
-		collision: 'flipfit', // valid options are 'flip', 'fit', or 'flipfit'
+		collision: 'flip', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
 		destroyOnHide: false,
 		offset: '50%', 
