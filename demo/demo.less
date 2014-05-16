@@ -58,8 +58,8 @@ aside {
 .popup-container.fading {
 	opacity: 1;
 
-	&.ani {
-		transition: opacity 0.7s;
+	&.ani-show, &.ani-hide {
+		transition: opacity 0.7s linear;
 	}
 
 	&.ani-start, &.ani-finish {
@@ -68,29 +68,35 @@ aside {
 }
 
 .popup-container.grow {
-	height: 300px;	
+	height: 300px;
+	opacity: 1;
+	overflow: hidden;
+	width: 310px;
 
-	&.ani {
-		transition: height 0.7s, margin 0.7s;
-		// .popup-arrow {
-		// 	transition: margin: 0.7s;
-		// }
+	&.ani-show {
+		transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s;
+	}
+
+	&.ani-hide {
+		transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease 0.7s;
 	}
 
 	&.ani-start, &.ani-finish {
 		height: 30px;
-		//margin-top: 115px;
+		margin-top: 135px;
+		opacity: 0;
+		width: 30px;
+	}
 
-		// .popup-arrow {
-		// 	margin-top: -115px;
-		// }
+	&.showing {
+		overflow: inherit;
 	}
 }
 
 .popup-container.spin {
 	opacity: 1;
 
-	&.ani {
+	&.ani-show, &.ani-hide {
 		transition: transform 0.7s, opacity 0.7s;
 	}
 

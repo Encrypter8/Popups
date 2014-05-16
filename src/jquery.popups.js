@@ -309,13 +309,23 @@
 			this.$popup
 				.addClass('ani-start')
 				.css('visibility', "visible")
-				.delay(0)
-				.queue(function() { that.$popup.addClass('ani').dequeue(); })
-				.delay(0)
+				.delay(30)
+				.queue(function() {
+					that.$popup.addClass('ani-show').one($.support.transition.end, function() {
+						that.$popup.removeClass('ani-show');
+						finishShow();
+					}).emulateTransitionEnd().dequeue();
+				}).delay(30)
 				.queue(function() { that.$popup.removeClass('ani-start').dequeue(); });
 		}
+		else {
+			finishShow();
+		}
 
-		this.$el.trigger('shown.popup');
+		function finishShow() {
+			that.$popup.addClass('showing');
+			that.$el.trigger('shown.popup');
+		}
 	};
 
 	// consider: rename to 'hide'
@@ -331,14 +341,17 @@
 		if (!this.isShowing) { return; }
 
 		this.$el.trigger('hide.popup');
+		this.$popup.removeClass('showing');
 
 		if (this.options.animate) {
-			this.$popup.one($.support.transition.end, function() {
-				that.$popup.removeClass('ani ani-finish').css('visibility', 'hidden');
-				finishHide();
-			}).emulateTransitionEnd();
-
-			this.$popup.addClass('ani-finish');
+			this.$popup
+				.addClass('ani-hide')
+				.one($.support.transition.end, function() {
+					that.$popup.removeClass('ani-hide ani-finish').css('visibility', 'hidden');
+					finishHide();
+				}).emulateTransitionEnd()
+				.delay(30)
+				.queue(function() { that.$popup.addClass('ani-finish').dequeue(); });
 		}
 		else {
 			finishHide();

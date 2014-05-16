@@ -38,8 +38,9 @@ aside {
 .popup-container.fading {
   opacity: 1;
 }
-.popup-container.fading.ani {
-  transition: opacity 0.7s;
+.popup-container.fading.ani-show,
+.popup-container.fading.ani-hide {
+  transition: opacity 0.7s linear;
 }
 .popup-container.fading.ani-start,
 .popup-container.fading.ani-finish {
@@ -47,18 +48,31 @@ aside {
 }
 .popup-container.grow {
   height: 300px;
+  opacity: 1;
+  overflow: hidden;
+  width: 310px;
 }
-.popup-container.grow.ani {
-  transition: height 0.7s, margin 0.7s;
+.popup-container.grow.ani-show {
+  transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s;
+}
+.popup-container.grow.ani-hide {
+  transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease 0.7s;
 }
 .popup-container.grow.ani-start,
 .popup-container.grow.ani-finish {
   height: 30px;
+  margin-top: 135px;
+  opacity: 0;
+  width: 30px;
+}
+.popup-container.grow.showing {
+  overflow: inherit;
 }
 .popup-container.spin {
   opacity: 1;
 }
-.popup-container.spin.ani {
+.popup-container.spin.ani-show,
+.popup-container.spin.ani-hide {
   transition: transform 0.7s, opacity 0.7s;
 }
 .popup-container.spin.ani-start,
