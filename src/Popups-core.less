@@ -1,0 +1,154 @@
+//
+// Popups-core.less
+// core less file for creating your css driven popup styles and behavior
+
+// mixins
+// reset button
+// remove all the default button styles so it's a blank canvas
+.button-reset() {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	padding: 0;
+}
+
+// variables
+// changes these to your liking
+@loading-image: "../demo/assets/loading_spinner.gif";
+@close-image: "../demo/assets/Simple_close_icon.png";
+
+@container-background: #FFF;
+@container-border-width: 2px;
+@container-border-color: #999;
+
+@arrow-width: 12px;
+@arrow-inner-width: 12px;
+
+// all of the below styles is to try and give you a base of what you need to do
+// for the css-driven popups.js to function properly
+// set your base styles for your popup-container
+// make all your core changes here!!
+
+.popup-container {
+	background-color: @container-background;
+	border: @container-border-width solid @container-border-color;
+	min-height: 100px;
+	min-width: 150px;
+	padding: 10px;
+	position: absolute !important;
+	// don't at top and left here, that will be handled by the javascript
+
+	// style your ajax loading placeholder
+	&.loading {
+		background-image: url("@{loading-image}");
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.popup-close {
+		.button-reset();
+		background-image: url("@{close-image}");
+		background-repeat: no-repeat;
+		height: 20px;
+		position: absolute !important;
+		right: 5px;
+		top: 5px;
+		width: 20px;
+	}
+
+	// default style for the arrow
+	.popup-arrow {
+		border: @arrow-width solid transparent;
+		height: 0;
+		position: absolute !important;
+		width: 0;
+
+		// the inner arrow is so you can do that arrow border effect (see demo)
+		// i'm not using :after to do that because I want IE7 support
+		// if you'd rather use :after, just change the stylings as needed
+		.inner-arrow {
+			border: @arrow-width solid transparent;
+			height: 0;
+			position: relative !important;
+			width: 0;
+		}
+	}
+
+	// styles for the specific positions
+	&.top {
+		// add a buffer zone for when the arrow is showing
+		&.show-arrow {
+			margin-bottom: @arrow-width;
+		}
+
+		.popup-arrow {
+			border-top: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-top: @arrow-width solid @container-background;
+				left: -@arrow-width;
+				top: -14px;
+			}
+		}
+	}
+
+	&.right {
+		&.show-arrow {
+			margin-left: @arrow-width;
+		}
+
+		.popup-arrow {
+			border-right:  @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				 border-right: @arrow-width solid @container-background;
+				 left: -10px;
+				 top: -@arrow-width;
+			}
+		}
+	}
+
+	&.bottom {
+		&.show-arrow {
+			margin-top: @arrow-width;
+		}
+
+		.popup-arrow {
+			border-bottom: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-bottom: @arrow-width solid @container-background;
+				left: -@arrow-width;
+				top: -10px;
+			}
+		}
+	}
+
+	&.left {
+		&.show-arrow {
+			margin-right: @arrow-width;
+		}
+
+		.popup-arrow {
+			border-left: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-left: @arrow-width solid @container-background;
+				left: -14px;
+				top: -@arrow-width;
+			}
+		}
+	}
+
+
+	// the arrow will remain hidden when position is middle or free, so no need to style this one out
+	// but you may want to add additional styles for those, so here are some placeholders for that
+	&.middle {
+
+	}
+
+	&.free {
+
+	}
+
+}
