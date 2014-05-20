@@ -320,7 +320,6 @@
 					// because the transitionEnd event fires for every transition, we don't listen to the transitionEnd event
 					// it's reliable enough to just measure what the total transition time is and do a setTimeout
 					window.setTimeout(function() {
-						that.$popup.off($.support.transition.end);
 						that.$popup.removeClass('ani-show');
 						finishShow();
 					}, getTotalTransitionTime(that.$popup));
