@@ -638,7 +638,7 @@
 			max = max < total ? total : max;
 		}
 
-		return max * 1000;
+		return max * 1000 + 30; // + 30 if max == 0, we want some kind of delay here at least
 	}
 
 
