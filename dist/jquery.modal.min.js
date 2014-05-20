@@ -1,4 +1,4 @@
-/* jQuery Modal - v1.0.0-RC1 - 2014-05-16
+/* jQuery Modal - v1.0.0 - 2014-05-20
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 

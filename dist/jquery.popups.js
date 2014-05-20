@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0-RC1 - 2014-05-16
+/* jQuery Popups - v1.0.0 - 2014-05-20
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -14,6 +14,8 @@
 		$window = $(window),
 		$document = $(document),
 		$body = $(document.body),
+
+		transitionSupport,
 
 		guid = 0,
 
@@ -57,7 +59,7 @@
 		this.guid = "popup" + (++guid);
 
 		// set animate is lack of support
-		!$.support.transition.end && !$.fn.emulateTransitionEnd && (o.animate = false);
+		!transitionSupport && (o.animate = false);
 
 		// normalize o.placement
 		typeof o.placement !== 'string' && (o.placement = 'free');
@@ -310,23 +312,26 @@
 		this.position();
 
 		if (this.options.animate) {
-			//delays and queues are to defeat race conditions
+			// delays and queues are to defeat race conditions
 			this.$popup
 				.addClass('ani-start')
 				.css('visibility', "visible")
 				.delay(30)
-				.queue(function() {
-					that.$popup.addClass('ani-show');
-					var longestTransition = that.$popup.getLongestTransition();
-					that.$popup.on($.support.transition.end, function(e, isEmulate) {
-						if (isEmulate || e.originalEvent.propertyName == longestTransition) {
-							that.$popup.off($.support.transition.end);
-							that.$popup.removeClass('ani-show');
-							finishShow();
-						}
-					}).emulateTransitionEnd().dequeue();
-				}).delay(30)
-				.queue(function() { that.$popup.removeClass('ani-start').dequeue(); });
+				.queue(function(next) { that.$popup.addClass('ani-show'); next(); })
+				.delay(30)
+				.queue(function(next) {
+					that.$popup.removeClass('ani-start');
+
+					// because the transitionEnd event fires for every transition, we don't listen to the transitionEnd event
+					// it's reliable enough to just measure what the total transition time is and do a setTimeout
+					window.setTimeout(function() {
+						that.$popup.off($.support.transition.end);
+						that.$popup.removeClass('ani-show');
+						finishShow();
+					}, getTotalTransitionTime(that.$popup));
+
+					next();
+				});
 		}
 		else {
 			finishShow();
@@ -354,17 +359,19 @@
 		this.$popup.removeClass('showing');
 
 		if (this.options.animate) {
-			this.$popup.addClass('ani-hide');
-			var longestTransition = that.$popup.getLongestTransition();
-			this.$popup
-				.on($.support.transition.end, function(e, isEmulate) {
-						if (isEmulate || e.originalEvent.propertyName == longestTransition) {
-							that.$popup.removeClass('ani-hide ani-finish').css('visibility', 'hidden');
-							finishHide();
-						}
-				}).emulateTransitionEnd()
-				.delay(30)
-				.queue(function() { that.$popup.addClass('ani-finish').dequeue(); });
+			// delays and queues are to defeat race conditions
+			this.$popup.addClass('ani-hide')
+			.delay(30)
+			.queue(function(next) {
+				that.$popup.addClass('ani-end');
+
+				window.setTimeout(function() {
+					that.$popup.removeClass('ani-hide ani-end').css('visibility', 'hidden');
+					finishHide();
+				}, getTotalTransitionTime(that.$popup));
+
+				next();
+			});				
 		}
 		else {
 			finishHide();
@@ -624,5 +631,44 @@
 				return { top: 0, right: 0, bottom: 0, left: 0 };
 		}
 	}
+
+
+	// animation/transition related helpers
+	function getTotalTransitionTime($el) {
+		var i, total, max = 0,
+			duration = $el.css('transition-duration').split(', '),
+			delay = $el.css('transition-delay').split(', ');
+
+		for (i = 0; i < duration.length; i++) {
+			total = parseFloat(duration[i]) + parseFloat(delay[i]);
+			max = max < total ? total : max;
+		}
+
+		return max * 1000;
+	}
+
+
+	// credit to bootstrap here
+	function determineTransitionSupport() {
+		var el = document.createElement('popup');
+
+		var transEndEventNames = {
+			WebkitTransition: 'webkitTransitionEnd',
+			OTransition: 'oTransitionEnd otransitionend',
+			transition: 'transitionend'
+		};
+
+		for (var name in transEndEventNames) {
+			if (el.style[name] !== undefined) {
+				return { end: transEndEventNames[name] };
+			}
+		}
+
+		return false;
+	}
+
+	$(function() {
+		transitionSupport = determineTransitionSupport();
+	});
 
 }(jQuery, document, window);
