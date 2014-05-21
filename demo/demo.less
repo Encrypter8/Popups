@@ -74,11 +74,11 @@ aside {
 	width: 304px; // border-box, so make sure you add padding/border
 
 	&.ani-show {
-		transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s;
+		transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s ease-in;
 	}
 
 	&.ani-hide {
-		transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease 1s;
+		transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease-out 1s;
 	}
 
 	&.ani-start, &.ani-end {
@@ -96,8 +96,12 @@ aside {
 .popup-container.spin {
 	opacity: 1;
 
-	&.ani-show, &.ani-hide {
-		transition: transform 0.7s, opacity 0.7s;
+	&.ani-show {
+		transition: transform 0.7s, opacity 0.7s ease-in;
+	}
+
+	&.ani-hide {
+		transition: transform 0.7s, opacity 0.7s ease-out;	
 	}
 
 	&.ani-start, &.ani-end {

@@ -53,10 +53,10 @@ aside {
   width: 304px;
 }
 .popup-container.grow.ani-show {
-  transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s;
+  transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s ease-in;
 }
 .popup-container.grow.ani-hide {
-  transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease 1s;
+  transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease-out 1s;
 }
 .popup-container.grow.ani-start,
 .popup-container.grow.ani-end {
@@ -71,9 +71,11 @@ aside {
 .popup-container.spin {
   opacity: 1;
 }
-.popup-container.spin.ani-show,
+.popup-container.spin.ani-show {
+  transition: transform 0.7s, opacity 0.7s ease-in;
+}
 .popup-container.spin.ani-hide {
-  transition: transform 0.7s, opacity 0.7s;
+  transition: transform 0.7s, opacity 0.7s ease-out;
 }
 .popup-container.spin.ani-start,
 .popup-container.spin.ani-end {
