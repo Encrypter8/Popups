@@ -2,11 +2,13 @@
   height: 600px;
 }
 #main-examples > div,
-#fit-examples > div {
+#fit-examples > div,
+#animation-examples > div {
   text-align: center;
 }
 #main-examples button,
-#fit-examples button {
+#fit-examples button,
+#animation-examples button {
   margin-bottom: 20px;
 }
 /* articles need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
@@ -81,4 +83,14 @@ aside {
 .popup-container.spin.ani-end {
   opacity: 0;
   transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+}
+.popup-container.flip.ani-show,
+.popup-container.flip.ani-hide {
+  transition: transform 0.3s linear, skewX 0.3s linear;
+}
+.popup-container.flip.ani-start,
+.popup-container.flip.ani-end {
+  transform: rotateX(90deg) skewX(10deg);
+  -webkit-transform: rotateX(90deg) skewX(10deg);
 }
