@@ -46,6 +46,9 @@
 
 	<article id="about">
 		<h2>About</h2>
+		<p>jquery.popups.js is a css driven popup and dialog creator. Though it can serve many other purposed such as dropdown menu.</p>
+		<p>Unlike most other jQuery plug-ins that wrap up all the styles in the javascript, this script is depended on a well maintains css file, not only for the style of the popup, but for it's placement as well.</p>
+		<p>The plugin will position of the element it is being called in against the <code>attachTo</code> element passed in options. It will be place on a specific side of that via the <code>placement</code>. And here is the important bit, if <code>placement: right</code>, then the popover will be placed flush against <code>attachTo</code> by it's most outer boundry, including the margin!</p>
 	</article>
 
 	<article id="getting-started">
@@ -186,36 +189,48 @@
 						<td>attachTo</td>
 						<td>jQuery | element | string</td>
 						<td>null</td>
+						<td>The element the popup will be positioned against. Can be a jQuery element, a dom element, or a query string.</td>
 					</tr>
 					<tr>
 						<td>autoShow</td>
 						<td>boolean</td>
 						<td>true</td>
+						<td>Display immediately after creation of the popup.</td>
 					</tr>
 					<tr>
 						<td>boundary</td>
-						<td>number</td>
+						<td>number | string</td>
 						<td>10</td>
+						<td>An additional inner boundary inside the window. Used in tandam with collision. If set to 0, the window is the boundary. If set to 10, the boudary is 10 pixels inside the window on all 4 side. You can also pass in a string <code>boundary: "50 10 10 10"</code> that represents a different value for each side of the window (css style top-right-bottom-left).</td>
 					</tr>
 					<tr>
 						<td>classes</td>
 						<td>string</td>
 						<td>null</td>
+						<td>Any class names you would like to add to the popup-container</td>
 					</tr>
 					<tr>
 						<td>collision</td>
 						<td>string</td>
-						<td>'fitflip'</td>
+						<td>'flip'</td>
+						<td>There are 3 acceptable values. <code>"flip"</code>, <code>"flip"</code>, or <code>"flipfit"</code></td>
 					</tr>
 					<tr>
 						<td>container</td>
 						<td>jQuery | element | string</td>
 						<td>null</td>
+						<td>The element that the popup will be a child of. If left null, one of 2 things will happend:
+							<ol>
+								<li>If the popup was already part of the DOM it will remain in it's current position</li>
+								<li>If the popup is not already part of the DOM (just a documentFragment), it will be appended to the bottom of the body</li>
+							</ol>
+						</td>
 					</tr>
 					<tr>
 						<td>destroyOnHide</td>
 						<td>boolean</td>
 						<td>false</td>
+						<td>Destroy the popup on close. Usefull when you're creating the popup from a template and not an exisition dom element, and populating data points on creations. This allows you to get a fresh pop-up everytime.</td>
 					</tr>
 					<tr>
 						<td>offset</td>
