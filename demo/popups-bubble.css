@@ -1,5 +1,7 @@
-.bubble .popup {
+.bubble {
   max-width: 500px;
+  min-height: 100px;
+  min-width: 100px;
 }
 .popup-container {
   position: absolute;

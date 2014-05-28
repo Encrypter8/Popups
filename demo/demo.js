@@ -3,11 +3,22 @@ $(function() {
 	// notification
 	$('.notification').eq(1).popup();
 
-	$('.notification').eq(3).popup({
-		attachTo: $('.notify-btn').eq(1),
+
+	var $notify = $('.notification').eq(3);
+	var $notifyBtn = $('.notify-btn').eq(1);
+
+	$notify.popup({
+		attachTo: $notifyBtn,
 		classes: 'bubble',
 		collision: false,
-		position: 'right'
+		destroyOnHide: false,
+		position: 'right',
+		showArrow: true,
+		showClose: true
+	});
+
+	$notifyBtn.on('click', function() {
+		$notify.popup('toggle');
 	});
 
 
@@ -113,14 +124,12 @@ $(function() {
 			type: 'GET',
 			url: 'http://jsfiddle.net/echo/jsonp/',
 			data: {
-				html: '<div class="popup">Here is your Echo:<br /><span class="echo"></span></div>',
-				echo: echo,
+				html: $lorem().html(),
 				delay: 3
 			},
 			dataType: 'jsonp'
 		}).done(function(data) {
 			$echoPopup.popup('setContent', data.html);
-			$echoPopup.find('.echo').text(data.echo);
 		});
 
 		var $echoPopup = $.popup($ajax, {
@@ -161,7 +170,7 @@ $(function() {
 
 
 	function $lorem() {
-		return $('<div class="popup"><h3 class="heading">Speach Bubble</h3><div class="body">' + lorem() + "</div></div>");
+		return $('<div class="popup"><h3 class="heading">Speech Bubble</h3><div class="body">' + lorem() + "</div></div>");
 	}
 
 	function lorem() {

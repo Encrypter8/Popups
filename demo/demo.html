@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<!--[if lt IE 9]><script type="text/javascript" src="https://rawgithub.com/scottjehl/Respond/master/dest/respond.src.js"></script><![endif]-->
 	<link href="./assets/prism.css" rel="stylesheet" type="text/css" />
-	<!-- <link href="../assets/prism-twilight.css" rel="stylesheet" type="text/css" /> -->
 	<link href="./assets/bootstrap.min.css" rel="stylesheet" />
 	<link href="../dist/popups-core.css" rel="stylesheet" type="text/css" />
 	<link href="./demo.css" rel="stylesheet" type="text/css" />
@@ -38,10 +37,12 @@
 		</nav><!-- /.navbar-collapse -->
 	</div>
 </header>
+
 <main class="container">
 	<article>
 		<h1>jquery.popups.js</h1>
 		<h4>A css driven jquery plug-in for all your popup and dialog needs</h4>
+		<p>Compatible down to IE7</p>
 	</article>
 
 	<article id="about">
@@ -236,21 +237,25 @@
 						<td>offset</td>
 						<td>string</td>
 						<td>'50%'</td>
+						<td>The popup is always positioned against the center of the attachTo element. Offset displaces that position by either a percentage, pixels, or both. Percent is the percent of the popup's width or height (depends on if the placement is left/right or top/bottom). If set to <code>'50%'</code> the middle of the popup will align with the middle of attachTo. If set to <code>'30px'</code> the popup will align with the middel of attachTo from 30px from the Top/Left of the popup. If you want 30px from the Bottom/Right of the popup, you would set this too <code>'100%-30px'</code>. See the offset example below to play around with some values.</td>
 					</tr>
 					<tr>
 						<td>placement</td>
 						<td>string</td>
 						<td>'right'</td>
+						<td>This determines how the popup is placed against attachTo. Your valid options are 'top', 'right', 'bottom', or 'left'. If you are no placing the popup against attachTo, you can also pass in 'middle' or 'free'. 'Middle' will position the popup in the dead center of the current view port. It will not be fixed, so the popup will scroll. 'Free' skips the positioning process altogether. 'Free' is the default if you pass an invalid position, and is only recomended if you want to wire up your own positioning (say for when you want to just create floating elements that are draggable).</td>
 					</tr>
 					<tr>
 						<td>showArrow</td>
 						<td>boolean</td>
 						<td>true</td>
+						<td>When set to true, the markup for the arrow will be added to popup-container. The arror element will always be position to the middle of attachTo, regardless of what <code>offset</code> is set too. See the offset example below for a visual.</td>
 					</tr>
 					<tr>
 						<td>showClose</td>
 						<td>boolean</td>
 						<td>true</td>
+						<td>When set to true, the markup for the close button will be added to popup-container. The position of this element is completely left up to your css. It is automatically binded to trigger the method <code>'close'</code> on click.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -263,24 +268,35 @@
 				<thead>
 					<tr>
 						<th style="width: 150px;">Name</th>
+						<td style="width: 300px;">Use</td>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>show</td>
+						<td><code>$element.popup('show');</code></td>
+						<td>Reveal the popup</td>
 					</tr>
 					<tr>
 						<td>hide</td>
+						<td><code>$element.popup('hide');</code></td>
+						<td>Hide the popup</td>
 					</tr>
 					<tr>
 						<td>toggle</td>
+						<td><code>$element.popup('toggle');</code></td>
+						<td>Toggle the popup</td>
 					</tr>
 					<tr>
 						<td>destroy</td>
+						<td><code>$element.popup('destroy');</code></td>
+						<td>Completely destroy the popup instance and remove the popup-container markup (and it's children) from the DOM. <span class="text-danger">WARNING!</span> If you instantiated the popup of markup that already existed on the DOM, it will be remove with this method, and not be placed back in it's original place.</td>
 					</tr>
 					<tr>
 						<td>setContent</td>
+						<td><code>$element.popup('setContent', <i>content</i>);</code></td>
+						<td>Sets the content of $element. This method will remove all children of $element and replace them with <code><i>content</i></code>. This method is very handy when you want to populate the popup with fresh content loaded via ajax. <code><i>content</i></code> should always be a string of html.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -494,9 +510,6 @@
 		destroyOnHide: true
 	});
 });</code></pre>
-				<label>This text will be echo'd back:</label>
-				<input id="jqXHR-echo" class="form-control" type="text" placeholder="Enter your echo" />
-				<br />
 				<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
 			</div>
 		</div>
