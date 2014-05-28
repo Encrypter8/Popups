@@ -1,0 +1,12 @@
+{
+	"name": "jquery.popups",
+	"description": "A jQuery Plugin for all your popup, popover, tooltip, dropdown, dialog, and modal needs",
+	"version": "1.0.0",
+	"main": [
+		"dist/jquery.popups.js",
+		"dist/jquery.popups-core.css"
+	],
+	"dependencies": {
+		"jquery": ">=1.7.0"
+	}
+}

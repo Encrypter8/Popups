@@ -13,5 +13,6 @@ Desktop.ini
 ## NPM
 #############
 node_modules/
+bower_components/
 /src/jquery.popups.old.js
 /src/jquery.modal.old.js

@@ -118,6 +118,19 @@ module.exports = function(grunt) {
 				files: ['./demo/*.less'],
 				tasks: ['less:demo']	
 			}
+		},
+
+		update_json: {
+			bower: {
+				src: 'package.json',
+				dest: 'bower.json',
+				fields: [
+					'name',
+					'version',
+					'description',
+					'main'
+				]
+			}
 		}
 
 	});
@@ -129,8 +142,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-update-json');
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'clean', 'less', 'copy', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'clean', 'less', 'copy', 'uglify', 'update_json']);
 
 };
