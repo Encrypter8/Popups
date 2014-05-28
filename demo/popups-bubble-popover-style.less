@@ -1,0 +1,202 @@
+//
+// Popups-bubble-popover-style.less
+// custom popup styles for "speach-bubbles"
+// styled to look like default bootstrap popovers
+//
+
+
+// let's customize popups for a specific style that we want
+// in this case we're going to make a speach-bubble
+
+// variables
+
+@loading-image: "./assets/loading_spinner.gif";
+
+@container-background-color: #FFF;
+@container-border-width: 1px;
+@container-border-color: rgba(0, 0, 0, 0.2);
+
+@arrow-width: 11px;
+
+@arrow-inner-width: 10px;
+
+
+// popup styles
+
+// custom popup styles for 'bubble'
+.bubble {
+	max-width: 500px;
+	min-height: 100px;
+	min-width: 100px;
+}
+
+.popup-container {
+	position: absolute;
+
+	.popup-inner {
+		min-height: 100px;
+		min-width: 100px;
+	}
+
+	&.loading {
+		background-image: url("@{loading-image}");
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+}
+
+.popup-container.bubble {
+	background-color: @container-background-color;
+	border: @container-border-width solid @container-border-color;
+	.box-shadow(0 5px 10px @container-border-color);
+
+	&.show-arrow {
+		margin: @arrow-width;
+	}
+
+	// alter the default arrow
+	.popup-arrow {
+		border: @arrow-width solid transparent;
+
+		// the inner arrow is so you can do that arrow border effect (see demo)
+		// i'm not using :after to do that because I want IE7 support
+		// if you'd rather use :after, just change the stylings as needed
+		.inner-arrow {
+			border: @arrow-inner-width solid transparent;
+		}
+	}
+
+	&.top {
+		.popup-arrow {
+			// we're using a different width for the display side of the border to get a pointier arrow
+			border-top: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-top: @arrow-inner-width solid @container-background-color;
+				left: -10px;
+				top: -11px;
+			}
+		}
+	}
+
+	&.right {
+		.popup-arrow {
+			border-right: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-right: @arrow-inner-width solid @container-background-color;
+				left: -9px;
+				top: -10px;
+			}
+		}
+	}
+
+	&.bottom {
+		.popup-arrow {
+			border-bottom: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-bottom: @arrow-inner-width solid @container-background-color;;
+				left: -10px;
+				top: -9px;
+			}
+		}
+	}
+
+	&.left {
+		.popup-arrow {
+			border-left: @arrow-width solid @container-border-color;
+
+			.inner-arrow {
+				border-left: @arrow-inner-width solid @container-background-color;
+				left: -11px;
+				top: -10px;
+			}
+		}
+	}
+}
+
+
+// we are also going to have a common interior design, we'll style that out here as well
+// <div class="popup">
+//  	<h3 class="heading"></h3>
+//  	<div class="body"></div>
+// </div>
+
+// let's name space it so there are no conflicts
+.popup-container.bubble {
+	// first let's remove the defaults padding
+	padding: 0;
+	.borderRadius(5px, 5px, 5px, 5px);
+
+	// let's give it a set width
+	.popup {
+		width: 300px;
+	}
+
+	h3.heading {
+		.borderRadius(5px, 5px, 0px, 0px); // give top-left and top-right a borderRadius so gradient doesn't paint over .popup-container's border-radois
+
+		background-color: #F7F7F7;
+		border-bottom: 1px solid #EBEBEB;
+		font-size: 14px;
+		margin: 0; // remove some bootstrap styles
+		padding: 8px 28px 8px 14px;
+	}
+
+	.body {
+		padding: 9px 14px;
+	}
+}
+
+
+
+// mixins
+.clearfix() {
+	*zoom: 1;
+	&:before,
+	&:after {
+		display: table;
+		content: "";
+		line-height: 0;
+	}
+	&:after {
+		clear: both;
+	}
+}
+
+.lightBlueToWhiteGradient() {
+	background: #e9f0f7; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e9f0f7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e9f0f7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e9f0f7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#e9f0f7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#e9f0f7 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ffffff 0%,#e9f0f7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e9f0f7',GradientType=0 ); /* IE6-9 */
+}
+
+.borderRadius(@topLeftRadius, @topRightRadius, @bottomRightRadius, @bottomLeftRadius) {
+	-webkit-border-radius: @topLeftRadius @topRightRadius @bottomRightRadius @bottomLeftRadius;
+	-moz-border-radius: @topLeftRadius @topRightRadius @bottomRightRadius @bottomLeftRadius;
+	border-radius: @topLeftRadius @topRightRadius @bottomRightRadius @bottomLeftRadius;
+}
+
+.opacity(@opacity) {
+	opacity: @opacity / 100;
+	filter: ~"alpha(opacity=@{opacity})";
+}
+
+// reset button
+// remove all the default button styles so it's a blank canvas
+.button-reset() {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	padding: 0;
+}
+
+.box-shadow(@shadow) {
+	-webkit-box-shadow: @shadow;
+	box-shadow: @shadow;
+}
