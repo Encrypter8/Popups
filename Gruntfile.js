@@ -131,6 +131,12 @@ module.exports = function(grunt) {
 					'main'
 				]
 			}
+		},
+
+		karma: {
+			unit: {
+				configFile: './tests/karma.conf.js'
+			}
 		}
 
 	});
@@ -143,8 +149,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-update-json');
+	grunt.loadNpmTasks('grunt-karma');
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'clean', 'less', 'copy', 'uglify', 'update_json']);
+	grunt.registerTask('default', ['jshint', 'karma', 'clean', 'less', 'copy', 'uglify', 'update_json']);
 
 };
