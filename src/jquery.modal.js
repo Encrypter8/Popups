@@ -7,13 +7,6 @@
 	var cachedScrollbarWidth;
 
 
-	//
-	//
-	// Test Change to see how gh-pages can update with rebasing
-	//
-	//
-
-
 	// credit: jQuery UI
 	function scrollbarWidth() {
 		if (cachedScrollbarWidth !== undefined) {
