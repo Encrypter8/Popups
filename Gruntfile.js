@@ -100,7 +100,8 @@ module.exports = function(grunt) {
 			demo: {
 				files: {
 					'demo/demo.css': 'demo/demo.less',
-					'demo/popups-bubble.css': 'demo/popups-bubble.less'
+					'demo/popups-bubble.css': 'demo/popups-bubble.less',
+					'demo/popups-bubble-popover-style.css': 'demo/popups-bubble-popover-style.less'
 				}
 			},
 		},
@@ -152,6 +153,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-karma');
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'karma', 'clean', 'less', 'copy', 'uglify', 'update_json']);
+	grunt.registerTask('default', ['jshint', /*'karma',*/ 'clean', 'less', 'copy', 'uglify', 'update_json']);
 
 };

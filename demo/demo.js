@@ -1,5 +1,12 @@
 $(function() {
 
+	// StyleSwitcher
+	$('#navbar').find('.dropdown-menu').on('click', 'a', function() {
+		setActiveStyleSheet($(this).data('value'));
+	});
+
+
+
 	// notification
 	$('.notification').eq(1).popup();
 

@@ -8,7 +8,8 @@
 	<link href="./assets/bootstrap.min.css" rel="stylesheet" />
 	<link href="../dist/popups-core.css" rel="stylesheet" type="text/css" />
 	<link href="./demo.css" rel="stylesheet" type="text/css" />
-	<link href="./popups-bubble.css" rel="stylesheet" type="text/css" />
+	<link href="./popups-bubble.css" rel="stylesheet" type="text/css" title="default" />
+	<link href="./popups-bubble-popover-style.css" rel="alternate stylesheet" type="text/css" title="bootstrap" />
 	
 </head>
 <body data-spy="scroll" data-target="#navbar">
@@ -34,6 +35,13 @@
 				<li><a href="#examples">Examples</a></li>
 				<li><a href="#download">Download</a></li>
 			</ul>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Choose a Style</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="Javascript:void(0);" data-value="default">Default</a></li>
+					<li><a href="Javascript:void(0);" data-value="bootstrap">Bootstrap</a></li>
+				</ul>
+			</div>
 		</nav><!-- /.navbar-collapse -->
 	</div>
 </header>
@@ -545,6 +553,7 @@
 	<div id="room-to-scroll"></div>
 </main>
 
+<script type="text/javascript" src="./assets/styleswitcher.js"></script>
 <script type="text/javascript" src="./assets/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="./assets/bootstrap.min.js"></script>
 <script type="text/javascript" src="../src/transition.js"></script>
