@@ -2,6 +2,8 @@
 
 jquery.popups.js - a jQuery Popups Plugin
 
+[![Build Status](https://api.travis-ci.org/Harris-Miller/Popups.svg?branch=master)]https://travis-ci.org/Harris-Miller/Popups)
+
 ## Getting Started
 Download the [production version][prod] or the [development version][dev].
 
