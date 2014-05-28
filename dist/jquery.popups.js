@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0 - 2014-05-27
+/* jQuery Popups - v1.0.0 - 2014-05-28
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
