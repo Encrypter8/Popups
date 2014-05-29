@@ -29,6 +29,37 @@ $(function() {
 	});
 
 
+	var $commonPopup = $('#common-popup').popup({
+		attachTo: '#common-button',
+		autoShow: false,
+		classes: 'bubble',
+		collision: false,
+		showArrow: true,
+		showClose: true
+	});
+
+	$('#common-button').on('click', function() {
+		$commonPopup.popup('toggle');
+	});
+
+	$('#lazy-button').on('click', function() {
+		var $this = $(this);
+
+		if (!$this.data('popup-ref')) {
+			$('<div id="lazy-popup">I am a lazy loaded popup.</div>').popup({
+				attachTo: $this,
+				classes: 'bubble',
+				collision: false,
+				showArrow: true,
+				showClose: true
+			});
+		}
+		else {
+			$this.data('popup-ref').popup('toggle');
+		}
+	});
+
+
 	$('.main-demo').on('click', function() {
 
 		var $testHtml = $lorem();

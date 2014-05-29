@@ -15,6 +15,12 @@
 #animation-examples button {
   margin-bottom: 20px;
 }
+#common-popup,
+#lazy-popup {
+  height: 75px;
+  width: 150px;
+  padding: 10px;
+}
 /* articles need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
 article {
   padding-top: 50px;
@@ -52,26 +58,26 @@ aside {
 .popup-container.fading.ani-end {
   opacity: 0;
 }
-.popup-container.grow {
+.popup-container.bubble.grow {
   height: 300px;
   opacity: 1;
   overflow: hidden;
   width: 304px;
 }
-.popup-container.grow.ani-show {
+.popup-container.bubble.grow.ani-show {
   transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s ease-in;
 }
-.popup-container.grow.ani-hide {
+.popup-container.bubble.grow.ani-hide {
   transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease-out 1s;
 }
-.popup-container.grow.ani-start,
-.popup-container.grow.ani-end {
+.popup-container.bubble.grow.ani-start,
+.popup-container.bubble.grow.ani-end {
   height: 40px;
   margin-top: 130px;
   opacity: 0;
   width: 30px;
 }
-.popup-container.grow.showing {
+.popup-container.bubble.grow.showing {
   overflow: inherit;
 }
 .popup-container.spin {
@@ -86,8 +92,8 @@ aside {
 .popup-container.spin.ani-start,
 .popup-container.spin.ani-end {
   opacity: 0;
-  transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 .popup-container.flip.ani-show,
 .popup-container.flip.ani-hide {
@@ -95,6 +101,6 @@ aside {
 }
 .popup-container.flip.ani-start,
 .popup-container.flip.ani-end {
-  transform: rotateX(90deg) skewX(10deg);
   -webkit-transform: rotateX(90deg) skewX(10deg);
+  transform: rotateX(90deg) skewX(10deg);
 }

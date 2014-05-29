@@ -72,12 +72,12 @@
 		this.boundary = calculateBoundary.call(this);
 
 		// create popup container
-		this.$popup = $('<div class="popup-container">').addClass(o.classes);
-		o.showArrow && this.$popup.addClass('show-arrow');
+		this.$popupContainer = $('<div class="popup-container">').addClass(o.classes);
+		o.showArrow && this.$popupContainer.addClass('show-arrow');
 
 		// create close and arrow if needed
-		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popup) : null;
-		this.$arrow = o.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popup) : null;
+		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popupContainer) : null;
+		this.$arrow = o.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popupContainer) : null;
 
 		// if showClose, bind click event
 		this.$closeButton && this.$closeButton.on('click', $.proxy(this.hide, this));
@@ -93,11 +93,11 @@
 
 		// move $el into $popup and place $popup where $el used to be
 		// always hide here, if o.autoShow, popup will open below
-		$el.after(this.$popup);
-		this.$popup.append($el).hide();
+		$el.after(this.$popupContainer);
+		this.$popupContainer.append($el).hide();
 
 		// add visibility hidden when o.animate == true
-		o.animate && this.$popup.css('visibility', 'hidden');
+		o.animate && this.$popupContainer.css('visibility', 'hidden');
 
 		// if attachTo, save ref of popup
 		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
@@ -120,8 +120,8 @@
 		var placement = this.placement,
 			o = this.options,
 			offset = calculateOffset.call(this),
-			elWidth = this.$popup[0].offsetWidth,
-			elHeight = this.$popup[0].offsetHeight,
+			elWidth = this.$popupContainer[0].offsetWidth,
+			elHeight = this.$popupContainer[0].offsetHeight,
 			atPos = getPosition(this.$attachTo),
 			elPos = { top: null, left: null },
 			boundary = this.boundary;
@@ -194,21 +194,21 @@
 
 
 		// add class to popup for styling (first remove all possible classes)
-		this.$popup.removeClass('top bottom right left middle free').addClass(placement);
+		this.$popupContainer.removeClass('top bottom right left middle free').addClass(placement);
 
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - parseFloat(this.$popup.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
+				elPos = { top: atPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
 				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popup.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
+				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
 				break;
 			case 'right':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(this.$popup.css('margin-left')) };
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
 				break;
 			case 'left':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(this.$popup.css('margin-right')) };
+				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
 				break;
 			case 'middle':
 				elPos = { top: $document.scrollTop() + $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
@@ -267,14 +267,14 @@
 		
 		// position popup, $.fn.offset will correctly position the popup at the coords passed in regardless of which of it's parent
 		// elements is the first to have a position of absolute/relative/fixed
-		this.$popup.offset(elPos);
+		this.$popupContainer.offset(elPos);
 
 		// position arrow, arrow also has point at middle of $attachTo
 		if (o.showArrow) {
 			var $arrow = this.$arrow,
 				arrPos = { top: null, left: null },
-				popupBorderTop = parseFloat(this.$popup.css('border-top-width')),
-				popupBorderLeft = parseFloat(this.$popup.css('border-left-width'));
+				popupBorderTop = parseFloat(this.$popupContainer.css('border-top-width')),
+				popupBorderLeft = parseFloat(this.$popupContainer.css('border-left-width'));
 
 			// first, clear previous position
 			$arrow.css({ left: '', right: '', top: '', bottom: '' });
@@ -308,26 +308,26 @@
 		if (this.isShowing) { return; }
 		this.isShowing = true;
 		this.$el.trigger('show.popup');
-		this.$popup.show();
+		this.$popupContainer.show();
 		this.position();
 
 		if (this.options.animate) {
 			// delays and queues are to defeat race conditions
-			this.$popup
+			this.$popupContainer
 				.addClass('ani-start')
 				.css('visibility', "visible")
 				.delay(30)
-				.queue(function(next) { that.$popup.addClass('ani-show'); next(); })
+				.queue(function(next) { that.$popupContainer.addClass('ani-show'); next(); })
 				.delay(30)
 				.queue(function(next) {
-					that.$popup.removeClass('ani-start');
+					that.$popupContainer.removeClass('ani-start');
 
 					// because the transitionEnd event fires for every transition, we don't listen to the transitionEnd event
 					// it's reliable enough to just measure what the total transition time is and do a setTimeout
 					window.setTimeout(function() {
-						that.$popup.removeClass('ani-show');
+						that.$popupContainer.removeClass('ani-show');
 						finishShow();
-					}, getTotalTransitionTime(that.$popup));
+					}, getTotalTransitionTime(that.$popupContainer));
 
 					next();
 				});
@@ -337,7 +337,7 @@
 		}
 
 		function finishShow() {
-			that.$popup.addClass('showing');
+			that.$popupContainer.addClass('showing');
 			that.$el.trigger('shown.popup');
 		}
 	};
@@ -355,19 +355,19 @@
 		if (!this.isShowing) { return; }
 
 		this.$el.trigger('hide.popup');
-		this.$popup.removeClass('showing');
+		this.$popupContainer.removeClass('showing');
 
 		if (this.options.animate) {
 			// delays and queues are to defeat race conditions
-			this.$popup.addClass('ani-hide')
+			this.$popupContainer.addClass('ani-hide')
 			.delay(30)
 			.queue(function(next) {
-				that.$popup.addClass('ani-end');
+				that.$popupContainer.addClass('ani-end');
 
 				window.setTimeout(function() {
-					that.$popup.removeClass('ani-hide ani-end').css('visibility', 'hidden');
+					that.$popupContainer.removeClass('ani-hide ani-end').css('visibility', 'hidden');
 					finishHide();
-				}, getTotalTransitionTime(that.$popup));
+				}, getTotalTransitionTime(that.$popupContainer));
 
 				next();
 			});				
@@ -379,7 +379,7 @@
 		function finishHide() {
 
 			that.isShowing = false;
-			that.$popup.hide();
+			that.$popupContainer.hide();
 			that.$el.trigger('hidden.popup');
 
 			if (that.options.destroyOnHide) {
@@ -405,7 +405,7 @@
 		this.$el.off('.popup');
 
 		this.$el.trigger('destroy.popup');
-		this.$popup.remove();
+		this.$popupContainer.remove();
 	};
 
 
@@ -441,7 +441,7 @@
 			}
 			// else if popup has not yet been instantiated
 			else if (!instance) {
-				option = $.extend({}, $.fn.popup.defaults, $.isPlainObject(option) && option);
+				option = $.extend({}, $.fn.popup.defaults, $.isPlainObject(option) && option, $this.data());
 				$this.data('popup', (instance = new Popup($this, option)));
 			}
 			// if popup has been instantiated
@@ -569,8 +569,8 @@
 	function calculateOffset() {
 		var placement = this.placement,
 			parsedOffset = rOffsetMatch.exec(this.options.offset),
-			elWidth = this.$popup[0].offsetWidth,
-			elHeight = this.$popup[0].offsetHeight,
+			elWidth = this.$popupContainer[0].offsetWidth,
+			elHeight = this.$popupContainer[0].offsetHeight,
 			offset = 0; // zero by default
 
 		// if value of this.options.offset was invalid, use the default option

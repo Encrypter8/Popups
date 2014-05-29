@@ -195,10 +195,32 @@
 				</thead>
 				<tbody>
 					<tr>
+						<td>animate</td>
+						<td>boolean</td>
+						<td>false</td>
+						<td>
+							Setting animate to true will cause a series of classnames to be added and removed to popup-container to allow for animation effects on show/hide. The idea is to use a clever componation of position css properties / transforms and transitions. Where the popup is to be regularly positioned is where the transition will end on show. When you show the pop-up, these classes will be added/removed:
+							<br />
+							<code>ani-start</code> This will be where your popup begins on animation<br />
+							<code>ani-start ani-show</code> ani-show should contain your transition<br />
+							<code>ani-show</code> then remoing ani-start will transition your pop-up from it's start position to your show position. At the end of the transition, ani-show will be removed.
+							<br /><br />
+							On hide, these classes will be added/removed:<br />
+							<code>ani-hide</code> this will be your hide transiton<br />
+							<code>ani-hide ani-end</code> ani-end is the position you want your hide transition to end on. This will trigger the transition on ani-hide. At the end of that transition, both these classes will be removed.<br />
+							A lot of the time, ani-start and ani-end will be the same, as well as ani-show and ani-hide (see the fade example below). There are times when you want them to be different however, and that is why they are different classes (see the grow example below).
+						</td>
+					</tr>
+					<tr>
 						<td>attachTo</td>
 						<td>jQuery | element | string</td>
 						<td>null</td>
-						<td>The element the popup will be positioned against. Can be a jQuery element, a dom element, or a query string.</td>
+						<td>
+							The element the popup will be positioned against. Can be a jQuery element, a dom element, or a query string. This element will also be given a reference to the element the popup was instantiated on. It is saved on attachTo via <code>data-popup-ref</code>. ie: For<br />
+							<code>$element.popup({ attachTo: $myButton });</code><br />
+							then<br />
+							<code>$myButton.data('popup-ref') == $element</code><br />
+						</td>
 					</tr>
 					<tr>
 						<td>autoShow</td>
@@ -216,7 +238,7 @@
 						<td>classes</td>
 						<td>string</td>
 						<td>null</td>
-						<td>Any class names you would like to add to the popup-container</td>
+						<td>Any class names you would like to add to the popup-container. ex: <code>'bubble'</code>, or for multiple: <code>'bubble fade'</code></td>
 					</tr>
 					<tr>
 						<td>collision</td>
@@ -251,7 +273,7 @@
 						<td>placement</td>
 						<td>string</td>
 						<td>'right'</td>
-						<td>This determines how the popup is placed against attachTo. Your valid options are 'top', 'right', 'bottom', or 'left'. If you are no placing the popup against attachTo, you can also pass in 'middle' or 'free'. 'Middle' will position the popup in the dead center of the current view port. It will not be fixed, so the popup will scroll. 'Free' skips the positioning process altogether. 'Free' is the default if you pass an invalid position, and is only recomended if you want to wire up your own positioning (say for when you want to just create floating elements that are draggable).</td>
+						<td>This determines how the popup is placed against attachTo. Your valid options are 'top', 'right', 'bottom', or 'left'. If you are no placing the popup against attachTo, you can also pass in 'middle' or 'free'. 'Middle' will position the popup in the dead center of the current view port. It will not be fixed, so the popup will scroll. 'Free' skips the positioning process altogether. 'Free' is the default if you pass an invalid position, and is only recomended if you want to wire up your own positioning (say for when you want to just create floating elements that are draggable). The placement will also be added as a classname to popup-container.</td>
 					</tr>
 					<tr>
 						<td>showArrow</td>
@@ -284,12 +306,12 @@
 					<tr>
 						<td>show</td>
 						<td><code>$element.popup('show');</code></td>
-						<td>Reveal the popup</td>
+						<td>Reveal the popup. The classname <code>showing</code> is added to popup-container once shown (if <code>animate = true</code> it will be added at the and of the show transition.</td>
 					</tr>
 					<tr>
 						<td>hide</td>
 						<td><code>$element.popup('hide');</code></td>
-						<td>Hide the popup</td>
+						<td>Hide the popup/ The classname <code>showing</code> will be removed immediately from popup-container when this method is called.</td>
 					</tr>
 					<tr>
 						<td>toggle</td>
@@ -304,7 +326,7 @@
 					<tr>
 						<td>setContent</td>
 						<td><code>$element.popup('setContent', <i>content</i>);</code></td>
-						<td>Sets the content of $element. This method will remove all children of $element and replace them with <code><i>content</i></code>. This method is very handy when you want to populate the popup with fresh content loaded via ajax. <code><i>content</i></code> should always be a string of html.</td>
+						<td>Sets the content of $element. This method will remove all children of $element and replace them with <code><i>content</i></code>. This method is very handy when you want to populate the popup with fresh content loaded via ajax. <code><i>content</i></code> can be a jquery object, an HTML Element, or a html string. It does use <code>$.fn.append()</code>, so if you pass it a Node that already exists somewhere else in the DOM, it will be moved and become a child of the popup (this is ideal for when you are using a DocumentFragment you created from an html string brought in via ajax).</td>
 					</tr>
 				</tbody>
 			</table>
@@ -323,16 +345,14 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>$popup</td>
+						<td>$popupContainer</td>
 						<td>jQuery</td>
-					</tr>
-					<tr>
-						<td>$el</td>
-						<td>jQuery</td>
+						<td>Returns a jQuery of the pop-container your popup has been nested in.</td>
 					</tr>
 					<tr>
 						<td>isShowing</td>
 						<td>boolean</td>
+						<td>Returns show/hide state of the popup.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -378,6 +398,60 @@
 	<article id="examples">
 		<h2>Examples</h2>
 		<p class="bg-info">Note: all of the following examples are always passing the option <code>classes: 'bubble'</code> to add to the visual effect of the demo. I am leaving that out of the code examples because I only want to show what options are needed for the actually example.</p>
+
+		<div id="common-case" class="row">
+			<h3 class="col-xs-12">Common Use Case</h3>
+			<div class="col-xs-12">
+				<p>The most common use case is a click event on a button opens a popup. Here is an example of when the popup is instantiated on page load:</p>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<pre class="language-javascript"><code>var $popup = $('#common-popup').popup({
+	attachTo: '#common-button',
+	autoShow: false,
+	classes: 'bubble',
+	showArrow: true,
+	showClose: true
+});
+
+$('#common-button').on('click', function() {
+	$popup.popup('toggle');
+});</code></pre>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<button id="common-button" class="btn">Common Button</button>
+				<div id="common-popup">I am a common example of a popup</div>
+			</div>
+			<div class="col-xs-12">
+				<p>And here is an example when you want to lazy instantiate the popup, but still have the same functinality:</p>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<pre class="language-javascript"><code>var html = '&lt;div id="lazy-popup"&gt;I am a lazy loaded popup.&lt;/div&gt;';
+$('#lazy-button').on('click', function() {
+	var $this = $(this);
+
+	// since #common-popup will have data('popup-ref')
+	// because it's the attachTo,
+	// we can see if the popup has been instanciated yet or not
+	if (!$this.data('popup-ref'))
+		$(html).popup({
+			attachTo: $this,
+			classes: 'bubble',
+			showArrow: true,
+			showClose: true
+		});
+	}
+	// and once the pop-up has been instantiated,
+	// we then just have the button toggle the popup
+	else {
+		$this.data('popup-ref').popup('toggle');
+	}
+});</code></pre>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<button id="lazy-button" class="btn">Lazy Button</button>
+			</div>
+		</div>
+
 		<div id="main-examples" class="row">
 			<h3 class="col-xs-12">Placement</h3>
 			<div class="col-sm-3 col-xs-12">
