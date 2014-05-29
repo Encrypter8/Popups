@@ -436,7 +436,7 @@
 			}
 			// else if popup has not yet been instantiated
 			else if (!instance) {
-				option = $.extend({}, $.fn.popup.defaults, $.isPlainObject(option) && option);
+				option = $.extend({}, $.fn.popup.defaults, $.isPlainObject(option) && option, $this.data());
 				$this.data('popup', (instance = new Popup($this, option)));
 			}
 			// if popup has been instantiated
