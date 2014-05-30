@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0 - 2014-05-28
+/* jQuery Popups - v1.0.0 - 2014-05-30
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -396,9 +396,7 @@
 
 
 	Popup.prototype.destroy = function() {
-		if (this.$attachTo) {
-			this.$attachTo.removeData('popup-ref');
-		}
+		this.$attachTo && this.$attachTo.removeData('popup-ref');
 
 		// remove events
 		$window.off('resize.' + this.guid);
