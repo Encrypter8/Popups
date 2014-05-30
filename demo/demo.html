@@ -326,7 +326,7 @@
 					<tr>
 						<td>setContent</td>
 						<td><code>$element.popup('setContent', <i>content</i>);</code></td>
-						<td>Sets the content of $element. This method will remove all children of $element and replace them with <code><i>content</i></code>. This method is very handy when you want to populate the popup with fresh content loaded via ajax. <code><i>content</i></code> can be a jquery object, an HTML Element, or a html string. It does use <code>$.fn.append()</code>, so if you pass it a Node that already exists somewhere else in the DOM, it will be moved and become a child of the popup (this is ideal for when you are using a DocumentFragment you created from an html string brought in via ajax).</td>
+						<td>Sets the content of $element. This method will remove all children of $element and replace them with <code><i>content</i></code>. This method is very handy when you want to populate the popup with fresh content loaded via ajax. <code><i>content</i></code> can be a jquery object, an HTML Element, or a html string. It does use <code>$.fn.append()</code>, so if you pass it a Node that already exists somewhere else in the DOM, it will be moved and become a child of the popup (this is ideal for when you are using a DocumentFragment you created from an html string brought in via ajax). The popup will automatically re-position itself on this call (to account for width/height changes)</td>
 					</tr>
 				</tbody>
 			</table>
@@ -360,6 +360,12 @@
 
 		<h3>Events</h3>
 		<p>This are the events you can hook into. All the Events are called on the element .popup() was called upon.</p>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<pre class="language-javascript"><code>$('#message').popup({...});
+$('#message').on('show.popup', function() { ... });</code></pre>
+			</div>
+		</div>
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped">
 				<thead>
@@ -371,24 +377,31 @@
 				<tbody>
 					<tr>
 						<td>create.popup</td>
+						<td>Triggered at the end of the instantiation, and before showing if <code>autoOpen = true</code>.</td>
 					</tr>
 					<tr>
 						<td>show.popup</td>
+						<td>Triggered right as the popup begins the process of showing.</td>
 					</tr>
 					<tr>
 						<td>shown.popup</td>
+						<td>Triggered once the popup has fully closed. Generally this and <code>show.popup</code> will happen within an instance of each other, except when <code>animate = true</code>.</td>
 					</tr>
 					<tr>
 						<td>positioned.popup</td>
+						<td>Triggered after the popup has been positioned.</td>
 					</tr>
 					<tr>
 						<td>hide.popup</td>
+						<td>Triggerd right as the popup begins the process of hiding.</td>
 					</tr>
 					<tr>
 						<td>hidden.popup</td>
+						<td>Triggered once the popup has fully closed. Like show and shown, hide and hidden will happen within an instance of each other, except when <code>animate = true</code>.</td>
 					</tr>
 					<tr>
 						<td>destroy.popup</td>
+						<td>Triggered when destroying the popup. This trigger happens directly before <code>$popupContainer</code> is removed.</td>
 					</tr>
 				</tbody>
 			</table>

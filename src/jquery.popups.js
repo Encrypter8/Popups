@@ -391,9 +391,7 @@
 
 
 	Popup.prototype.destroy = function() {
-		if (this.$attachTo) {
-			this.$attachTo.removeData('popup-ref');
-		}
+		this.$attachTo && this.$attachTo.removeData('popup-ref');
 
 		// remove events
 		$window.off('resize.' + this.guid);
