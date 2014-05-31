@@ -124,6 +124,11 @@ aside {
 	}
 }
 
+// we do this for the rotateX transform below
+body {
+	perspective: 10000px;
+}
+
 .popup-container.flip {
 
 	&.ani-show, &.ani-hide {
@@ -131,7 +136,7 @@ aside {
 	}
 
 	&.ani-start, &.ani-end {
-		-webkit-transform: rotateX(90deg) skewX(10deg);
 		transform: rotateX(90deg) skewX(10deg);
+		-webkit-transform: rotateX(90deg) skewX(10deg);
 	}
 }
