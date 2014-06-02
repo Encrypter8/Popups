@@ -75,8 +75,7 @@ module.exports = function(grunt) {
 		uglify: {
 			popups: {
 				options: {
-					banner: '<%= popupsBanner %>',
-					sourceMap: true
+					banner: '<%= popupsBanner %>'
 				},
 				src: '<%= meta.popupsDev %>',
 				dest: 'dist/jquery.popups.min.js'
