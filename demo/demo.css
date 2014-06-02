@@ -7,12 +7,14 @@
 }
 #main-examples > div,
 #fit-examples > div,
-#animation-examples > div {
+#animation-examples > div,
+#ajax-examples > div {
   text-align: center;
 }
 #main-examples button,
 #fit-examples button,
-#animation-examples button {
+#animation-examples button,
+#ajax-examples button {
   margin-bottom: 20px;
 }
 #common-popup,

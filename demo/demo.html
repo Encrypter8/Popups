@@ -578,7 +578,7 @@ $('#lazy-button').on('click', function() {
 
 		<div id="ajax-examples" class="row">
 			<h3 class="col-xs-12">jqXHR</h3>
-			<div class="col-sm-6 col-xs-12">
+			<div class="col-sm-9 col-xs-12">
 				<pre class="language-javascript"><code>$('#jqXHR-test').on('click', function() {
 
 	var echo = $('#jqXHR-echo').val();
@@ -587,14 +587,13 @@ $('#lazy-button').on('click', function() {
 		type: 'GET',
 		url: 'http://jsfiddle.net/echo/jsonp/',
 		data: {
-			html: '<div class="popup">Here is your Echo:<br /><span class="echo"></span></div>',
+			html: '&lt;div class=&quot;popup&quot;&gt; ... &lt;/div&gt;',
 			echo: echo,
 			delay: 3
 		},
 		dataType: 'jsonp'
 	}).done(function(data) {
 		$echoPopup.popup('setContent', data.html);
-		$echoPopup.find('.echo').text(data.echo);
 	});
 
 	var $echoPopup = $.popup($ajax, {

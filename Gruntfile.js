@@ -82,8 +82,7 @@ module.exports = function(grunt) {
 			},
 			modal: {
 				options: {
-					banner: '<%= modalBanner %>',
-					sourceMap: true
+					banner: '<%= modalBanner %>'
 				},
 				src: '<%= meta.modalDev %>',
 				dest: 'dist/jquery.modal.min.js'

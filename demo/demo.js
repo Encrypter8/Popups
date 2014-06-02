@@ -3,6 +3,10 @@ $(function() {
 	// StyleSwitcher
 	$('#navbar').find('.dropdown-menu').on('click', 'a', function() {
 		setActiveStyleSheet($(this).data('value'));
+		// reposition all open popups
+		$('*').filter(function() {
+			return $(this).data('popup') !== undefined;
+		}).each(function() { $(this).popup('position'); });
 	});
 
 
@@ -162,7 +166,7 @@ $(function() {
 			type: 'GET',
 			url: 'http://jsfiddle.net/echo/jsonp/',
 			data: {
-				html: $lorem().html(),
+				html: $lorem()[0].outerHTML,
 				delay: 3
 			},
 			dataType: 'jsonp'
