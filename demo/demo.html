@@ -611,18 +611,35 @@ $('#lazy-button').on('click', function() {
 
 		<div id="animation-examples" class="row">
 			<h3 class="col-xs-12">Animations</h3>
+			<p>Animation effects when you have <code>animate: true</code> and the css to support it.</p>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble fading'
+});</code></pre>
 				<button class="btn ani-demo" data-ani="fading">Fade</button>
 			</div>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble grow'
+});</code></pre>
 				<button class="btn ani-demo" data-ani="grow">Grow</button>
 			</div>
 			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble spin'
+});</code></pre>
 				<button class="btn ani-demo" data-ani="spin">Spin</button>
 				<br />
 				<small>Need Firefox for this one</small>
 			</div>
 			<div class="col-sm-3 col-x-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble flip'
+});</code></pre>
 				<button class="btn ani-demo" data-ani="flip">Flip</button>
 				<br />
 				<small>Need Firefox for this one</small>
