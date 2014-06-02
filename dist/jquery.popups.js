@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.0.0 - 2014-05-31
+/* jQuery Popups - v1.0.0 - 2014-06-01
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -67,8 +67,8 @@
 		!rPlacementOptions.test(o.placement) && (o.placement = 'free');
 		this.placement = o.placement;
 
-		// set $attachTo and calculate Boundary
-		this.$attachTo = $(o.attachTo);
+		// set $anchor and calculate Boundary
+		this.$anchor = $(o.anchor);
 		this.boundary = calculateBoundary.call(this);
 
 		// create popup container
@@ -99,8 +99,8 @@
 		// add visibility hidden when o.animate == true
 		o.animate && this.$popupContainer.css('visibility', 'hidden');
 
-		// if attachTo, save ref of popup
-		this.$attachTo && this.$attachTo.data('popup-ref', this.$el);
+		// if anchor, save ref of popup
+		this.$anchor && this.$anchor.data('popup-ref', this.$el);
 
 		// position on window resize
 		$window.on('resize.' + this.guid, $.proxy(this.position, this));
@@ -122,7 +122,7 @@
 			offset = calculateOffset.call(this),
 			elWidth = this.$popupContainer[0].offsetWidth,
 			elHeight = this.$popupContainer[0].offsetHeight,
-			atPos = getPosition(this.$attachTo),
+			atPos = getPosition(this.$anchor),
 			elPos = { top: null, left: null },
 			boundary = this.boundary;
 
@@ -269,7 +269,7 @@
 		// elements is the first to have a position of absolute/relative/fixed
 		this.$popupContainer.offset(elPos);
 
-		// position arrow, arrow also has point at middle of $attachTo
+		// position arrow, arrow also has point at middle of $anchor
 		if (o.showArrow) {
 			var $arrow = this.$arrow,
 				arrPos = { top: null, left: null },
@@ -396,7 +396,7 @@
 
 
 	Popup.prototype.destroy = function() {
-		this.$attachTo && this.$attachTo.removeData('popup-ref');
+		this.$anchor && this.$anchor.removeData('popup-ref');
 
 		// remove events
 		$window.off('resize.' + this.guid);
@@ -508,7 +508,7 @@
 	// feel free to change these to your liking
 	$.fn.popup.defaults = {
 		animate: false,
-		attachTo: null,
+		anchor: null,
 		autoShow: true,
 		boundary: 10,
 		classes: null,

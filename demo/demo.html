@@ -57,7 +57,7 @@
 		<h2>About</h2>
 		<p>jquery.popups.js is a css driven popup and dialog creator. Though it can serve many other purposed such as dropdown menu.</p>
 		<p>Unlike most other jQuery plug-ins that wrap up all the styles in the javascript, this script is depended on a well maintains css file, not only for the style of the popup, but for it's placement as well.</p>
-		<p>The plugin will position of the element it is being called in against the <code>attachTo</code> element passed in options. It will be place on a specific side of that via the <code>placement</code>. And here is the important bit, if <code>placement: right</code>, then the popover will be placed flush against <code>attachTo</code> by it's most outer boundry, including the margin!</p>
+		<p>The plugin will position of the element it is being called in against the <code>anchor</code> element passed in options. It will be place on a specific side of that via the <code>placement</code>. And here is the important bit, if <code>placement: right</code>, then the popover will be placed flush against <code>anchor</code> by it's most outer boundry, including the margin!</p>
 	</article>
 
 	<article id="getting-started">
@@ -125,7 +125,7 @@
 			<div class="row">
 				<div class="col-sm-9 col-xs-12">
 					<pre class="language-javascript"><code>$('.notification').popup({
-	attachTo: '.notify-btn',
+	anchor: '.notify-btn',
 	classes: 'bubble',
 	collision: false,
 	position: right,
@@ -195,6 +195,17 @@
 				</thead>
 				<tbody>
 					<tr>
+						<td>anchor</td>
+						<td>jQuery | element | string</td>
+						<td>null</td>
+						<td>
+							The element the popup will be positioned against. Can be a jQuery element, a dom element, or a query string. This element will also be given a reference to the element the popup was instantiated on. It is saved on anchor via <code>data-popup-ref</code>. ie: For<br />
+							<code>$element.popup({ anchor: $myButton });</code><br />
+							then<br />
+							<code>$myButton.data('popup-ref') == $element</code><br />
+						</td>
+					</tr>
+					<tr>
 						<td>animate</td>
 						<td>boolean</td>
 						<td>false</td>
@@ -209,17 +220,6 @@
 							<code>ani-hide</code> this will be your hide transiton<br />
 							<code>ani-hide ani-end</code> ani-end is the position you want your hide transition to end on. This will trigger the transition on ani-hide. At the end of that transition, both these classes will be removed.<br />
 							A lot of the time, ani-start and ani-end will be the same, as well as ani-show and ani-hide (see the fade example below). There are times when you want them to be different however, and that is why they are different classes (see the grow example below).
-						</td>
-					</tr>
-					<tr>
-						<td>attachTo</td>
-						<td>jQuery | element | string</td>
-						<td>null</td>
-						<td>
-							The element the popup will be positioned against. Can be a jQuery element, a dom element, or a query string. This element will also be given a reference to the element the popup was instantiated on. It is saved on attachTo via <code>data-popup-ref</code>. ie: For<br />
-							<code>$element.popup({ attachTo: $myButton });</code><br />
-							then<br />
-							<code>$myButton.data('popup-ref') == $element</code><br />
 						</td>
 					</tr>
 					<tr>
@@ -267,19 +267,19 @@
 						<td>offset</td>
 						<td>string</td>
 						<td>'50%'</td>
-						<td>The popup is always positioned against the center of the attachTo element. Offset displaces that position by either a percentage, pixels, or both. Percent is the percent of the popup's width or height (depends on if the placement is left/right or top/bottom). If set to <code>'50%'</code> the middle of the popup will align with the middle of attachTo. If set to <code>'30px'</code> the popup will align with the middel of attachTo from 30px from the Top/Left of the popup. If you want 30px from the Bottom/Right of the popup, you would set this too <code>'100%-30px'</code>. See the offset example below to play around with some values.</td>
+						<td>The popup is always positioned against the center of the anchor element. Offset displaces that position by either a percentage, pixels, or both. Percent is the percent of the popup's width or height (depends on if the placement is left/right or top/bottom). If set to <code>'50%'</code> the middle of the popup will align with the middle of anchor. If set to <code>'30px'</code> the popup will align with the middle of anchor from 30px from the Top/Left of the popup. If you want 30px from the Bottom/Right of the popup, you would set this too <code>'100%-30px'</code>. See the offset example below to play around with some values.</td>
 					</tr>
 					<tr>
 						<td>placement</td>
 						<td>string</td>
 						<td>'right'</td>
-						<td>This determines how the popup is placed against attachTo. Your valid options are 'top', 'right', 'bottom', or 'left'. If you are no placing the popup against attachTo, you can also pass in 'middle' or 'free'. 'Middle' will position the popup in the dead center of the current view port. It will not be fixed, so the popup will scroll. 'Free' skips the positioning process altogether. 'Free' is the default if you pass an invalid position, and is only recomended if you want to wire up your own positioning (say for when you want to just create floating elements that are draggable). The placement will also be added as a classname to popup-container.</td>
+						<td>This determines how the popup is placed against anchor. Your valid options are 'top', 'right', 'bottom', or 'left'. If you are no placing the popup against anchor, you can also pass in 'middle' or 'free'. 'Middle' will position the popup in the dead center of the current view port. It will not be fixed, so the popup will scroll. 'Free' skips the positioning process altogether. 'Free' is the default if you pass an invalid position, and is only recomended if you want to wire up your own positioning (say for when you want to just create floating elements that are draggable). The placement will also be added as a classname to popup-container.</td>
 					</tr>
 					<tr>
 						<td>showArrow</td>
 						<td>boolean</td>
 						<td>true</td>
-						<td>When set to true, the markup for the arrow will be added to popup-container. The arror element will always be position to the middle of attachTo, regardless of what <code>offset</code> is set too. See the offset example below for a visual.</td>
+						<td>When set to true, the markup for the arrow will be added to popup-container. The arror element will always be position to the middle of anchor, regardless of what <code>offset</code> is set too. See the offset example below for a visual.</td>
 					</tr>
 					<tr>
 						<td>showClose</td>
@@ -321,7 +321,7 @@
 					<tr>
 						<td>destroy</td>
 						<td><code>$element.popup('destroy');</code></td>
-						<td>Completely destroy the popup instance and remove the popup-container markup (and it's children) from the DOM. <span class="text-danger">WARNING!</span> If you instantiated the popup of markup that already existed on the DOM, it will be remove with this method, and not be placed back in it's original place.</td>
+						<td>Completely destroy the popup instance and remove the popup-container markup (and it's children) from the DOM. All events related to the popup are also removed. <span class="text-danger">WARNING! If you instantiated the popup on markup that already existed on the DOM, it will be remove with this method, and not be placed back in it's original place.</span></td>
 					</tr>
 					<tr>
 						<td>setContent</td>
@@ -410,7 +410,7 @@ $('#message').on('show.popup', function() { ... });</code></pre>
 
 	<article id="examples">
 		<h2>Examples</h2>
-		<p class="bg-info">Note: all of the following examples are always passing the option <code>classes: 'bubble'</code> to add to the visual effect of the demo. I am leaving that out of the code examples because I only want to show what options are needed for the actually example.</p>
+		<p class="bg-info">Note: all of the following examples are always passing the option <code>classes: 'bubble'</code> to add to the visual effect of the demo. I am leaving that out of the code examples because I only want to show what options are needed for the actually example. I am also leaving out <code>anchor</code>, which for all examples are the buttons that show/hide the popup.</p>
 
 		<div id="common-case" class="row">
 			<h3 class="col-xs-12">Common Use Case</h3>
@@ -419,7 +419,7 @@ $('#message').on('show.popup', function() { ... });</code></pre>
 			</div>
 			<div class="col-xs-12 col-sm-6">
 				<pre class="language-javascript"><code>var $popup = $('#common-popup').popup({
-	attachTo: '#common-button',
+	anchor: '#common-button',
 	autoShow: false,
 	classes: 'bubble',
 	showArrow: true,
@@ -443,11 +443,11 @@ $('#lazy-button').on('click', function() {
 	var $this = $(this);
 
 	// since #common-popup will have data('popup-ref')
-	// because it's the attachTo,
+	// because it's the anchor,
 	// we can see if the popup has been instanciated yet or not
 	if (!$this.data('popup-ref'))
 		$(html).popup({
-			attachTo: $this,
+			anchor: $this,
 			classes: 'bubble',
 			showArrow: true,
 			showClose: true
@@ -598,7 +598,7 @@ $('#lazy-button').on('click', function() {
 	});
 
 	var $echoPopup = $.popup($ajax, {
-		attachTo: '#jqXHR-test',
+		anchor: '#jqXHR-test',
 		classes: 'bubble',
 		collision: false,
 		placement: 'right',

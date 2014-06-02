@@ -15,7 +15,7 @@ $(function() {
 	var $notifyBtn = $('.notify-btn').eq(1);
 
 	$notify.popup({
-		attachTo: $notifyBtn,
+		anchor: $notifyBtn,
 		classes: 'bubble',
 		collision: false,
 		destroyOnHide: false,
@@ -30,7 +30,7 @@ $(function() {
 
 
 	var $commonPopup = $('#common-popup').popup({
-		attachTo: '#common-button',
+		anchor: '#common-button',
 		autoShow: false,
 		classes: 'bubble',
 		collision: false,
@@ -47,7 +47,7 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			$('<div id="lazy-popup">I am a lazy loaded popup.</div>').popup({
-				attachTo: $this,
+				anchor: $this,
 				classes: 'bubble',
 				collision: false,
 				showArrow: true,
@@ -68,7 +68,7 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
-				attachTo: $this,
+				anchor: $this,
 				classes: 'bubble',
 				collision: null,
 				destroyOnHide: true,
@@ -92,7 +92,7 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
-				attachTo: $this,
+				anchor: $this,
 				classes: 'bubble',
 				destroyOnHide: true,
 				offset: offset,
@@ -114,7 +114,7 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
-				attachTo: $this,
+				anchor: $this,
 				boundary: '50 10 10 10',
 				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
 				collision: $this.hasClass('fit') ? 'fit' : null,
@@ -138,7 +138,7 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
-				attachTo: $this,
+				anchor: $this,
 				boundary: '50 10 10 10',
 				classes: 'bubble flip-width',
 				collision: 'flip',
@@ -171,7 +171,7 @@ $(function() {
 		});
 
 		var $echoPopup = $.popup($ajax, {
-			attachTo: '#jqXHR-test',
+			anchor: '#jqXHR-test',
 			classes: 'bubble',
 			collision: false,
 			placement: 'right',
@@ -190,8 +190,8 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
+				anchor: $this,
 				animate: true,
-				attachTo: $this,
 				classes: 'bubble ' + $this.data('ani') || '',
 				destroyOnHide: true,
 				placement: 'right',
