@@ -385,8 +385,7 @@
 
 
 	Popup.prototype.toggle = function() {
-		if (this.isShowing) { return this.hide(); }
-		this.show();
+		this.isShowing ? this.hide() : this.show();
 	};
 
 
