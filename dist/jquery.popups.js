@@ -351,8 +351,8 @@
 		var that = this;
 		// if jqXHR was initially passed, and the jqXHR has not yet been resolved, we want to abort the XHR call
 		// we want to always destroy in this case, since we will need to re-call the ajax if user re-opens
-		if (this.jqXHR && this.jqXHR.state() === 'pending') {
-			this.jqXHR.abort();
+		if (this.options.jqXHR && this.options.jqXHR.state() === 'pending') {
+			this.options.jqXHR.abort();
 			this.destroy();
 		}
 
