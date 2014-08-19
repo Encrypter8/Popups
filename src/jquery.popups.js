@@ -70,9 +70,13 @@
 		this.$popupContainer = $('<div class="popup-container">').addClass(o.classes);
 		o.showArrow && this.$popupContainer.addClass('show-arrow');
 
+		// if no custom templates, use default
+		o.closeTemplate = o.closeTemplate || '<button class="popup-close" type="button"></button>';
+		o.arrowTemplate = o.arrowTemplate || '<div class="popup-arrow"><div class="inner-arrow"></div></div>';
+
 		// create close and arrow if needed
-		this.$closeButton = o.showClose ? $('<button class="popup-close" type="button"></button>').appendTo(this.$popupContainer) : null;
-		this.$arrow = o.showArrow ? $('<div class="popup-arrow"><div class="inner-arrow"></div></div>').appendTo(this.$popupContainer) : null;
+		this.$closeButton = o.showClose ? $(o.closeTemplate).appendTo(this.$popupContainer) : null;
+		this.$arrow = o.showArrow ? $(o.arrowTemplate).appendTo(this.$popupContainer) : null;
 
 		// if showClose, bind click event
 		this.$closeButton && this.$closeButton.on('click', $.proxy(this.hide, this));
@@ -503,9 +507,11 @@
 	$.fn.popup.defaults = {
 		animate: false,
 		anchor: null,
+		arrowTemplate: null,
 		autoShow: true,
 		boundary: 10,
 		classes: null,
+		closeTempalte: null,
 		collision: 'flip', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
 		destroyOnHide: false,
