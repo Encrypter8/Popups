@@ -431,10 +431,11 @@
 			// test on this to see if it's an jqXHR object
 			if (this.readyState && this.promise) {
 				option.jqXHR = this;
-				var $html = $('<div class="popup-inner">').popup(option);
-				$html.popup('$popup').addClass('loading');
+				option.loadingTemplate = option.loadingTemplate || '<div class="popup-inner">';
+				var $html = $(option.loadingTemplate).popup(option);
+				$html.popup('$popupContainer').addClass('loading');
 				this.always(function(data) {
-					$html.popup('$popup').removeClass('loading');
+					$html.popup('$popupContainer').removeClass('loading');
 				});
 				// return single jquery object of newly created node with popup instanciated on it
 				rtnValue = $html;
@@ -520,6 +521,7 @@
 		collision: 'flip', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
 		destroyOnHide: false,
+		loadingTemplate: null,
 		offset: '50%', 
 		placement: 'right',
 		showArrow: false, // consider: rename to 'addArrow'
