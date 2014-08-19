@@ -1,0 +1,143 @@
+// demo.less
+
+#navbar .btn-group {
+	padding-top: 8px;
+	margin-left: 15px;
+}
+
+#room-to-scroll {
+	height: 600px;
+}
+
+#main-examples,
+#fit-examples,
+#animation-examples,
+#ajax-examples {
+	> div {
+		text-align: center;
+	}
+
+	button {
+		margin-bottom: 20px;
+	}
+}
+
+#common-popup,
+#lazy-popup {
+	height: 75px;
+	width: 150px;
+	padding: 10px;
+}
+
+/* articles need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
+article {
+	padding-top: 50px;
+}
+
+aside {
+	margin-top: 20px;
+}
+
+.bubble {
+
+	&.fit-width {
+		max-width: none;
+		width: 800px;
+	}
+
+	&.fit-height {
+		max-width: none;
+		width: 400px;
+		height: 300px;
+	}
+
+	&.flip-width {
+		width: 500px;
+	}
+}
+
+#examples {
+	label {
+		margin-right: 15px;
+	}
+
+	.form-control {
+		display: inline-block;
+		width: 200px;
+	}
+}
+
+
+// animations
+.popup-container.fading {
+	opacity: 1;
+
+	&.ani-show, &.ani-hide {
+		transition: opacity 0.7s linear;
+	}
+
+	&.ani-start, &.ani-end {
+		opacity: 0;
+	}
+}
+
+.popup-container.bubble.grow {
+	height: 300px;
+	opacity: 1;
+	overflow: hidden;
+	width: 304px; // for this example, the popup has a height of 300px and .popup-container is border-box, so 304px to account for the border of 2px top and bottom
+
+	&.ani-show {
+		transition: height 0.7s ease 0.7s, width 0.7s, margin 0.7s ease 0.7s, opacity 0.4s ease-in;
+	}
+
+	&.ani-hide {
+		transition: height 0.7s, width 0.7s ease 0.7s, margin 0.7s, opacity 0.4s ease-out 1s;
+	}
+
+	&.ani-start, &.ani-end {
+		height: 40px;
+		margin-top: 130px;
+		opacity: 0;
+		width: 30px;
+	}
+
+	&.showing {
+		overflow: inherit;
+	}
+}
+
+.popup-container.spin {
+	opacity: 1;
+
+	&.ani-show {
+		transition: transform 0.7s, opacity 0.7s ease-in;
+	}
+
+	&.ani-hide {
+		transition: transform 0.7s, opacity 0.7s ease-out;
+	}
+
+	&.ani-start, &.ani-end {
+		opacity: 0;
+		-webkit-transform: rotate(180deg);
+		transform: rotate(180deg);
+	}
+}
+
+// we do this for the rotateX transform below
+body {
+	perspective: 10000px;
+}
+
+.popup-container.flip {
+
+	&.ani-show, &.ani-hide {
+		transition: transform 0.3s linear, skewX 0.3s linear;
+	}
+
+	&.ani-start, &.ani-end {
+		transform: rotateX(90deg) skewX(10deg);
+		-webkit-transform: rotateX(90deg) skewX(10deg);
+	}
+}

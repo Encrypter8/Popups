@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jquery.popups.js</title>
+	<meta charset="UTF-8">
+	<!--[if lt IE 9]><script type="text/javascript" src="https://rawgithub.com/scottjehl/Respond/master/dest/respond.src.js"></script><![endif]-->
+	<link href="./assets/prism.css" rel="stylesheet" type="text/css" />
+	<link href="./assets/bootstrap.min.css" rel="stylesheet" />
+	<link href="../dist/popups-core.css" rel="stylesheet" type="text/css" />
+	<link href="./demo.css" rel="stylesheet" type="text/css" />
+	<link href="./popups-bubble.css" rel="stylesheet" type="text/css" title="default" />
+	<link href="./popups-bubble-popover-style.css" rel="alternate stylesheet" type="text/css" title="bootstrap" />
+	
+</head>
+<body data-spy="scroll" data-target="#navbar">
+
+<header class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+		<a class="navbar-brand" href="#">jquery.popups.js</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<nav class="collapse navbar-collapse" id="navbar">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="#about">About</a></li>
+				<li><a href="#getting-started">Getting Started</a></li>
+				<li><a href="#api">API</a></li>
+				<li><a href="#examples">Examples</a></li>
+				<li><a href="#download">Download</a></li>
+			</ul>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Choose a Style <span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="Javascript:void(0);" data-value="default">Default</a></li>
+					<li><a href="Javascript:void(0);" data-value="bootstrap">Bootstrap</a></li>
+				</ul>
+			</div>
+		</nav><!-- /.navbar-collapse -->
+	</div>
+</header>
+
+<main class="container">
+	<article>
+		<h1>jquery.popups.js</h1>
+		<h4>A css driven jquery plug-in for all your popup and dialog needs</h4>
+		<p>Compatible down to IE7</p>
+	</article>
+
+	<article id="about">
+		<h2>About</h2>
+		<p>jquery.popups.js is a css driven popup and dialog creator. Though it can serve many other purposed such as dropdown menu.</p>
+		<p>Unlike most other jQuery plug-ins that wrap up all the styles in the javascript, this script is depended on a well maintains css file, not only for the style of the popup, but for it's placement as well.</p>
+		<p>The plugin will position of the element it is being called in against the <code>anchor</code> element passed in options. It will be place on a specific side of that via the <code>placement</code>. And here is the important bit, if <code>placement: right</code>, then the popover will be placed flush against <code>anchor</code> by it's most outer boundry, including the margin!</p>
+	</article>
+
+	<article id="getting-started">
+		<h2>Getting Started</h2>
+
+		<section>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-javascript"><code>$('&lt;div class=&quot;my-class&quot;&gt;').popup();</code></pre>
+				</div>
+			</div>
+			<p>Will simply Render:</p>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-markup"><code>&lt;div class=&quot;popup-container&quot;&gt;
+	&lt;div class=&quot;my-class&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<p>An example where you already have the markup in the DOM</p>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-javascript"><code>$('.notification').popup();</code></pre>
+				</div>
+			</div>
+			<p>Will turn this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+			<p>Into this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;div class=&quot;popup-container&quot;&gt;
+		&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<p>A full example with several options passed</p>
+			<div class="row">
+				<div class="col-sm-9 col-xs-12">
+					<pre class="language-javascript"><code>$('.notification').popup({
+	anchor: '.notify-btn',
+	classes: 'bubble',
+	collision: false,
+	position: right,
+	showArrow: true,
+	showClose: true
+});</code></pre>
+				</div>
+			</div>
+			<p>Will turn this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;button class=&quot;btn notify-btn&quot;&gt;Notify!&lt;/button&gt;
+	&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<button class="btn notify-btn">Notify!</button>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+			<p>Into this:</p>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<pre class="language-markup"><code>...
+&lt;aside&gt;
+	&lt;button class=&quot;btn notify-btn&quot;&gt;Notify!&lt;/button&gt;
+	&lt;div class=&quot;popup-container&quot;&gt;
+		&lt;button class=&quot;popup-close&quot; type=&quot;button&quot;&gt;&lt;/button&gt;
+		&lt;div class=&quot;popup-arrow&quot;&gt;
+			&lt;div class=&quot;inner-arrow&quot;&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div class=&quot;notification&quot;&gt;This is a notification!&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/aside&gt;
+...</code></pre>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<aside>
+						<button class="btn notify-btn">Notify!</button>
+						<div class="notification">This is a notification!</div>
+					</aside>
+				</div>
+			</div>
+			</div>
+		</section>
+
+	</article>
+
+	<article id="api">
+		<h2>API</h2>
+		<h3>Options</h3>
+		<p>The object properties that can be passed on creation of a popup</p>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Name</th>
+						<th style="width: 200px;">Type</th>
+						<th style="width: 100px;">Default</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>anchor</td>
+						<td>jQuery | element | string</td>
+						<td>null</td>
+						<td>
+							The element the popup will be positioned against. Can be a jQuery element, a dom element, or a query string. This element will also be given a reference to the element the popup was instantiated on. It is saved on anchor via <code>data-popup-ref</code>. ie: For<br />
+							<code>$element.popup({ anchor: $myButton });</code><br />
+							then<br />
+							<code>$myButton.data('popup-ref') == $element</code><br />
+						</td>
+					</tr>
+					<tr>
+						<td>animate</td>
+						<td>boolean</td>
+						<td>false</td>
+						<td>
+							Setting animate to true will cause a series of classnames to be added and removed to popup-container to allow for animation effects on show/hide. The idea is to use a clever componation of position css properties / transforms and transitions. Where the popup is to be regularly positioned is where the transition will end on show. When you show the pop-up, these classes will be added/removed:
+							<br />
+							<code>ani-start</code> This will be where your popup begins on animation<br />
+							<code>ani-start ani-show</code> ani-show should contain your transition<br />
+							<code>ani-show</code> then remoing ani-start will transition your pop-up from it's start position to your show position. At the end of the transition, ani-show will be removed.
+							<br /><br />
+							On hide, these classes will be added/removed:<br />
+							<code>ani-hide</code> this will be your hide transiton<br />
+							<code>ani-hide ani-end</code> ani-end is the position you want your hide transition to end on. This will trigger the transition on ani-hide. At the end of that transition, both these classes will be removed.<br />
+							A lot of the time, ani-start and ani-end will be the same, as well as ani-show and ani-hide (see the fade example below). There are times when you want them to be different however, and that is why they are different classes (see the grow example below).
+						</td>
+					</tr>
+					<tr>
+						<td>autoShow</td>
+						<td>boolean</td>
+						<td>true</td>
+						<td>Display immediately after creation of the popup.</td>
+					</tr>
+					<tr>
+						<td>boundary</td>
+						<td>number | string</td>
+						<td>10</td>
+						<td>An additional inner boundary inside the window. Used in tandam with collision. If set to 0, the window is the boundary. If set to 10, the boudary is 10 pixels inside the window on all 4 side. You can also pass in a string <code>boundary: "50 10 10 10"</code> that represents a different value for each side of the window (css style top-right-bottom-left).</td>
+					</tr>
+					<tr>
+						<td>classes</td>
+						<td>string</td>
+						<td>null</td>
+						<td>Any class names you would like to add to the popup-container. ex: <code>'bubble'</code>, or for multiple: <code>'bubble fade'</code></td>
+					</tr>
+					<tr>
+						<td>collision</td>
+						<td>string</td>
+						<td>'flip'</td>
+						<td>There are 3 acceptable values. <code>"flip"</code>, <code>"flip"</code>, or <code>"flipfit"</code></td>
+					</tr>
+					<tr>
+						<td>container</td>
+						<td>jQuery | element | string</td>
+						<td>null</td>
+						<td>The element that the popup will be a child of. If left null, one of 2 things will happend:
+							<ol>
+								<li>If the popup was already part of the DOM it will remain in it's current position</li>
+								<li>If the popup is not already part of the DOM (just a documentFragment), it will be appended to the bottom of the body</li>
+							</ol>
+						</td>
+					</tr>
+					<tr>
+						<td>destroyOnHide</td>
+						<td>boolean</td>
+						<td>false</td>
+						<td>Destroy the popup on close. Usefull when you're creating the popup from a template and not an exisition dom element, and populating data points on creations. This allows you to get a fresh pop-up everytime.</td>
+					</tr>
+					<tr>
+						<td>offset</td>
+						<td>string</td>
+						<td>'50%'</td>
+						<td>The popup is always positioned against the center of the anchor element. Offset displaces that position by either a percentage, pixels, or both. Percent is the percent of the popup's width or height (depends on if the placement is left/right or top/bottom). If set to <code>'50%'</code> the middle of the popup will align with the middle of anchor. If set to <code>'30px'</code> the popup will align with the middle of anchor from 30px from the Top/Left of the popup. If you want 30px from the Bottom/Right of the popup, you would set this too <code>'100%-30px'</code>. See the offset example below to play around with some values.</td>
+					</tr>
+					<tr>
+						<td>placement</td>
+						<td>string</td>
+						<td>'right'</td>
+						<td>This determines how the popup is placed against anchor. Your valid options are 'top', 'right', 'bottom', or 'left'. If you are no placing the popup against anchor, you can also pass in 'middle' or 'free'. 'Middle' will position the popup in the dead center of the current view port. It will not be fixed, so the popup will scroll. 'Free' skips the positioning process altogether. 'Free' is the default if you pass an invalid position, and is only recomended if you want to wire up your own positioning (say for when you want to just create floating elements that are draggable). The placement will also be added as a classname to popup-container.</td>
+					</tr>
+					<tr>
+						<td>showArrow</td>
+						<td>boolean</td>
+						<td>true</td>
+						<td>When set to true, the markup for the arrow will be added to popup-container. The arror element will always be position to the middle of anchor, regardless of what <code>offset</code> is set too. See the offset example below for a visual.</td>
+					</tr>
+					<tr>
+						<td>showClose</td>
+						<td>boolean</td>
+						<td>true</td>
+						<td>When set to true, the markup for the close button will be added to popup-container. The position of this element is completely left up to your css. It is automatically binded to trigger the method <code>'close'</code> on click.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h3>Methods</h3>
+		<p>There are methods that can be called for your programming convenience.</p>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Name</th>
+						<td style="width: 300px;">Use</td>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>show</td>
+						<td><code>$element.popup('show');</code></td>
+						<td>Reveal the popup. The classname <code>showing</code> is added to popup-container once shown (if <code>animate = true</code> it will be added at the and of the show transition.</td>
+					</tr>
+					<tr>
+						<td>hide</td>
+						<td><code>$element.popup('hide');</code></td>
+						<td>Hide the popup/ The classname <code>showing</code> will be removed immediately from popup-container when this method is called.</td>
+					</tr>
+					<tr>
+						<td>toggle</td>
+						<td><code>$element.popup('toggle');</code></td>
+						<td>Toggle the popup</td>
+					</tr>
+					<tr>
+						<td>destroy</td>
+						<td><code>$element.popup('destroy');</code></td>
+						<td>Completely destroy the popup instance and remove the popup-container markup (and it's children) from the DOM. All events related to the popup are also removed. <span class="text-danger">WARNING! If you instantiated the popup on markup that already existed on the DOM, it will be remove with this method, and not be placed back in it's original place.</span></td>
+					</tr>
+					<tr>
+						<td>position</td>
+						<td><code>$element.popup('position');</code></td>
+						<td>Rerun the popup's position function. Useful for when you add/remove content from the popup and you keep the popup align properly on it's anchor.</td>
+					</tr>
+					<tr>
+						<td>setContent</td>
+						<td><code>$element.popup('setContent', <i>content</i>);</code></td>
+						<td>Sets the content of $element. This method will remove all children of $element and replace them with <code><i>content</i></code>. This method is very handy when you want to populate the popup with fresh content loaded via ajax. <code><i>content</i></code> can be a jquery object, an HTML Element, or a html string. It does use <code>$.fn.append()</code>, so if you pass it a Node that already exists somewhere else in the DOM, it will be moved and become a child of the popup (this is ideal for when you are using a DocumentFragment you created from an html string brought in via ajax). The popup will automatically re-position itself on this call (to account for width/height changes)</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h3>Properties</h3>
+		<p>Get only properties for your programming convenience</p>
+		<div class="table0-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Name</th>
+						<th style="width: 150px">Return Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>$popupContainer</td>
+						<td>jQuery</td>
+						<td>Returns a jQuery of the pop-container your popup has been nested in.</td>
+					</tr>
+					<tr>
+						<td>isShowing</td>
+						<td>boolean</td>
+						<td>Returns show/hide state of the popup.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h3>Events</h3>
+		<p>This are the events you can hook into. All the Events are called on the element .popup() was called upon.</p>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<pre class="language-javascript"><code>$('#message').popup({...});
+$('#message').on('show.popup', function() { ... });</code></pre>
+			</div>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Name</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>create.popup</td>
+						<td>Triggered at the end of the instantiation, and before showing if <code>autoOpen = true</code>.</td>
+					</tr>
+					<tr>
+						<td>show.popup</td>
+						<td>Triggered right as the popup begins the process of showing.</td>
+					</tr>
+					<tr>
+						<td>shown.popup</td>
+						<td>Triggered once the popup has fully closed. Generally this and <code>show.popup</code> will happen within an instance of each other, except when <code>animate = true</code>.</td>
+					</tr>
+					<tr>
+						<td>positioned.popup</td>
+						<td>Triggered after the popup has been positioned.</td>
+					</tr>
+					<tr>
+						<td>hide.popup</td>
+						<td>Triggerd right as the popup begins the process of hiding.</td>
+					</tr>
+					<tr>
+						<td>hidden.popup</td>
+						<td>Triggered once the popup has fully closed. Like show and shown, hide and hidden will happen within an instance of each other, except when <code>animate = true</code>.</td>
+					</tr>
+					<tr>
+						<td>destroy.popup</td>
+						<td>Triggered when destroying the popup. This trigger happens directly before <code>$popupContainer</code> is removed.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</article>
+
+	<article id="examples">
+		<h2>Examples</h2>
+		<p class="bg-info">Note: all of the following examples are always passing the option <code>classes: 'bubble'</code> to add to the visual effect of the demo. I am leaving that out of the code examples because I only want to show what options are needed for the actually example. I am also leaving out <code>anchor</code>, which for all examples are the buttons that show/hide the popup.</p>
+
+		<div id="common-case" class="row">
+			<h3 class="col-xs-12">Common Use Case</h3>
+			<div class="col-xs-12">
+				<p>The most common use case is a click event on a button opens a popup. Here is an example of when the popup is instantiated on page load:</p>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<pre class="language-javascript"><code>var $popup = $('#common-popup').popup({
+	anchor: '#common-button',
+	autoShow: false,
+	classes: 'bubble',
+	showArrow: true,
+	showClose: true
+});
+
+$('#common-button').on('click', function() {
+	$popup.popup('toggle');
+});</code></pre>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<button id="common-button" class="btn">Common Button</button>
+				<div id="common-popup">I am a common example of a popup</div>
+			</div>
+			<div class="col-xs-12">
+				<p>And here is an example when you want to lazy instantiate the popup, but still have the same functinality:</p>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<pre class="language-javascript"><code>var html = '&lt;div id="lazy-popup"&gt;I am a lazy loaded popup.&lt;/div&gt;';
+$('#lazy-button').on('click', function() {
+	var $this = $(this);
+
+	// since #common-popup will have data('popup-ref')
+	// because it's the anchor,
+	// we can see if the popup has been instanciated yet or not
+	if (!$this.data('popup-ref'))
+		$(html).popup({
+			anchor: $this,
+			classes: 'bubble',
+			showArrow: true,
+			showClose: true
+		});
+	}
+	// and once the pop-up has been instantiated,
+	// we then just have the button toggle the popup
+	else {
+		$this.data('popup-ref').popup('toggle');
+	}
+});</code></pre>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<button id="lazy-button" class="btn">Lazy Button</button>
+			</div>
+		</div>
+
+		<div id="main-examples" class="row">
+			<h3 class="col-xs-12">Placement</h3>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'left'
+});</code></pre>
+				<button class="btn main-demo" data-placement="left">Popup Left</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'top'
+});</code></pre>
+				<button class="btn main-demo" data-placement="top">Popup Top</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'bottom'
+});</code></pre>
+				<button class="btn main-demo" data-placement="bottom">Popup Bottom</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	placement: 'right'
+});</code></pre>
+				<button class="btn main-demo" data-placement="right">Popup Right</button>
+			</div>
+		</div>
+
+		<div id="offset-examples" class="row">
+			<h3 class="col-xs-12">Offset</h3>
+			<div class="col-sm-6 col-xs-12">
+				<pre class="language-javascript"><code>$.element.popup({
+	offset: '50%-30px'
+	placement: 'right'
+});</code></pre>
+				<label>Set the offset:</label>
+				<input id="offset-input" type="text" value="50%-30px">
+				<button id="offset-test" class="btn">Offset</button>
+			</div>
+		</div>
+		
+		<div id="fit-examples" class="row">
+			<h3 class="col-xs-12">Collision and Boundry</h3>
+			<div class="col-sm-4 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'fit',
+	offset: '100%-50px',
+	placement: 'bottom'
+});</code></pre>
+				<button class="btn fit-demo" data-placement="bottom">No Fit</button>
+				<br />
+				<button class="btn fit-demo fit" data-placement="bottom">Fit</button>
+			</div>
+			<div class="col-sm-4 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'fit',
+	offset: '50%',
+	placement: 'right'
+});</code></pre>
+				<button class="btn vert fit-demo" data-placement="right">No Fit</button>
+				<br />
+				<button class="btn vert fit-demo fit" data-placement="right">Fit</button>
+			</div>
+			<div class="col-sm-4 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'fit',
+	offset: '50px'
+	placement: 'bottom'
+});</code></pre>
+				<button class="btn front fit-demo" data-placement="bottom">No Fit</button>
+				<br />
+				<button class="btn front fit-demo fit" data-placement="bottom">Fit</button>
+			</div>
+
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'left'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="left">Popup Left</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'top'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="top">Popup Top</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'bottom'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="bottom">Popup Bottom</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	boundary: '50 10 10 10',
+	collision: 'flip',
+	placement: 'right'
+});</code></pre>
+				<button class="btn flip-demo" data-placement="right">Popup Right</button>
+			</div>
+		</div>
+
+		<div id="ajax-examples" class="row">
+			<h3 class="col-xs-12">jqXHR</h3>
+			<div class="col-sm-9 col-xs-12">
+				<pre class="language-javascript"><code>$('#jqXHR-test').on('click', function() {
+
+	var echo = $('#jqXHR-echo').val();
+
+	var $ajax = $.ajax({
+		type: 'GET',
+		url: 'http://jsfiddle.net/echo/jsonp/',
+		data: {
+			html: '&lt;div class=&quot;popup&quot;&gt; ... &lt;/div&gt;',
+			echo: echo,
+			delay: 3
+		},
+		dataType: 'jsonp'
+	}).done(function(data) {
+		$echoPopup.popup('setContent', data.html);
+	});
+
+	var $echoPopup = $.popup($ajax, {
+		anchor: '#jqXHR-test',
+		classes: 'bubble',
+		collision: false,
+		placement: 'right',
+		destroyOnHide: true
+	});
+});</code></pre>
+				<button id="jqXHR-test" class="btn">jqXHR Test Popup</button>
+			</div>
+		</div>
+
+		<div id="animation-examples" class="row">
+			<h3 class="col-xs-12">Animations</h3>
+			<p>Animation effects when you have <code>animate: true</code> and the css to support it.</p>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble fading'
+});</code></pre>
+				<button class="btn ani-demo" data-ani="fading">Fade</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble grow'
+});</code></pre>
+				<button class="btn ani-demo" data-ani="grow">Grow</button>
+			</div>
+			<div class="col-sm-3 col-xs-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble spin'
+});</code></pre>
+				<button class="btn ani-demo" data-ani="spin">Spin</button>
+				<br />
+				<small>Need Firefox for this one</small>
+			</div>
+			<div class="col-sm-3 col-x-12">
+				<pre class="language-javascript"><code>$element.popup({
+	animate: true,
+	classes: 'bubble flip'
+});</code></pre>
+				<button class="btn ani-demo" data-ani="flip">Flip</button>
+				<br />
+				<small>Need Firefox for this one</small>
+			</div>
+		</div>
+
+	</article>
+
+	<article id="download">
+		<h2>Download</h2>
+
+		<div id="test-box"></div>
+	</article>
+
+	<div id="room-to-scroll"></div>
+</main>
+
+<script type="text/javascript" src="./assets/styleswitcher.js"></script>
+<script type="text/javascript" src="./assets/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="./assets/bootstrap.min.js"></script>
+<script type="text/javascript" src="../src/transition.js"></script>
+<script type="text/javascript" src="../src/jquery.popups.js"></script>
+<script type="text/javascript" src="./assets/prism.js"></script>
+<script type="text/javascript" src="./demo.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+############
+## Windows
+############
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+
+#############
+## NPM
+#############
+node_modules/
+bower_components/
+/src/jquery.popups.old.js
+/src/jquery.modal.old.js
