@@ -417,7 +417,7 @@
 	// define $.fn.popup
 	$.fn.popup = function(option, arg) {
 		
-		var rtnValue = null;
+		var rtnValue;
 		this.each(function() {
 			var $this = $(this),
 				instance = $this.data('popup');
@@ -446,7 +446,7 @@
 
 				if (typeof option === 'string') {
 					// if method/property exists
-					if (instance[option]) {
+					if (option in instance) {
 						// if function
 						if ($.isFunction(instance[option])) {
 							rtnValue = instance[option](arg);
@@ -459,7 +459,7 @@
 
 					// follow how jQuery gets only return the method/property value first in the collection when it's a get
 					// so we want to break out of the .each here
-					if (rtnValue) {
+					if (rtnValue !== undefined) {
 						return false;
 					}
 				}
@@ -478,7 +478,10 @@
 		});
 
 		// return value (if it exists) or return this (for chaining)
-		return rtnValue || this;
+		if (rtnValue !== undefined) {
+			return rtnValue;
+		}
+		return this;
 	};
 
 
