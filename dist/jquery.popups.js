@@ -526,7 +526,7 @@
 		anchorPoint: '50%',
 		arrowTemplate: null,
 		autoShow: true,
-		boundary: null,
+		boundary: '0',
 		classes: null,
 		closeTempalte: null,
 		collision: 'flip', // valid options are 'flip', 'fit', or 'flipfit'

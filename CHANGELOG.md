@@ -5,6 +5,8 @@ Features:
 
  - user's can now pass in their own template for use with the arrow. The orignal one is now just the default
  - same with the close button, user can pass in their own template
+ - new 'within' option. Allows the user to choose the contraining element the popup will collide with when 'collision' is on
+ - 'boundry' default changed to '0'
 
 Bugfixes:
 
