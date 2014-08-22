@@ -10,23 +10,8 @@ Download the [production version][prod] or the [development version][dev].
 [prod]: https://raw.github.com/harris-miller/Popups/master/dist/jquery.popups.min.js
 [dev]: https://raw.github.com/harris-miller/Popups/master/dist/jquery.popups.js
 
-In your web page:
-
-```html
-<script src="jquery.js"></script>
-<script src="dist/Popups.min.js"></script>
-<script>
-(function($) {
-  // _(Coming soon)_
-})(jQuery);
-</script>
-```
-
 ## Documentation
-_(Coming soon)_
-
-## Examples
-_(Coming soon)_
+[Visit the documentation site!](http://harris-miller.github.io/Popups/)
 
 ## Release History
-_(Nothing yet)_
+[See the Changelog](https://github.com/Harris-Miller/Popups/blob/master/CHANGELOG.md)
