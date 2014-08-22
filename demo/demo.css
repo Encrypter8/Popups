@@ -23,6 +23,9 @@
   width: 150px;
   padding: 10px;
 }
+#position-test {
+  width: 200px;
+}
 /* articles need padding-top for bootstrap scroll spy because the top nav is 50px tall*/
 article {
   padding-top: 50px;

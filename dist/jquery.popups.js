@@ -1,4 +1,4 @@
-/* jQuery Popups - v1.1.0 - 2014-08-20
+/* jQuery Popups - v1.1.0 - 2014-08-21
  * https://github.com/harris-miller/Popups
  * Copyright (c) 2014 Harris Miller
  * Licensed MIT 
@@ -24,6 +24,10 @@
 		// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
 		// point is to grab the separate percent and pixel value off the submitted input
 		rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/,
+
+		// matches a percent, negative values ok
+		// accepts "25%", "-25%"
+		rPercentmatch = /^-?\d+%$/,
 
 		// this strips the px off a valid pixel input
 		// accepts: "25" or "25px"
@@ -70,6 +74,9 @@
 		// set $anchor and calculate Boundary
 		this.$anchor = $(o.anchor);
 		this.boundary = calculateBoundary.call(this);
+
+		// default anchorPoint to 50% if invalid value
+		rPercentmatch.test(o.anchorPoint) || (o.anchorPoint = '50%');
 
 		// create popup container
 		this.$popupContainer = $('<div class="popup-container">').addClass(o.classes);
@@ -127,6 +134,7 @@
 			elWidth = this.$popupContainer[0].offsetWidth,
 			elHeight = this.$popupContainer[0].offsetHeight,
 			atPos = getPosition(this.$anchor),
+			atPoint = parseFloat(o.anchorPoint)/100,
 			elPos = { top: null, left: null },
 			boundary = this.boundary;
 
@@ -203,16 +211,16 @@
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: atPos.left + atPos.width/2 - offset};
+				elPos = { top: atPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: atPos.left + atPos.width*atPoint - offset};
 				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: atPos.left + atPos.width/2 - offset };
+				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: atPos.left + atPos.width*atPoint - offset };
 				break;
 			case 'right':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left + atPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
+				elPos = { top: atPos.top + atPos.height*atPoint - offset, left: atPos.left + atPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
 				break;
 			case 'left':
-				elPos = { top: atPos.top + atPos.height/2 - offset, left: atPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
+				elPos = { top: atPos.top + atPos.height*atPoint - offset, left: atPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
 				break;
 			case 'middle':
 				elPos = { top: $document.scrollTop() + $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
@@ -516,6 +524,7 @@
 	$.fn.popup.defaults = {
 		animate: false,
 		anchor: null,
+		anchorPoint: '50%',
 		arrowTemplate: null,
 		autoShow: true,
 		boundary: 10,

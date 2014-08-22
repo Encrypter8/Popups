@@ -8,8 +8,8 @@ A css driven jquery plug-in for all your popup and dialog needs
 ## Getting Started
 Download the [production version][prod] or the [development version][dev].
 
-[prod]: https://raw.github.com/harris-miller/Popups/master/dist/jquery.popups.min.js
-[dev]: https://raw.github.com/harris-miller/Popups/master/dist/jquery.popups.js
+[prod]: https://raw.githubusercontent.com/Harris-Miller/Popups/v1.0.0/dist/jquery.popups.min.js
+[dev]: https://raw.githubusercontent.com/Harris-Miller/Popups/v1.0.0/dist/jquery.popups.js
 
 ## Documentation
 [Visit the documentation site!](http://harris-miller.github.io/Popups/)

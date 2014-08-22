@@ -206,6 +206,14 @@
 						</td>
 					</tr>
 					<tr>
+						<td>anchorPoint</td>
+						<td>string</td>
+						<td>'50%'</td>
+						<td>
+							Where on the anchor the popup will center too. If <code>offset: 50%</code> and <code>showArrow: true</code>, the arrow will point to this spot on the anchor. The percent range represents the edges of the anchor's border from end to end, with '50%' being the middle of the side you have choosen (based on <code>placement</code>). For left and right, '0%' will be the very top of the anchor, and '100%' will be the very bottom of the anchor. For top and bottom, '0%' will be the very left of the anchor, and '100%' will be the very right of the anchor. Negative values and values over '100%' are ok. Invalid values will default to '50%'.
+						</td>
+					</tr>
+					<tr>
 						<td>animate</td>
 						<td>boolean</td>
 						<td>false</td>
@@ -244,7 +252,7 @@
 						<td>collision</td>
 						<td>string</td>
 						<td>'flip'</td>
-						<td>There are 3 acceptable values. <code>"flip"</code>, <code>"flip"</code>, or <code>"flipfit"</code></td>
+						<td>There are 3 acceptable values. <code>"flip"</code>, <code>"fit"</code>, or <code>"flipfit"</code></td>
 					</tr>
 					<tr>
 						<td>container</td>
@@ -498,16 +506,23 @@ $('#lazy-button').on('click', function() {
 			</div>
 		</div>
 
-		<div id="offset-examples" class="row">
-			<h3 class="col-xs-12">Offset</h3>
+		<div id="position-examples" class="row">
+			<h3 class="col-xs-12">Offset and AnchorPoint</h3>
 			<div class="col-sm-6 col-xs-12">
 				<pre class="language-javascript"><code>$.element.popup({
+	anchorPoint: '25%',
 	offset: '50%-30px'
 	placement: 'right'
 });</code></pre>
-				<label>Set the offset:</label>
-				<input id="offset-input" type="text" value="50%-30px">
-				<button id="offset-test" class="btn">Offset</button>
+				<span>
+					<label>Set the offset:</label>
+					<input id="offset-input" type="text" value="50%-75px">
+					<br>
+					<label>Set the AnchorPoint:</label>
+					<input id="anchorPoint-input" type="text" value="25%">
+				</span>
+				
+				<button id="position-test" class="btn">Show / Hide</button>
 			</div>
 		</div>
 		

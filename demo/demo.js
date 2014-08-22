@@ -89,20 +89,23 @@ $(function() {
 	});
 
 
-	$('#offset-test').on('click', function() {
+	$('#position-test').on('click', function() {
 
 		var $testHtml = $lorem();
 		var $this = $(this);
 
 		var offset = $('#offset-input').val();
+		var anchorPoint = $('#anchorPoint-input').val();
 
 		if (!$this.data('popup-ref')) {
 			$testHtml.popup({
 				anchor: $this,
+				anchorPoint: anchorPoint,
 				classes: 'bubble',
+				collision: false,
 				destroyOnHide: true,
 				offset: offset,
-				placement: 'right',
+				placement: 'top',
 				showArrow: true,
 				showClose: true
 			});
@@ -111,7 +114,6 @@ $(function() {
 			$this.data('popup-ref').popup('hide');
 		}
 	});
-
 
 	$('.fit-demo').on('click', function() {
 
@@ -124,7 +126,6 @@ $(function() {
 				boundary: '50 10 10 10',
 				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
 				collision: $this.hasClass('fit') ? 'fit' : null,
-				destroyOnHide: true,
 				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px',
 				placement: $this.data('placement'),
 				showArrow: true,
@@ -132,7 +133,7 @@ $(function() {
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('hide');
+			$this.data('popup-ref').popup('toggle');
 		}
 	});
 
@@ -148,14 +149,13 @@ $(function() {
 				boundary: '50 10 10 10',
 				classes: 'bubble flip-width',
 				collision: 'flip',
-				destroyOnHide: true,
 				placement: $this.data('placement'),
 				showArrow: true,
 				showClose: true
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('hide');
+			$this.data('popup-ref').popup('toggle');
 		}
 	});
 
@@ -199,14 +199,13 @@ $(function() {
 				anchor: $this,
 				animate: true,
 				classes: 'bubble ' + $this.data('ani') || '',
-				destroyOnHide: true,
 				placement: 'right',
 				showArrow: true,
 				showClose: true
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('hide');
+			$this.data('popup-ref').popup('toggle');
 		}
 	});
 
