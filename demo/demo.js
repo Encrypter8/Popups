@@ -121,7 +121,6 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			var within = $('#within-radios input[name=within]:checked').val();
-			console.log(within);
 
 			$testHtml.popup({
 				anchor: $this,
@@ -149,7 +148,6 @@ $(function() {
 
 		if (!$this.data('popup-ref')) {
 			var within = $('#within-radios input[name=within]:checked').val();
-			console.log(within);
 			
 			$testHtml.popup({
 				anchor: $this,

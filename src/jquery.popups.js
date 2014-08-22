@@ -127,7 +127,7 @@
 			elWidth = this.$popupContainer[0].offsetWidth,
 			elHeight = this.$popupContainer[0].offsetHeight,
 			aPos = getPosition(this.$anchor),
-			aPoint = calculatePctPxValue.call(this, o.anchor, o.anchorPoint),
+			aPoint = calculatePctPxValue.call(this, this.$anchor, o.anchorPoint),
 			elPos = { top: null, left: null },
 			isWithinWindow = o.within[0] === window,
 			within = isWithinWindow ? getWindowPosition() : getPosition(o.within);
@@ -567,20 +567,16 @@
 		// if no element, return all 0s
 		if (!$el || !$el[0]) {
 			return {
-				bottom: 0,
 				height: 0,
 				left: 0,
-				right: 0,
 				top: 0,
-				width: 0,
-				x: 0,
-				y: 0
+				width: 0
 			};
 		}
 
 		var el = $el[0];
 
-		return $.extend({}, $.isFunction(el.getBoundingClientRect) ? el.getBoundingClientRect() : {
+		return $.extend({}, {
 			width: el.offsetWidth,
 			height: el.offsetHeight
 		}, $el.offset());
@@ -590,14 +586,10 @@
 	function getWindowPosition() {
 		// including x and y for consistency
 		return {
-			bottom: $document.scrollTop() + $window.height(),
 			height: $window.height(),
 			left: 0,
-			right: $window.width(),
 			top: $document.scrollTop(),
-			width: $window.width(),
-			x: 0,
-			y: $window.width()
+			width: $window.width()
 		};
 	}
 
