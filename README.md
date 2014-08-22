@@ -1,6 +1,7 @@
 # Popups
 
-jquery.popups.js - a jQuery Popups Plugin
+### jquery.popups.js
+A css driven jquery plug-in for all your popup and dialog needs
 
 [![Build Status](https://api.travis-ci.org/Harris-Miller/Popups.svg?branch=master)](https://travis-ci.org/Harris-Miller/Popups)
 
