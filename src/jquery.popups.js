@@ -62,9 +62,14 @@
 		!rPlacementOptions.test(o.placement) && (o.placement = 'free');
 		this.placement = o.placement;
 
+		// check if o.within is valid
+		o.within = $(o.within);
+		// default to $window if not
+		o.within.length === 0 && (o.within = $window);
+
 		// set $anchor and calculate Boundary
 		this.$anchor = $(o.anchor);
-		this.boundary = calculateBoundary.call(this);
+		o.boundary = calculateBoundary.call(this);
 
 		// create popup container
 		this.$popupContainer = $('<div class="popup-container">').addClass(o.classes);
@@ -118,13 +123,14 @@
 
 		var placement = this.placement,
 			o = this.options,
-			offset = calculatePctPxValue.call(this, this.$popupContainer, this.options.offset),
+			offset = calculatePctPxValue.call(this, this.$popupContainer, o.offset),
 			elWidth = this.$popupContainer[0].offsetWidth,
 			elHeight = this.$popupContainer[0].offsetHeight,
-			atPos = getPosition(this.$anchor),
-			atPoint = calculatePctPxValue.call(this, o.anchor, o.anchorPoint),
+			aPos = getPosition(this.$anchor),
+			aPoint = calculatePctPxValue.call(this, o.anchor, o.anchorPoint),
 			elPos = { top: null, left: null },
-			boundary = this.boundary;
+			isWithinWindow = o.within[0] === window,
+			within = isWithinWindow ? getWindowPosition() : getPosition(o.within);
 
 		// figure out the correct placement for determining collision "flip"
 		// if placement is free or middle, we don't do collision detection
@@ -134,28 +140,28 @@
 
 			// define flip tests
 			willFitOnRight = function() {
-				if (atPos.left + atPos.width + elWidth > $window.width() - boundary.right) {
+				if (aPos.left + aPos.width + elWidth > within.left + within.width - o.boundary.right) {
 					return false;
 				}
 				return 'right';
 			},
 
 			willFitOnLeft = function() {
-				if (atPos.left - elWidth < boundary.left) {
+				if (aPos.left - elWidth < within.left + o.boundary.left) {
 					return false;
 				}
 				return 'left';
 			},
 
 			willFitOnBottom = function() {
-				if (atPos.top + atPos.height + elHeight > $document.scrollTop() + $window.height() - boundary.bottom) {
+				if (aPos.top + aPos.height + elHeight > within.top + within.height - o.boundary.bottom) {
 					return false;
 				}
 				return 'bottom';
 			},
 
 			willFitOnTop = function() {
-				if (atPos.top - elHeight < $document.scrollTop() + boundary.top) {
+				if (aPos.top - elHeight < within.top + o.boundary.top) {
 					return false;
 				}
 				return 'top';
@@ -199,16 +205,16 @@
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: atPos.left + atPoint - offset};
+				elPos = { top: aPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: aPos.left + aPoint - offset};
 				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: atPos.left + atPoint - offset };
+				elPos = { top: aPos.top + aPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: aPos.left + aPoint - offset };
 				break;
 			case 'right':
-				elPos = { top: atPos.top + atPoint - offset, left: atPos.left + atPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
+				elPos = { top: aPos.top + aPoint - offset, left: aPos.left + aPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
 				break;
 			case 'left':
-				elPos = { top: atPos.top + atPoint - offset, left: atPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
+				elPos = { top: aPos.top + aPoint - offset, left: aPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
 				break;
 			case 'middle':
 				elPos = { top: $document.scrollTop() + $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
@@ -231,16 +237,16 @@
 			// fit in horizontal axis
 			if (rHorizontal.test(placement)) {
 				// shift popup to the left
-				if (elPos.left + elWidth > $window.width() - boundary.right) {
-					adj = (elPos.left + elWidth) - ($window.width() - boundary.right);
+				if (elPos.left + elWidth > within.left + within.width - o.boundary.right) {
+					adj = (elPos.left + elWidth) - (within.left + within.width - o.boundary.right);
 					elPos.left -= adj;
 					offset += adj;
 				}
 
 				// shift popup to the 
 				// always do this incase the shift left pushed popup beyond window right edge
-				if (elPos.left < boundary.left) {
-					adj = (-elPos.left + boundary.left);
+				if (elPos.left < within.left + o.boundary.left) {
+					adj = (-elPos.left + within.left + o.boundary.left);
 					elPos.left += adj;
 					offset -= adj;
 				}
@@ -249,16 +255,16 @@
 			// fit in vertical axis
 			if (rVertical.test(placement)) {
 				// shift popup up
-				if (elPos.top + elHeight > $document.scrollTop() + $window.height() - boundary.bottom) {
-					adj = (elPos.top + elHeight) - ($document.scrollTop() + $window.height() - boundary.bottom);
+				if (elPos.top + elHeight > within.top + within.height - o.boundary.bottom) {
+					adj = (elPos.top + elHeight) - (within.top + within.height - o.boundary.bottom);
 					elPos.top -= adj;
 					offset += adj;
 				}
 
 				// shift popup down
 				// again, always do this incase the shift up pushed popup beyond the window top edge
-				if (elPos.top < $document.scrollTop() + boundary.top) {
-					adj = (($document.scrollTop() - elPos.top) + boundary.top);
+				if (elPos.top < within.top + o.boundary.top) {
+					adj = ((within.top - elPos.top) + o.boundary.top);
 					elPos.top += adj;
 					offset -= adj;
 				}
@@ -515,7 +521,7 @@
 		anchorPoint: '50%',
 		arrowTemplate: null,
 		autoShow: true,
-		boundary: 10,
+		boundary: null,
 		classes: null,
 		closeTempalte: null,
 		collision: 'flip', // valid options are 'flip', 'fit', or 'flipfit'
@@ -525,8 +531,8 @@
 		offset: '50%', 
 		placement: 'right',
 		showArrow: false, // consider: rename to 'addArrow'
-		showClose: false  // consider: rename to 'addClose'
-		//within: $window, // bound the popup within
+		showClose: false,  // consider: rename to 'addClose'
+		within: $window // bound the popup within the window or a DOM element
 	};
 
 	/*
@@ -558,8 +564,18 @@
 
 	// returns .getBoundingClientRect or (if that function does not exits) a calculated version of
 	function getPosition($el) {
+		// if no element, return all 0s
 		if (!$el || !$el[0]) {
-			return { left: 0, top: 0 };
+			return {
+				bottom: 0,
+				height: 0,
+				left: 0,
+				right: 0,
+				top: 0,
+				width: 0,
+				x: 0,
+				y: 0
+			};
 		}
 
 		var el = $el[0];
@@ -568,6 +584,21 @@
 			width: el.offsetWidth,
 			height: el.offsetHeight
 		}, $el.offset());
+	}
+
+	// simulate .getBoundingClientRect for the window
+	function getWindowPosition() {
+		// including x and y for consistency
+		return {
+			bottom: $document.scrollTop() + $window.height(),
+			height: $window.height(),
+			left: 0,
+			right: $window.width(),
+			top: $document.scrollTop(),
+			width: $window.width(),
+			x: 0,
+			y: $window.width()
+		};
 	}
 
 	// calculates the pixel value as given by "50%-25px" format, which is the format for o.offset and o.anchorPoint
@@ -608,11 +639,12 @@
 
 	// calculate boundary object
 	function calculateBoundary() {
+		var o = this.options;
 		// normalize o.boundary
-		if (!this.options.boundary && this.options.boundary !== 0) { this.options.boundary = '0'; }
-		if ($.isNumeric(this.options.boundary)) { this.options.boundary = this.options.boundary.toString(); }
+		if (!o.boundary && o.boundary !== 0) { o.boundary = '0'; }
+		if ($.isNumeric(o.boundary)) { o.boundary = o.boundary.toString(); }
 
-		var parse = this.options.boundary.split(' '),
+		var parse = o.boundary.split(' '),
 			i;
 
 		// if the parse has incorrect length, return 0s

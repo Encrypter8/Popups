@@ -120,19 +120,24 @@ $(function() {
 		var $this = $(this);
 
 		if (!$this.data('popup-ref')) {
+			var within = $('#within-radios input[name=within]:checked').val();
+			console.log(within);
+
 			$testHtml.popup({
 				anchor: $this,
 				boundary: '50 10 10 10',
 				classes: 'bubble ' + ($this.hasClass('vert') ? 'fit-height' : 'fit-width'),
 				collision: $this.hasClass('fit') ? 'fit' : null,
+				destroyOnHide: true,
 				offset: $this.hasClass('front') ? '50px' : $this.hasClass('vert') ? '50%' : '100%-50px',
 				placement: $this.data('placement'),
 				showArrow: true,
-				showClose: true
+				showClose: true,
+				within: within
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('toggle');
+			$this.data('popup-ref').popup('hide');
 		}
 	});
 
@@ -143,18 +148,23 @@ $(function() {
 		var $this = $(this);
 
 		if (!$this.data('popup-ref')) {
+			var within = $('#within-radios input[name=within]:checked').val();
+			console.log(within);
+			
 			$testHtml.popup({
 				anchor: $this,
 				boundary: '50 10 10 10',
 				classes: 'bubble flip-width',
 				collision: 'flip',
+				destroyOnHide: true,
 				placement: $this.data('placement'),
 				showArrow: true,
-				showClose: true
+				showClose: true,
+				within: within
 			});
 		}
 		else {
-			$this.data('popup-ref').popup('toggle');
+			$this.data('popup-ref').popup('hide');
 		}
 	});
 

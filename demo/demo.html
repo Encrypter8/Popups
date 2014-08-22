@@ -295,6 +295,14 @@
 						<td>true</td>
 						<td>When set to true, the markup for the close button will be added to popup-container. The position of this element is completely left up to your css. It is automatically binded to trigger the method <code>'close'</code> on click.</td>
 					</tr>
+					<tr>
+						<td>within</td>
+						<td>jQuery | element | string</td>
+						<td>$(window)</td>
+						<td>
+							The <code>within</code> option selects what the popup is constrained by in terms of its <code>collision</code>. By default it is the browser window, however it can be any DOM element. In general it will be the site's or module's container element that the popup will exist in. In the example below, you can choose within to be either the browser window, or this site's <code>&lt;main.container&gt;</code> tag.
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -527,7 +535,18 @@ $('#lazy-button').on('click', function() {
 		</div>
 		
 		<div id="fit-examples" class="row">
-			<h3 class="col-xs-12">Collision and Boundry</h3>
+			<h3 class="col-xs-12">Collision, Boundry, and Within</h3>
+			<div class="col-sm-6 col-sm-offset-3 col-xs-12">
+				<h4>Select within:</h4>
+				<div id="within-radios" class="btn-group" data-toggle="buttons">
+					<label class="btn btn-default active">
+						<input type="radio" name="within" value="" checked> within: window
+					</label>
+					<label class="btn btn-default">
+						<input type="radio" value="main.container" name="within"> within: $('.container')
+					</label>
+				</div>
+			</div>
 			<div class="col-sm-4 col-xs-12">
 				<pre class="language-javascript"><code>$element.popup({
 	boundary: '50 10 10 10',
