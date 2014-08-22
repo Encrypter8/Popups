@@ -42,7 +42,6 @@ $(function() {
 		showClose: true
 	});
 
-	console.log($commonPopup);
 
 	$('#common-button').on('click', function() {
 		$commonPopup.popup('toggle');

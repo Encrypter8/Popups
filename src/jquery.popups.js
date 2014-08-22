@@ -18,11 +18,7 @@
 		// accepts: "25", "+25", "-25", "25px", "25%", "+25%", "-25%", "25%+50", "25%-50", "25%-50px"
 		// for "50%-25px", exec gives ["50%-25px", "50%", "-25"]
 		// point is to grab the separate percent and pixel value off the submitted input
-		rOffsetMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/,
-
-		// matches a percent, negative values ok
-		// accepts "25%", "-25%"
-		rPercentmatch = /^-?\d+%$/,
+		rPctPxComboMatch = /^(?:\+?(\-?\d+(?:\.\d+)?%))?(?:\+?(\-?\d+(?:\.\d+)?)(?:px)?)?$/,
 
 		// this strips the px off a valid pixel input
 		// accepts: "25" or "25px"
@@ -69,9 +65,6 @@
 		// set $anchor and calculate Boundary
 		this.$anchor = $(o.anchor);
 		this.boundary = calculateBoundary.call(this);
-
-		// default anchorPoint to 50% if invalid value
-		rPercentmatch.test(o.anchorPoint) || (o.anchorPoint = '50%');
 
 		// create popup container
 		this.$popupContainer = $('<div class="popup-container">').addClass(o.classes);
@@ -125,11 +118,11 @@
 
 		var placement = this.placement,
 			o = this.options,
-			offset = calculateOffset.call(this),
+			offset = calculatePctPxValue.call(this, this.$popupContainer, this.options.offset),
 			elWidth = this.$popupContainer[0].offsetWidth,
 			elHeight = this.$popupContainer[0].offsetHeight,
 			atPos = getPosition(this.$anchor),
-			atPoint = parseFloat(o.anchorPoint)/100,
+			atPoint = calculatePctPxValue.call(this, o.anchor, o.anchorPoint),
 			elPos = { top: null, left: null },
 			boundary = this.boundary;
 
@@ -206,16 +199,16 @@
 
 		switch (placement) {
 			case 'top':
-				elPos = { top: atPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: atPos.left + atPos.width*atPoint - offset};
+				elPos = { top: atPos.top - elHeight - parseFloat(this.$popupContainer.css('margin-bottom')), left: atPos.left + atPoint - offset};
 				break;
 			case 'bottom':
-				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: atPos.left + atPos.width*atPoint - offset };
+				elPos = { top: atPos.top + atPos.height + parseFloat(this.$popupContainer.css('margin-top')), left: atPos.left + atPoint - offset };
 				break;
 			case 'right':
-				elPos = { top: atPos.top + atPos.height*atPoint - offset, left: atPos.left + atPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
+				elPos = { top: atPos.top + atPoint - offset, left: atPos.left + atPos.width + parseFloat(this.$popupContainer.css('margin-left')) };
 				break;
 			case 'left':
-				elPos = { top: atPos.top + atPos.height*atPoint - offset, left: atPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
+				elPos = { top: atPos.top + atPoint - offset, left: atPos.left - elWidth - parseFloat(this.$popupContainer.css('margin-right')) };
 				break;
 			case 'middle':
 				elPos = { top: $document.scrollTop() + $window.height()/2 - elHeight/2, left: $window.width()/2 - elWidth/2 };
@@ -577,35 +570,40 @@
 		}, $el.offset());
 	}
 
-	// calculates the pixel offset as given by placement = "50%-25px" format, which is the format for o.offset
-	function calculateOffset() {
-		var placement = this.placement,
-			parsedOffset = rOffsetMatch.exec(this.options.offset),
-			elWidth = this.$popupContainer[0].offsetWidth,
-			elHeight = this.$popupContainer[0].offsetHeight,
-			offset = 0; // zero by default
+	// calculates the pixel value as given by "50%-25px" format, which is the format for o.offset and o.anchorPoint
+	// $el should be $popupContainer when calculating offset, and should be o.anchor when calculating anchorPoint
+	// value will be o.offset or o.anchorPoint
+	function calculatePctPxValue($el, value) {
+		// return 0 if el is a bad value
+		if (!$el || !$el.length) { return 0;}
 
-		// if value of this.options.offset was invalid, use the default option
-		if (!parsedOffset) {
-			parsedOffset = rOffsetMatch.exec($.fn.popup.defaults.offset);
+		var placement = this.placement,
+			parsedValue = rPctPxComboMatch.exec(value),
+			elWidth = $el[0].offsetWidth,
+			elHeight = $el[0].offsetHeight,
+			rtnValue = 0; // zero by default
+
+		// if value of this.options.rtnValue was invalid, use the default option
+		if (!parsedValue) {
+			parsedValue = rPctPxComboMatch.exec('50%');
 		}
 
-		// if parsedOffset has a percent value
-		if (parsedOffset && parsedOffset[1]) {
+		// if parsedValue has a percent value
+		if (parsedValue && parsedValue[1]) {
 			if (placement === 'right' || placement === 'left') {
-				offset = elHeight * (parseFloat(parsedOffset[1]) / 100);
+				rtnValue = elHeight * (parseFloat(parsedValue[1]) / 100);
 			}
 			if (placement === 'top' || placement === 'bottom') {
-				offset = elWidth * (parseFloat(parsedOffset[1]) / 100);
+				rtnValue = elWidth * (parseFloat(parsedValue[1]) / 100);
 			}
 		}
-		// if parsedOffset has a pixel value (not we need to ADD to offset here, not set)
-		if (parsedOffset && parsedOffset[2]) {
-			offset += parseFloat(parsedOffset[2]);
+		// if parsedValue has a pixel value (not we need to ADD to rtnValue here, not set)
+		if (parsedValue && parsedValue[2]) {
+			rtnValue += parseFloat(parsedValue[2]);
 		}
 
-		// if offset is unintendedly 0 at this point, that means your $.fn.popup.defaults.offset is an invalid value
-		return offset;
+		// if rtnValue is unintendedly 0 at this point, that means your $.fn.popup.defaults.rtnValue is an invalid value
+		return rtnValue;
 	}
 
 	// calculate boundary object
