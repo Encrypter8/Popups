@@ -79,13 +79,6 @@
 		o.closeTemplate = o.closeTemplate || '<button class="popup-close" type="button"></button>';
 		o.arrowTemplate = o.arrowTemplate || '<div class="popup-arrow"><div class="inner-arrow"></div></div>';
 
-		// create close and arrow if needed
-		this.$closeButton = o.showClose ? $(o.closeTemplate).appendTo(this.$popupContainer) : null;
-		this.$arrow = o.showArrow ? $(o.arrowTemplate).appendTo(this.$popupContainer) : null;
-
-		// if showClose, bind click event
-		this.$closeButton && this.$closeButton.on('click', $.proxy(this.hide, this));
-
 		// if o.container, move $el to that container
 		// else if $el is not already a child of document.body, add it
 		if (o.container) {
@@ -99,6 +92,13 @@
 		// always hide here, if o.autoShow, popup will open below
 		$el.after(this.$popupContainer);
 		this.$popupContainer.append($el).hide();
+
+		// create close and arrow if needed
+		this.$closeButton = o.showClose ? $(o.closeTemplate).appendTo(this.$popupContainer) : null;
+		this.$arrow = o.showArrow ? $(o.arrowTemplate).appendTo(this.$popupContainer) : null;
+
+		// if showClose, bind click event
+		this.$closeButton && this.$closeButton.on('click', $.proxy(this.hide, this));
 
 		// add visibility hidden when o.animate == true
 		o.animate && this.$popupContainer.css('visibility', 'hidden');
