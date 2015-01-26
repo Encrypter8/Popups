@@ -523,7 +523,7 @@
 		autoShow: true,
 		boundary: '0',
 		classes: null,
-		closeTempalte: null,
+		closeTemplate: null,
 		collision: 'flip', // valid options are 'flip', 'fit', or 'flipfit'
 		container: null,
 		destroyOnHide: false,
